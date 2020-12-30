@@ -1,0 +1,92 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.1.2">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;MonoAndroid90</TargetFrameworks>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.6.135</Version>
+    <Authors>Hossein Mahabadi</Authors>
+    <Description>This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
+
+Add below line to MainActivity.cs after instalation.
+Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+
+https://instagram.com/hossein.mahabadi468</Description>
+    <PackageIcon>ShamsiDatePickerIcon.png</PackageIcon>
+    <Copyright>Copyright (c) 2020-2025 Hossein Mahabadi
+https://instagram.com/hossein.mahabadi468</Copyright>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Bugs fixed.
+
+============================================================
+
+Add below line to MainActivity.cs after instalation.
+
+Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+</PackageReleaseNotes>
+    <PackageTags>xamarin date persian persaindate shamsi jalali hijrishamsi taghvim datetime iran</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\bnazanin.ttf" />
+    <None Remove="Resources\Fonts\bnazanin_bold.ttf" />
+    <None Remove="Resources\Images\background-blue.jpg" />
+    <None Remove="Resources\Images\background.jpg" />
+    <None Remove="Resources\Images\left.png" />
+    <None Remove="Resources\Images\right.png" />
+    <None Include="license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
+    <None Include="Resources\Images\ShamsiDatePickerIcon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Fonts\bnazanin.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\bnazanin_bold.ttf" />
+    <EmbeddedResource Include="Resources\Images\background-blue.jpg" />
+    <EmbeddedResource Include="Resources\Images\background.jpg" />
+    <EmbeddedResource Include="Resources\Images\left.png" />
+    <EmbeddedResource Include="Resources\Images\right.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="readme.txt">
+      <Pack>true</Pack>
+      <PackagePath>readme.txt</PackagePath>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="CarouselView.FormsPlugin" Version="6.0.0" />
+    <PackageReference Include="HMExtension.Xamarin" Version="1.0.6" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.9" />
+    <PackageReference Include="VG.XFShapeView" Version="1.0.5" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1821" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">    
+    <Compile Include="Platform\Android\Renderers\*.cs" />
+    
+    <!--<AndroidAsset Include="Platform\Android\Assets\bnazanin.ttf" Link="Assets\bnazanin.ttf" />
+    <AndroidAsset Include="Platform\Android\Assets\bnazanin_bold.ttf" Link="Assets\bnazanin_bold.ttf" />-->
+
+    <AndroidResource Include="Platform\Android\Resources\values\styles.xml" Link="Resources\values\styles.xml" />
+  </ItemGroup>
+</Project>
