@@ -559,21 +559,11 @@ namespace ShamsiDatePicker.View
                 Converter = new SelectedItemEventArgsToSelectedItemConverter(),
             };
             ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() { Path = "YearSelectedCommand" });
-
             YearListView.Behaviors.Add(ItemSelectedEvent);
 
-            var TappedEvent = new TapGestureRecognizer();
-            TappedEvent.SetBinding(TapGestureRecognizer.CommandProperty, new Binding() { Path = "YearListTapped" });
-
-            YearListView.GestureRecognizers.Add(TappedEvent);
-
-            YearListView.ItemTemplate = new DataTemplate(() =>
-                {
-                    return new ViewCell()
-                    {
-                        View = CreateTemplateListYearNumberLabel(),
-                    };
-                });
+            var ItemTappedEvent = new EventToCommandBehavior() { EventName = "ItemTapped" };
+            ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() { Path = "YearListTapped" });
+            YearListView.Behaviors.Add(ItemTappedEvent);
 
             return YearListView;
         }
