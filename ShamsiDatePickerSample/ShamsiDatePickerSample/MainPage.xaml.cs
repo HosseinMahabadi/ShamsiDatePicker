@@ -16,6 +16,25 @@ namespace ShamsiDatePickerSample
         public MainPage()
         {
             InitializeComponent();
+
+            BindingContext = this;
+        }
+
+        private DateTime _targetDate = DateTime.Now;
+        DateTime TargetDate 
+        {
+            get
+            {
+                return _targetDate;
+            }
+            set
+            {
+                if(_targetDate != value)
+                {
+                    _targetDate = value;
+                    OnPropertyChanged();
+                }
+            } 
         }
     }
 }

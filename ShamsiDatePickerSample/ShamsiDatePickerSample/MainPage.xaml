@@ -3,14 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
              mc:Ignorable="d"
              x:Class="ShamsiDatePickerSample.MainPage">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Label x:Name="HeaderLabel"
+               Text="Shamsi Date Picker Sample"
+               FontSize="Header"
+               Margin="10"
+               Grid.ColumnSpan="2"/>
+
+        <Label x:Name="GregorianLabel"
+               Text="Gregorian Date: "
+               Margin="5"
+               Grid.Row="1"/>
+
+        <DatePicker x:Name="GregorianDatePicker"
+                    Date="{Binding TargetDate}"
+                    Margin="5"
+                    Grid.Row="1"
+                    Grid.Column="1"/>
+
+        <Label x:Name="ShamsiLabel"
+               Text="Gregorian Date: "
+               Margin="5"
+               Grid.Row="1"/>
+
+        <sdp:ShamsiDatePicker x:Name="ShamsiDatePicker"
+                              Date="{Binding TargetDate}"
+                              MinimumShamsiYear="1320"
+                              MaximumShamsiYear="1420"
+                              Margin="5"
+                              Grid.Row="1"
+                              Grid.Column="1"/>
+
+    </Grid>
 
 </ContentPage>
