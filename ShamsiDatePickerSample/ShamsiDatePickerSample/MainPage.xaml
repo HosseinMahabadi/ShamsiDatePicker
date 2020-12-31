@@ -21,32 +21,40 @@
 
         <Label x:Name="HeaderLabel"
                Text="Shamsi Date Picker Sample"
-               FontSize="Header"
+               FontSize="Title"
+               TextColor="DeepPink"
                Margin="10"
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
                Grid.ColumnSpan="2"/>
 
         <Label x:Name="GregorianLabel"
                Text="Gregorian Date: "
                Margin="5"
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
                Grid.Row="1"/>
 
         <DatePicker x:Name="GregorianDatePicker"
-                    Date="{Binding TargetDate}"
+                    Date="{Binding TargetDate, Mode=TwoWay}"
                     Margin="5"
                     Grid.Row="1"
                     Grid.Column="1"/>
 
         <Label x:Name="ShamsiLabel"
-               Text="Gregorian Date: "
+               Text="Shamsi Date: "
                Margin="5"
-               Grid.Row="1"/>
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
+               Grid.Row="2"/>
 
         <sdp:ShamsiDatePicker x:Name="ShamsiDatePicker"
-                              Date="{Binding TargetDate}"
+                              Date="{Binding TargetDate, Mode=TwoWay}"
                               MinimumShamsiYear="1320"
                               MaximumShamsiYear="1420"
                               Margin="5"
-                              Grid.Row="1"
+                              Grid.Row="2"
                               Grid.Column="1"/>
 
     </Grid>

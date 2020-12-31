@@ -16,12 +16,11 @@ namespace ShamsiDatePickerSample
         public MainPage()
         {
             InitializeComponent();
-
             BindingContext = this;
         }
 
         private DateTime _targetDate = DateTime.Now;
-        DateTime TargetDate 
+        public DateTime TargetDate 
         {
             get
             {
@@ -32,7 +31,7 @@ namespace ShamsiDatePickerSample
                 if(_targetDate != value)
                 {
                     _targetDate = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("TargetDate");
                 }
             } 
         }
