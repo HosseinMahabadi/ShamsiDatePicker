@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid90</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.6.139</Version>
+    <Version>1.6.140</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
 
