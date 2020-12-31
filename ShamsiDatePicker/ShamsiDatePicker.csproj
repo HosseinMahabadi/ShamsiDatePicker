@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid90</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.6.135</Version>
+    <Version>1.6.139</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
 
@@ -24,9 +24,9 @@ https://instagram.com/hossein.mahabadi468</Copyright>
 
 Add below line to MainActivity.cs after instalation.
 
-Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+Rg.Plugins.Popup.Popup.Init(this);
 </PackageReleaseNotes>
-    <PackageTags>xamarin date persian persaindate shamsi jalali hijrishamsi taghvim datetime iran</PackageTags>
+    <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

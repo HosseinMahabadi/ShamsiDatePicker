@@ -496,7 +496,7 @@ namespace ShamsiDatePicker.ViewModel
             {
                 if(_yearListTapped == null)
                 {
-                    _yearListTapped = new RelayCommand(() =>
+                    _yearListTapped = new Command(() =>
                      {
                          YearListVisibility = false;
                      });
@@ -559,6 +559,31 @@ namespace ShamsiDatePicker.ViewModel
             set
             {
                 _backwardCommand = value;
+            }
+        }
+
+        private ICommand _goToSelectedDay = null;
+
+        public ICommand GoToSelectedDay
+        {
+            get
+            {
+                if(_goToSelectedDay == null)
+                {
+                    _goToSelectedDay = new Command(() =>
+                    {
+                        if(CalendarData.SelectedDay != null)
+                        {
+                            Position = (int)CalendarData.SelectedDay.Month - 1;
+                        }
+                    });
+                }
+
+                return _goToSelectedDay;
+            }
+            set
+            {
+                _goToSelectedDay = value;
             }
         }
 

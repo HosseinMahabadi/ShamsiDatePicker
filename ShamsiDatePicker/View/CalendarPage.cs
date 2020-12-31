@@ -181,6 +181,10 @@ namespace ShamsiDatePicker.View
                 Mode = BindingMode.OneWay
             });
 
+            var TapEvent = new TapGestureRecognizer();
+            TapEvent.SetBinding(TapGestureRecognizer.CommandProperty, new Binding() { Path = "GoToSelectedDay" });
+            SelectedDayLabel.GestureRecognizers.Add(TapEvent);
+
             return SelectedDayLabel;
         }
         
