@@ -11,12 +11,13 @@ namespace ShamsiDatePicker.View
 {
     public class CalendarPage : Rg.Plugins.Popup.Pages.PopupPage
     {
+        private ListView YearListView = null;
         internal CalendarPageViewModel DataContext { get; set; } = null;
         internal CalendarPage(CalendarPageViewModel DataContext)
         {
             this.DataContext = DataContext;
             BindingContext = DataContext;
-
+            YearListView = CreateYearListView();
             InitializeComponent();
         }
 
@@ -146,7 +147,10 @@ namespace ShamsiDatePicker.View
                 Mode = BindingMode.OneWay
             });
 
-            var TempGesture = new TapGestureRecognizer() { CommandParameter = YearLabel };
+            var TempGesture = new TapGestureRecognizer()
+            {
+                CommandParameter = new List<object>() { YearLabel, YearListView }, 
+            };
             TempGesture.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
             {
                 Source = DataContext,
@@ -516,7 +520,7 @@ namespace ShamsiDatePicker.View
 
                 Children =
                 {
-                    CreateYearListView(),
+                    YearListView,
                     line,
                 }
             };
@@ -538,7 +542,6 @@ namespace ShamsiDatePicker.View
                 SelectionMode = ListViewSelectionMode.Single,
                 SeparatorVisibility = SeparatorVisibility.None,
                 HorizontalOptions = LayoutOptions.Center,
-               
             };
 
             YearListView.SetBinding(ListView.ItemsSourceProperty, new Binding() 
@@ -553,6 +556,14 @@ namespace ShamsiDatePicker.View
                 Mode = BindingMode.TwoWay 
             });
 
+            YearListView.ItemTemplate = new DataTemplate(() =>
+            {
+                return new ViewCell()
+                {
+                    View = CreateTemplateListYearNumberLabel(),
+                };
+            });
+
             var ItemSelectedEvent = new EventToCommandBehavior()
             {
                 EventName = "ItemSelected",
@@ -562,7 +573,7 @@ namespace ShamsiDatePicker.View
             YearListView.Behaviors.Add(ItemSelectedEvent);
 
             var ItemTappedEvent = new EventToCommandBehavior() { EventName = "ItemTapped" };
-            ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() { Path = "YearListTapped" });
+            ItemTappedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() { Path = "YearListTapped" });
             YearListView.Behaviors.Add(ItemTappedEvent);
 
             return YearListView;

@@ -451,11 +451,22 @@ namespace ShamsiDatePicker.ViewModel
             {
                 if(_yearTappedCommand == null)
                 {
-                    _yearTappedCommand = new Command<object>(async (sender) =>
+                    _yearTappedCommand = new Command<List<object>>(async (sender) =>
                     {
-                        var item = sender as Label;
-                        await item.FadeTo(0.4, 150);
-                        await item.FadeTo(1, 100);
+                        var label = sender[0] as Label;
+                        var listView = sender[1] as ListView;
+
+                        await label.FadeTo(0.4, 150);
+                        await label.FadeTo(1, 100);
+
+                        if (!YearListVisibility)
+                        {
+                            if (SelectedYear != null)
+                            {
+                                listView.ScrollTo(SelectedYear, ScrollToPosition.Center, false);
+                            }
+                        }
+
                         YearListVisibility = !YearListVisibility;
                     });
                 }
