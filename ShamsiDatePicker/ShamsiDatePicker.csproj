@@ -9,7 +9,7 @@
     <Description>This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
 
 Add below line to MainActivity.cs after instalation.
-Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+Rg.Plugins.Popup.Popup.Init(this);
 
 https://instagram.com/hossein.mahabadi468</Description>
     <PackageIcon>ShamsiDatePickerIcon.png</PackageIcon>
