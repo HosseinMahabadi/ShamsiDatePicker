@@ -408,8 +408,9 @@ namespace ShamsiDatePicker.ViewModel
             {
                 if(_cancelCommand == null)
                 {
-                    _cancelCommand = new Command(() =>
+                    _cancelCommand = new Command<CalendarPage>((sender) =>
                     {
+                        sender.FadeTo(0, 50);
                         CallBack(-1, -1, -1);
                     });
                 }
@@ -430,8 +431,9 @@ namespace ShamsiDatePicker.ViewModel
             {
                 if (_okCommand == null)
                 {
-                    _okCommand = new Command(() =>
+                    _okCommand = new Command<CalendarPage>((sender) =>
                     {
+                        sender.FadeTo(0, 50);
                         CallBack(Year, (int)CalendarData.SelectedDay.Month, (int)CalendarData.SelectedDay.Day);
                     });
                 }

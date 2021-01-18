@@ -4,7 +4,6 @@ using System.Text;
 using Xamarin.Forms;
 using ShamsiDatePicker.ViewModel;
 using HMExtension.Xamarin.Component;
-using Rg.Plugins.Popup.Services;
 using ShamsiDatePicker.View;
 
 namespace ShamsiDatePicker
@@ -12,7 +11,7 @@ namespace ShamsiDatePicker
     public class ShamsiDatePicker : Entry
     {
         public ShamsiDatePicker()
-        {
+        { 
             var TextBinding = new Binding()
             {
                 Source = this,
@@ -20,34 +19,44 @@ namespace ShamsiDatePicker
                 Mode = BindingMode.OneWay
             };
             SetBinding(TextProperty, TextBinding);
-            
-            //IsReadOnly = true;
-            
+                        
             /*var Tap = new TapGestureRecognizer();
-            Tap.Tapped += TapGestureRecognizer_Tapped;
+            Tap.Tapped += OpenCalendar;
             GestureRecognizers.Add(Tap);*/
 
-            Focused += ShamsiDatePicker_Focused;
+            Focused += OpenCalendar;
         }
 
-        [Obsolete]
-        private async void ShamsiDatePicker_Focused(object sender, FocusEventArgs e)
+        private async void OpenCalendar(object sender, EventArgs e)
         {
             try
             {
-                IsReadOnly = true;
-                var np = new CalendarPage(new CalendarPageViewModel()
+                var rootPage = new CalendarPage(new CalendarPageViewModel()
                 {
-                    CallBack = CallBack
+                    CallBack = CloseCalendar
                 });
-                np.BackgroundColor = Color.Transparent;
 
-                await PopupNavigation.PushAsync(np, true);
+                await Navigation.PushModalAsync(rootPage, false);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException);
             }
+        }
+
+        private void CloseCalendar(int year, int month, int day)
+        {
+            Navigation.PopModalAsync(false);
+            if (year != -1)
+            {
+                var temp = new DateType(year, month, day);
+                temp.Calendar = CalendarType.Miladi;
+
+                Date = new DateTime(temp.Year, temp.Month, temp.Day);
+                CalendarData.SelectedDate = (DateTime)Date;
+            }
+
+            Unfocus();
         }
 
         public DateTime? Date
@@ -212,44 +221,6 @@ namespace ShamsiDatePicker
         private void OnMaximumDateChanged(object oldValue, object newValue)
         {
             CalendarData.MaxYear = Convert.ToInt32(newValue);
-        }
-
-        [Obsolete]
-        private async void CallBack(int year, int month, int day)
-        {
-            IsReadOnly = false;
-
-            await PopupNavigation.PopAsync(true);
-            if (year != -1)
-            {
-                var temp = new DateType(year, month, day);
-                temp.Calendar = CalendarType.Miladi;
-
-                Date = new DateTime(temp.Year, temp.Month, temp.Day);
-                CalendarData.SelectedDate = (DateTime)Date;
-            }
-        }
-
-        [Obsolete]
-        private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
-            try
-            {
-                Focus();
-
-                var np = new CalendarPage(new CalendarPageViewModel()
-                {
-                    CallBack = CallBack
-                });
-
-                np.BackgroundColor = Color.Transparent;
-
-                await PopupNavigation.PushAsync(np, true);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex.InnerException);
-            }
         }
     }
 }

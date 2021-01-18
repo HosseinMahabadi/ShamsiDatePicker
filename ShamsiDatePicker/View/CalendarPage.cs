@@ -6,10 +6,11 @@ using Xamarin.Forms;
 using CarouselView.FormsPlugin.Abstractions;
 using HMExtension.Xamarin.Mvvm;
 using HMExtension.Xamarin.Component;
+using System.Threading.Tasks;
 
 namespace ShamsiDatePicker.View
 {
-    public class CalendarPage : Rg.Plugins.Popup.Pages.PopupPage
+    public class CalendarPage : ContentPage
     {
         private ListView YearListView = null;
         internal CalendarPageViewModel DataContext { get; set; } = null;
@@ -17,14 +18,22 @@ namespace ShamsiDatePicker.View
         {
             this.DataContext = DataContext;
             BindingContext = DataContext;
-            YearListView = CreateYearListView();
+            
             InitializeComponent();
         }
 
         private void InitializeComponent()
-        {
+        { 
+            BackgroundColor = Color.Transparent;
             FlowDirection = FlowDirection.RightToLeft;
+            NavigationPage.SetHasNavigationBar(this, false);
+            YearListView = CreateYearListView();
             Content = CreateMainGrid();
+        }
+
+        public void FadeOut()
+        {
+            Content.FadeTo(0, 100);
         }
 
         #region MainGrid
@@ -33,7 +42,8 @@ namespace ShamsiDatePicker.View
         {
             var MainGrid = new Grid
             {
-                BackgroundColor = Color.White,
+                Opacity = 0,
+                BackgroundColor = Color.Transparent,
 
                 ColumnDefinitions =
                 {
@@ -55,6 +65,8 @@ namespace ShamsiDatePicker.View
                 }
             };
 
+            Task.Run(async () => await MainGrid.FadeTo(1, 150));
+
             return MainGrid;
         }
 
@@ -63,14 +75,14 @@ namespace ShamsiDatePicker.View
             var BackgroundFrame = new Frame()
             {
                 BorderColor = Color.Transparent,
-                BackgroundColor = Color.FromHex("#7F000000")
+                BackgroundColor = Color.FromHex("#80000000"),
             };
 
             BackgroundFrame.SetValue(Grid.ColumnSpanProperty, 3);
             BackgroundFrame.SetValue(Grid.RowSpanProperty, 3);
 
             var tempBinding = new Binding() { Source = DataContext, Path = "CancelCommand", };
-            var tempTapGesture = new TapGestureRecognizer();
+            var tempTapGesture = new TapGestureRecognizer() { CommandParameter = this};
             tempTapGesture.SetBinding(TapGestureRecognizer.CommandProperty, tempBinding);
 
             BackgroundFrame.GestureRecognizers.Add(tempTapGesture);
@@ -85,7 +97,6 @@ namespace ShamsiDatePicker.View
             var ContentGrid = new Grid()
             {
                 BackgroundColor = Color.White,
-
                 RowDefinitions =
                 {
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) },
@@ -624,6 +635,7 @@ namespace ShamsiDatePicker.View
                 FontFamily = "B_Nazanin",
                 BackgroundColor = Color.Transparent,
                 Margin = new Thickness(0, 0, 0, 5),
+                CommandParameter = this,
             };
 
             OKButton.SetBinding(Button.CommandProperty, new Binding() 
@@ -645,6 +657,7 @@ namespace ShamsiDatePicker.View
                 FontFamily = "B_Nazanin",
                 BackgroundColor = Color.Transparent,
                 Margin = new Thickness(0, 0, 0, 5),
+                CommandParameter = this,
             };
 
             CancelButton.SetBinding(Button.CommandProperty, new Binding() 
