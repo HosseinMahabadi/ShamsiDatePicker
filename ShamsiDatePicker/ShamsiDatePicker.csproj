@@ -1,10 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/2.1.2">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;MonoAndroid10.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.6.181</Version>
+    <Version>1.6.182</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>
       This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
@@ -20,8 +20,7 @@
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>
-      1. Transparent background problem fixed.
-      2. No need to add any code to MainActivity.cs 
+      1. ios support.
     </PackageReleaseNotes>
     <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
@@ -35,6 +34,7 @@
 
   <ItemGroup>
     <Compile Remove="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
+    <Compile Remove="Platform\ios\Renderers\ShamsiDatePickerRenderer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +49,7 @@
       <PackagePath></PackagePath>
     </None>
     <None Include="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
+    <None Include="Platform\ios\Renderers\ShamsiDatePickerRenderer.cs" />
     <None Include="Resources\Images\ShamsiDatePickerIcon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -80,11 +81,12 @@
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <Compile Include="Platform\Android\Renderers\*.cs" />
-
-    <!--<AndroidAsset Include="Platform\Android\Assets\bnazanin.ttf" Link="Assets\bnazanin.ttf" />
-    <AndroidAsset Include="Platform\Android\Assets\bnazanin_bold.ttf" Link="Assets\bnazanin_bold.ttf" />-->
-
     <AndroidResource Include="Platform\Android\Resources\values\styles.xml" Link="Resources\values\styles.xml" />
     <AndroidResource Include="Platform\Android\Resources\values\colors.xml" Link="Resources\values\colors.xml" />
   </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('xamarinios')) ">
+    <Compile Include="Platform\ios\Renderers\*.cs" />
+  </ItemGroup>
+
 </Project>
