@@ -71,7 +71,7 @@
                               MaximumShamsiYear="1420"
                               Margin="5"
                               Grid.Row="2"
-                              Grid.Column="1" CalendarBackgroundColor="#000000" CalendarTitleColor="#AA6565" />
+                              Grid.Column="1"/>
 
     </Grid>
 
