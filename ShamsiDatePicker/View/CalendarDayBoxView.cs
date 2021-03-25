@@ -58,7 +58,7 @@ namespace ShamsiDatePicker.View
             BackgroundCircleShapeSelectedTrigger.Setters.Add(new Setter()
             {
                 Property = ShapeView.ColorProperty,
-                Value = Color.FromHex("#FF4081")
+                Value = new Binding() { Source = DataContext, Path = "CalendarHighlightColor" },
             });
 
             BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger);
@@ -70,7 +70,6 @@ namespace ShamsiDatePicker.View
         {
             var ShamsiDayLabel = new Label()
             {
-                TextColor = Color.Black,
                 BackgroundColor = Color.Transparent,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
@@ -79,12 +78,26 @@ namespace ShamsiDatePicker.View
                 FontFamily = "B_Nazanin"
             };
 
-            ShamsiDayLabel.SetBinding(Label.TextProperty, 
-                new Binding { Source = DataContext, Path = "Day", Mode = BindingMode.OneWay });
+            ShamsiDayLabel.SetBinding(Label.TextColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarTextColor",
+            });
+
+            ShamsiDayLabel.SetBinding(Label.TextProperty, new Binding() 
+            { 
+                Source = DataContext, 
+                Path = "Day", 
+                Mode = BindingMode.OneWay,
+            });
 
             DataTrigger LabelIsEnabledTrigger = new DataTrigger(typeof(Label))
             {
-                Binding = new Binding() { Source = this, Path = "IsEnabled" },
+                Binding = new Binding() 
+                { 
+                    Source = this, 
+                    Path = "IsEnabled" 
+                },
                 Value = false,
             };
             LabelIsEnabledTrigger.Setters.Add(new Setter()
@@ -95,13 +108,19 @@ namespace ShamsiDatePicker.View
 
             DataTrigger LabelIsSelectedTrigger = new DataTrigger(typeof(Label))
             {
-                Binding = new Binding() { Source = DataContext, Path = "IsSelected" },
+                Binding = new Binding() 
+                { 
+                    Source = DataContext, 
+                    Path = "IsSelected" 
+                },
                 Value = true,
             };
+            var setter = new Setter() { Property = Label.TextColorProperty };
+
             LabelIsSelectedTrigger.Setters.Add(new Setter()
             {
                 Property = Label.TextColorProperty,
-                Value = Color.White,
+                Value = new Binding() { Source = DataContext, Path = "CalendarSelectedTextColor" },
             });
 
             ShamsiDayLabel.Triggers.Add(LabelIsEnabledTrigger);

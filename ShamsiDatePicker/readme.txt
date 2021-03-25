@@ -1,8 +1,6 @@
 ============================================================
+
 Thanks for choosing ShamsiDatePicker control.
-This product has optimized for android.
+This product has optimized for android and ios.
 
-Add below line to MainActivity.cs file after instalation.
-
-Rg.Plugins.Popup.Popup.Init(this);
 ============================================================

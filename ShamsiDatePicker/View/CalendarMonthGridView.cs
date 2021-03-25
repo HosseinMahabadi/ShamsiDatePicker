@@ -14,7 +14,7 @@ namespace ShamsiDatePicker.View
         {
             DateGrid = new Grid()
             {
-                BackgroundColor = Color.White,
+                BackgroundColor = Color.Transparent,
 
                 HorizontalOptions = LayoutOptions.Fill,
 

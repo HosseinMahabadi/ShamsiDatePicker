@@ -6,7 +6,23 @@
              xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
              mc:Ignorable="d"
              x:Class="ShamsiDatePickerSample.MainPage">
-
+    <ContentPage.Resources>
+        <Style TargetType="sdp:ShamsiDatePicker">
+            <Setter Property="HeaderBackgroundColor" Value="SteelBlue"/>
+            <Setter Property="HeaderTitleTextColor" Value="Gold"/>
+            <Setter Property="HeaderSubTitleTextColor" Value="LightYellow"/>
+            <Setter Property="CalendarBackgroundColor" Value="WhiteSmoke"/>
+            <Setter Property="CalendarTitleColor" Value="Gold"/>
+            <Setter Property="CalendarSubTitleColor" Value="DarkBlue"/>
+            <Setter Property="CalendarTextColor" Value="BlueViolet"/>
+            <Setter Property="CalendarSelectedTextColor" Value="Cyan"/>
+            <Setter Property="CalendarHighlightColor" Value="SteelBlue"/>
+            <Setter Property="CalendarOKButtonTextColor" Value="ForestGreen"/>
+            <Setter Property="CalendarOKButtonBackgroundColor" Value="LightBlue"/>
+            <Setter Property="CalendarCancelButtonTextColor" Value="Red"/>
+            <Setter Property="CalendarCancelButtonBackgroundColor" Value="LightBlue"/>
+        </Style>
+    </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -50,12 +66,12 @@
                Grid.Row="2"/>
 
         <sdp:ShamsiDatePicker x:Name="ShamsiDatePicker"
-                              Date="{Binding TargetDate, Mode=TwoWay}"
+            Date="{Binding TargetDate, Mode=TwoWay}"
                               MinimumShamsiYear="1320"
                               MaximumShamsiYear="1420"
                               Margin="5"
                               Grid.Row="2"
-                              Grid.Column="1"/>
+                              Grid.Column="1" CalendarBackgroundColor="#000000" CalendarTitleColor="#AA6565" />
 
     </Grid>
 

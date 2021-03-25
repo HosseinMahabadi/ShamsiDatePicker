@@ -16,7 +16,9 @@ namespace ShamsiDatePicker.ViewModel
         Date MyDate = new Date();
 
         #region Functuin
-        public CalendarPageViewModel()
+        public CalendarPageViewModel() { }
+
+        public void Initialize()
         {
             Today.Calendar = CalendarType.Shamsi;
 
@@ -30,9 +32,9 @@ namespace ShamsiDatePicker.ViewModel
             }
 
             List<YearListViewModel> Temp = new List<YearListViewModel>();
-            for(int i = CalendarData.MinYear; i <= CalendarData.MaxYear; i++)
+            for (int i = CalendarData.MinYear; i <= CalendarData.MaxYear; i++)
             {
-                Temp.Add(new YearListViewModel() { YearNumber = i });
+                Temp.Add(new YearListViewModel() { YearNumber = i, ForeColor = CalendarTextColor });
             }
             YearList = Temp;
         }
@@ -133,6 +135,9 @@ namespace ShamsiDatePicker.ViewModel
                         {
                             Day = i,
                             Month = m,
+                            CalendarTextColor = CalendarTextColor,
+                            CalendarSelectedTextColor = CalendarSelectedTextColor,
+                            CalendarHighlightColor = CalendarHighlightColor,
                         })
                         {
                             VerticalOptions = LayoutOptions.FillAndExpand,
@@ -154,8 +159,8 @@ namespace ShamsiDatePicker.ViewModel
 
                 AllDays = items;
 
-                if (CalendarData.SelectedDay == null)
-                {
+                //if (CalendarData.SelectedDay == null)
+                //{
                     var temp = AllDays.Find(d => d.DataContext.Day == ShamsiSelectedDate.Day &&
                                 d.DataContext.Month == ShamsiSelectedDate.Month);
 
@@ -167,8 +172,8 @@ namespace ShamsiDatePicker.ViewModel
 
                     CalendarData.SelectedDay = null;
                     temp.DataContext.IsSelected = true;
-                }
-                else
+                //}
+                /*else
                 {
                     var temp = AllDays.Find(d => d.DataContext.Day == CalendarData.SelectedDay.Day &&
                                 d.DataContext.Month == CalendarData.SelectedDay.Month);
@@ -181,7 +186,7 @@ namespace ShamsiDatePicker.ViewModel
 
                     CalendarData.SelectedDay = null;
                     temp.DataContext.IsSelected = true;
-                }
+                }*/
             }
             catch (Exception ex)
             {
@@ -206,7 +211,7 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     if (_selectedYear != null)
                     {
-                        _selectedYear.ForeColor = Color.Black;
+                        _selectedYear.ForeColor = CalendarTextColor;
                         _selectedYear.FontSize = 22;
                     }
 
@@ -215,7 +220,7 @@ namespace ShamsiDatePicker.ViewModel
 
                     if (value != null)
                     {
-                        _selectedYear.ForeColor = Color.FromHex("#FF4081");
+                        _selectedYear.ForeColor = CalendarHighlightColor;
                         _selectedYear.FontSize = 38;
                     }
                 }
@@ -396,6 +401,228 @@ namespace ShamsiDatePicker.ViewModel
                 }
             }
         }
+
+        private Color _headerBackgroundColor = Color.FromHex("#FF4081");
+        public Color HeaderBackgroundColor
+        {
+            get
+            {
+                return _headerBackgroundColor;
+            }
+            set
+            {
+                if(_headerBackgroundColor != value)
+                {
+                    _headerBackgroundColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _headerTitleTextColor = Color.White;
+        public Color HeaderTitleTextColor
+        {
+            get
+            {
+                return _headerTitleTextColor;
+            }
+            set
+            {
+                if(_headerTitleTextColor != value)
+                {
+                    _headerTitleTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _headerSubTitleTextColor = Color.White;
+        public Color HeaderSubTitleTextColor
+        {
+            get
+            {
+                return _headerSubTitleTextColor;
+            }
+            set
+            {
+                if (_headerSubTitleTextColor != value)
+                {
+                    _headerSubTitleTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarBackgroundColor = Color.White;
+        public Color CalendarBackgroundColor
+        {
+            get
+            {
+                return _calendarBackgroundColor;
+            }
+            set
+            {
+                if (_calendarBackgroundColor != value)
+                {
+                    _calendarBackgroundColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarTextColor = Color.Black;
+        public Color CalendarTextColor
+        {
+            get
+            {
+                return _calendarTextColor;
+            }
+            set
+            {
+                if (_calendarTextColor != value)
+                {
+                    _calendarTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarSelectedTextColor = Color.White;
+        public Color CalendarSelectedTextColor
+        {
+            get
+            {
+                return _calendarSelectedTextColor;
+            }
+            set
+            {
+                if (_calendarSelectedTextColor != value)
+                {
+                    _calendarSelectedTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarHighlightColor = Color.FromHex("#FF4081");
+        public Color CalendarHighlightColor
+        {
+            get
+            {
+                return _calendarHighlightColor;
+            }
+            set
+            {
+                if (_calendarHighlightColor != value)
+                {
+                    _calendarHighlightColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarTitleColor = Color.Black;
+        public Color CalendarTitleColor
+        {
+            get
+            {
+                return _calendarTitleColor;
+            }
+            set
+            {
+                if (_calendarTitleColor != value)
+                {
+                    _calendarTitleColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarSubTitleColor = Color.Black;
+        public Color CalendarSubTitleColor
+        {
+            get
+            {
+                return _calendarSubTitleColor;
+            }
+            set
+            {
+                if (_calendarSubTitleColor != value)
+                {
+                    _calendarSubTitleColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarOKButtonTextColor = Color.FromHex("#FF4081");
+        public Color CalendarOKButtonTextColor
+        {
+            get
+            {
+                return _calendarOKButtonTextColor;
+            }
+            set
+            {
+                if (_calendarOKButtonTextColor != value)
+                {
+                    _calendarOKButtonTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarOKButtonBackgroundColor = Color.Transparent;
+        public Color CalendarOKButtonBackgroundColor
+        {
+            get
+            {
+                return _calendarOKButtonBackgroundColor;
+            }
+            set
+            {
+                if (_calendarOKButtonBackgroundColor != value)
+                {
+                    _calendarOKButtonBackgroundColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarCancelButtonTextColor = Color.FromHex("#FF4081");
+        public Color CalendarCancelButtonTextColor
+        {
+            get
+            {
+                return _calendarCancelButtonTextColor;
+            }
+            set
+            {
+                if (_calendarCancelButtonTextColor != value)
+                {
+                    _calendarCancelButtonTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarCancelButtonBackgroundColor = Color.Transparent;
+        public Color CalendarCancelButtonBackgroundColor
+        {
+            get
+            {
+                return _calendarCancelButtonBackgroundColor;
+            }
+            set
+            {
+                if (_calendarCancelButtonBackgroundColor != value)
+                {
+                    _calendarCancelButtonBackgroundColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Command
@@ -532,8 +759,8 @@ namespace ShamsiDatePicker.ViewModel
 
                         await Task.Run(() => Position++);
 
-                        item.ScaleTo(2, 100);
-                        await item.FadeTo(0.8, 100);
+                        item.ScaleTo(2.5, 100);
+                        await item.FadeTo(0.2, 100);
                         await item.FadeTo(0, 100);
                         await Task.Run(() => item.Scale = 1);
                     });
@@ -560,8 +787,8 @@ namespace ShamsiDatePicker.ViewModel
 
                         await Task.Run(() => Position--);
 
-                        item.ScaleTo(2, 100);
-                        await item.FadeTo(0.8, 100);
+                        item.ScaleTo(2.5, 100);
+                        await item.FadeTo(0.2, 100);
                         await item.FadeTo(0, 100);
                         await Task.Run(() => item.Scale = 1);
                     });

@@ -10,6 +10,7 @@ namespace ShamsiDatePicker
 {
     public class ShamsiDatePicker : Entry
     {
+        CalendarPageViewModel TargetViewModel = null;
         public ShamsiDatePicker()
         { 
             var TextBinding = new Binding()
@@ -23,18 +24,21 @@ namespace ShamsiDatePicker
             /*var Tap = new TapGestureRecognizer();
             Tap.Tapped += OpenCalendar;
             GestureRecognizers.Add(Tap);*/
-
+            
             Focused += OpenCalendar;
+
+            TargetViewModel = new CalendarPageViewModel()
+            {
+                CallBack = CloseCalendar,
+            };
         }
 
         private async void OpenCalendar(object sender, EventArgs e)
         {
             try
             {
-                var rootPage = new CalendarPage(new CalendarPageViewModel()
-                {
-                    CallBack = CloseCalendar
-                });
+                TargetViewModel.Initialize();
+                var rootPage = new CalendarPage(TargetViewModel);
 
                 await Navigation.PushModalAsync(rootPage, false);
             }
@@ -59,6 +63,434 @@ namespace ShamsiDatePicker
             Unfocus();
         }
 
+        public Color HeaderBackgroundColor
+        {
+            get
+            {
+                return (Color)GetValue(HeaderBackgroundColorProperty);
+            }
+            set
+            {
+                SetValue(HeaderBackgroundColorProperty, value);
+            }
+        }
+        public static readonly BindableProperty HeaderBackgroundColorProperty = BindableProperty.Create("HeaderBackgroundColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.FromHex("#FF4081"),
+            propertyChanged: OnHeaderBackgroundColorChanged);
+
+        private static void OnHeaderBackgroundColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnHeaderBackgroundColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnHeaderBackgroundColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.HeaderBackgroundColor = (Color)newValue;
+        }
+
+        public Color HeaderTitleTextColor
+        {
+            get
+            {
+                return (Color)GetValue(HeaderTitleTextColorProperty);
+            }
+            set
+            {
+                SetValue(HeaderTitleTextColorProperty, value);
+            }
+        }
+        public static readonly BindableProperty HeaderTitleTextColorProperty = BindableProperty.Create("HeaderTitleTextColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.White,
+            propertyChanged: OnHeaderTitleTextColorChanged);
+
+        private static void OnHeaderTitleTextColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnHeaderTitleTextColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnHeaderTitleTextColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.HeaderTitleTextColor = (Color)newValue;
+        }
+
+        public Color HeaderSubTitleTextColor
+        {
+            get
+            {
+                return (Color)GetValue(HeaderSubTitleTextColorProperty);
+            }
+            set
+            {
+                SetValue(HeaderSubTitleTextColorProperty, value);
+            }
+        }
+        public static readonly BindableProperty HeaderSubTitleTextColorProperty = BindableProperty.Create("HeaderSubTitleTextColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.White,
+            propertyChanged: OnHeaderSubTitleTextColorChanged);
+
+        private static void OnHeaderSubTitleTextColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnHeaderSubTitleTextColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnHeaderSubTitleTextColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.HeaderSubTitleTextColor = (Color)newValue;
+        }
+
+        public Color CalendarBackgroundColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarBackgroundColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarBackgroundColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarBackgroundColorProperty = BindableProperty.Create("CalendarBackgroundColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.White,
+            propertyChanged: OnCalendarBackgroundColorChanged);
+
+        private static void OnCalendarBackgroundColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarBackgroundColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarBackgroundColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarBackgroundColor = (Color)newValue;
+        }
+
+        public Color CalendarTextColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarTextColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarTextColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarTextColorProperty = BindableProperty.Create("CalendarTextColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.Black,
+            propertyChanged: OnCalendarTextColorChanged);
+
+        private static void OnCalendarTextColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarTextColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarTextColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarTextColor = (Color)newValue;
+        }
+
+        public Color CalendarSelectedTextColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarSelectedTextColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarSelectedTextColorProperty, value);
+            }
+        }
+        public static readonly BindableProperty CalendarSelectedTextColorProperty = BindableProperty.Create("CalendarSelectedTextColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.White,
+            propertyChanged: OnCalendarSelectedTextColorChanged);
+
+        private static void OnCalendarSelectedTextColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarSelectedTextColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarSelectedTextColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarSelectedTextColor = (Color)newValue;
+        }
+
+        public Color CalendarHighlightColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarHighlightColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarHighlightColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarHighlightColorProperty = BindableProperty.Create("CalendarHighlightColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.FromHex("#FF4081"),
+            propertyChanged: OnCalendarHighlightColorChanged);
+
+        private static void OnCalendarHighlightColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarHighlightColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarHighlightColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarHighlightColor = (Color)newValue;
+        }
+
+        public Color CalendarTitleColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarTitleColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarTitleColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarTitleColorProperty = BindableProperty.Create("CalendarTitleColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.Black,
+            propertyChanged: OnCalendarTitleColorChanged);
+
+        private static void OnCalendarTitleColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarTitleColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarTitleColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarTitleColor = (Color)newValue;
+        }
+
+
+        public Color CalendarSubTitleColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarSubTitleColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarSubTitleColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarSubTitleColorProperty = BindableProperty.Create("CalendarSubTitleColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.Black,
+            propertyChanged: OnCalendarSubTitleColorChanged);
+
+        private static void OnCalendarSubTitleColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarSubTitleColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarSubTitleColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarSubTitleColor = (Color)newValue;
+        }
+
+        public Color CalendarOKButtonTextColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarOKButtonTextColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarOKButtonTextColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarOKButtonTextColorProperty = BindableProperty.Create("CalendarOKButtonTextColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.FromHex("#FF4081"),
+            propertyChanged: OnCalendarOKButtonTextColorChanged);
+
+        private static void OnCalendarOKButtonTextColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarOKButtonTextColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarOKButtonTextColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarOKButtonTextColor = (Color)newValue;
+        }
+
+        public Color CalendarOKButtonBackgroundColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarOKButtonBackgroundColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarOKButtonBackgroundColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarOKButtonBackgroundColorProperty = BindableProperty.Create("CalendarOKButtonBackgroundColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.Black,
+            propertyChanged: OnCalendarOKButtonBackgroundColorChanged);
+
+        private static void OnCalendarOKButtonBackgroundColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarOKButtonBackgroundColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarOKButtonBackgroundColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarOKButtonBackgroundColor = (Color)newValue;
+        }
+        //***
+
+        public Color CalendarCancelButtonTextColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarCancelButtonTextColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarCancelButtonTextColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarCancelButtonTextColorProperty = BindableProperty.Create("CalendarCancelButtonTextColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.FromHex("#FF4081"),
+            propertyChanged: OnCalendarCancelButtonTextColorChanged);
+
+        private static void OnCalendarCancelButtonTextColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarCancelButtonTextColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarCancelButtonTextColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarCancelButtonTextColor = (Color)newValue;
+        }
+
+        public Color CalendarCancelButtonBackgroundColor
+        {
+            get
+            {
+                return (Color)GetValue(CalendarCancelButtonBackgroundColorProperty);
+            }
+            set
+            {
+                SetValue(CalendarCancelButtonBackgroundColorProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty CalendarCancelButtonBackgroundColorProperty = BindableProperty.Create("CalendarCancelButtonBackgroundColor",
+            typeof(Color),
+            typeof(ShamsiDatePicker),
+            defaultValue: Color.Black,
+            propertyChanged: OnCalendarCancelButtonBackgroundColorChanged);
+
+        private static void OnCalendarCancelButtonBackgroundColorChanged(BindableObject sender, object oldValue, object newValue)
+        {
+            try
+            {
+                var Object = sender as ShamsiDatePicker;
+                Object.OnCalendarCancelButtonBackgroundColorChanged(oldValue, newValue);
+            }
+            catch { }
+        }
+
+        private void OnCalendarCancelButtonBackgroundColorChanged(object oldValue, object newValue)
+        {
+            TargetViewModel.CalendarCancelButtonBackgroundColor = (Color)newValue;
+        }
+
+        //*************************************************
         public DateTime? Date
         {
             get

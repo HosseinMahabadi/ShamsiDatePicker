@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.6.182</Version>
+    <Version>2.0.19</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>
       This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
@@ -19,9 +19,22 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>
-      1. ios support.
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>1- Bugs fixed.
+
+2- Now you can style and customize your calendar control colors:
+*HeaderBackgroundColor
+*HeaderTitleColor
+*HeaderSubTitleColor
+*CalendarBackgroundColor
+*CalendarTextColor
+*CalendarTitleColor
+*CalendarSubtitleColor
+*CalendarHighlightColor
+*CalendarOKButtonTextColor
+*CalendarOKButtonBackgroundColor
+*CalendarCancelButtonTextColor
+*CalendarCancelButtonBackgroundColor
+</PackageReleaseNotes>
     <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
@@ -33,8 +46,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Platform\Android\Renderers\AssemblyInfo.cs" />
     <Compile Remove="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
-    <Compile Remove="Platform\ios\Renderers\ShamsiDatePickerRenderer.cs" />
+    <Compile Remove="Platform\iOS\Renderers\AssemblyInfo.cs" />
+    <Compile Remove="Platform\iOS\Renderers\ShamsiDatePickerRenderer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,8 +63,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="Platform\Android\Renderers\AssemblyInfo.cs" />
     <None Include="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
-    <None Include="Platform\ios\Renderers\ShamsiDatePickerRenderer.cs" />
+    <None Include="Platform\iOS\Renderers\AssemblyInfo.cs" />
+    <None Include="Platform\iOS\Renderers\ShamsiDatePickerRenderer.cs" />
     <None Include="Resources\Images\ShamsiDatePickerIcon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -74,9 +91,9 @@
 
   <ItemGroup>
     <PackageReference Include="CarouselView.FormsPlugin" Version="6.0.0" />
-    <PackageReference Include="HMExtension.Xamarin" Version="1.0.7" />
+    <PackageReference Include="HMExtension.Xamarin" Version="1.0.10" />
     <PackageReference Include="VG.XFShapeView" Version="1.0.5" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
@@ -86,7 +103,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('xamarinios')) ">
-    <Compile Include="Platform\ios\Renderers\*.cs" />
+    <Compile Include="Platform\iOS\Renderers\*.cs" />
   </ItemGroup>
 
 </Project>

@@ -96,7 +96,6 @@ namespace ShamsiDatePicker.View
         {
             var ContentGrid = new Grid()
             {
-                BackgroundColor = Color.White,
                 RowDefinitions =
                 {
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) },
@@ -116,6 +115,12 @@ namespace ShamsiDatePicker.View
             ContentGrid.SetValue(Grid.ColumnProperty, 1);
             ContentGrid.SetValue(Grid.RowProperty, 1);
 
+            ContentGrid.SetBinding(BackgroundColorProperty, new Binding()
+            {
+                Path = "CalendarBackgroundColor",
+                Source = DataContext,
+            });
+
             return ContentGrid;
         }
 
@@ -123,15 +128,19 @@ namespace ShamsiDatePicker.View
         private StackLayout CreateHeaderGrid()
         {
             var HeaderGrid = new StackLayout()
-            {
-                BackgroundColor = Color.FromHex("#FF4081"),
-
+            {                
                 Children =
                 {
                     CreateYearLabel(),
                     CreateSelectedDayLabel()
                 }
             };
+
+            HeaderGrid.SetBinding(BackgroundColorProperty, new Binding()
+            {
+                Path = "HeaderBackgroundColor",
+                Source = DataContext
+            });
 
             HeaderGrid.SetValue(Grid.RowProperty, 0);
 
@@ -148,7 +157,6 @@ namespace ShamsiDatePicker.View
                 VerticalOptions = LayoutOptions.Center,
                 FontFamily = "B_Nazanin",
                 FontSize = Device.GetNamedSize(NamedSize.Title, typeof(Label)),
-                TextColor = Color.White,
             };
 
             YearLabel.SetBinding(Label.TextProperty, new Binding()
@@ -156,6 +164,12 @@ namespace ShamsiDatePicker.View
                 Source = DataContext,
                 Path = "Year",
                 Mode = BindingMode.OneWay
+            });
+
+            YearLabel.SetBinding(Label.TextColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "HeaderTitleTextColor",
             });
 
             var TempGesture = new TapGestureRecognizer()
@@ -194,6 +208,12 @@ namespace ShamsiDatePicker.View
                 Source = DataContext,
                 Path = "SelectedDay",
                 Mode = BindingMode.OneWay
+            });
+
+            SelectedDayLabel.SetBinding(Label.TextColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "HeaderSubTitleTextColor",
             });
 
             var TapEvent = new TapGestureRecognizer();
@@ -294,6 +314,12 @@ namespace ShamsiDatePicker.View
                 FontSize = 16
             };
 
+            HeaderTamplateLabel.SetBinding(Label.TextColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarTitleColor",
+            });
+                
             HeaderTamplateLabel.SetBinding(Label.TextProperty, new Binding()
             {
                 Path = "Header",
@@ -367,6 +393,18 @@ namespace ShamsiDatePicker.View
                 HorizontalTextAlignment = TextAlignment.Center
             }, 7, 0);
 
+            foreach(Label label in DayOfWeekTemplateGrid.Children)
+            {
+                try
+                {
+                    label.SetBinding(Label.TextColorProperty, new Binding()
+                    {
+                        Source = DataContext,
+                        Path = "CalendarSubTitleColor",
+                    });
+                }
+                catch { }
+            }
             return DayOfWeekTemplateGrid;
         }
 
@@ -445,11 +483,16 @@ namespace ShamsiDatePicker.View
                 ShapeType = XFShapeView.ShapeType.Circle,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                Color = Color.Silver,
                 Opacity = 0
             };
 
             ForwardShape.SetValue(Grid.ColumnProperty, 1);
+
+            ForwardShape.SetBinding(XFShapeView.ShapeView.ColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarTitleColor",
+            });
 
             return ForwardShape;
         }
@@ -468,6 +511,15 @@ namespace ShamsiDatePicker.View
             
             ForwardImage.SetValue(Grid.ColumnProperty, 1);
 
+            var TintEffect = new TintImageEffect();
+            TintEffect.Bindable.SetBinding(TintImageEffect.TintColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarTitleColor",
+            });
+
+            ForwardImage.Effects.Add(TintEffect);
+
             return ForwardImage;
         }
 
@@ -483,6 +535,12 @@ namespace ShamsiDatePicker.View
             };
 
             BackwardShape.SetValue(Grid.ColumnProperty, 3);
+
+            BackwardShape.SetBinding(XFShapeView.ShapeView.ColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarTitleColor",
+            });
 
             return BackwardShape;
         }
@@ -500,6 +558,15 @@ namespace ShamsiDatePicker.View
             };
 
             BackwardImage.SetValue(Grid.ColumnProperty, 3);
+
+            var TintEffect = new TintImageEffect();
+            TintEffect.Bindable.SetBinding(TintImageEffect.TintColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarTitleColor",
+            });
+
+            BackwardImage.Effects.Add(TintEffect);
 
             return BackwardImage;
         }
@@ -521,8 +588,6 @@ namespace ShamsiDatePicker.View
 
             var YearListGrid = new Grid()
             {
-                BackgroundColor = Color.White,
-
                 RowDefinitions =
                 {
                     new RowDefinition(),
@@ -536,7 +601,13 @@ namespace ShamsiDatePicker.View
                 }
             };
 
-            YearListGrid.SetBinding(Grid.IsVisibleProperty, new Binding() 
+            YearListGrid.SetBinding(BackgroundColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarBackgroundColor",
+            });
+
+            YearListGrid.SetBinding(IsVisibleProperty, new Binding() 
             {
                 Source = DataContext,
                 Path = "YearListVisibility" 
@@ -630,13 +701,23 @@ namespace ShamsiDatePicker.View
             var OKButton = new Button()
             {
                 Text = "تایید",
-                TextColor = Color.FromHex("#FF4081"),
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Button)),
                 FontFamily = "B_Nazanin",
-                BackgroundColor = Color.Transparent,
-                Margin = new Thickness(0, 0, 0, 5),
+                Margin = new Thickness(5, 20, 10, 20),
                 CommandParameter = this,
             };
+
+            OKButton.SetBinding(Button.TextColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarOKButtonTextColor",
+            });
+
+            OKButton.SetBinding(Button.BackgroundColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarOKButtonBackgroundColor",
+            });
 
             OKButton.SetBinding(Button.CommandProperty, new Binding() 
             {
@@ -652,13 +733,23 @@ namespace ShamsiDatePicker.View
             var CancelButton = new Button()
             {
                 Text = "انصراف",
-                TextColor = Color.FromHex("#FF4081"),
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Button)),
                 FontFamily = "B_Nazanin",
-                BackgroundColor = Color.Transparent,
-                Margin = new Thickness(0, 0, 0, 5),
+                Margin = new Thickness(0, 20, 0, 20),
                 CommandParameter = this,
             };
+
+            CancelButton.SetBinding(Button.TextColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarCancelButtonTextColor",
+            });
+
+            CancelButton.SetBinding(Button.BackgroundColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "CalendarCancelButtonBackgroundColor",
+            });
 
             CancelButton.SetBinding(Button.CommandProperty, new Binding() 
             {

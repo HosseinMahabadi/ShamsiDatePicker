@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+//using System.Drawing;
 using HMExtension.Xamarin.Mvvm;
 using Xamarin.Forms;
 using System.Windows.Input;
@@ -106,6 +106,56 @@ namespace ShamsiDatePicker.ViewModel
             }
         }
 
+        private Color _calendarTextColor = Color.Black;
+        public Color CalendarTextColor
+        {
+            get
+            {
+                return _calendarTextColor;
+            }
+            set
+            {
+                if (_calendarTextColor != value)
+                {
+                    _calendarTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarSelectedTextColor = Color.White;
+        public Color CalendarSelectedTextColor
+        {
+            get
+            {
+                return _calendarSelectedTextColor;
+            }
+            set
+            {
+                if (_calendarSelectedTextColor != value)
+                {
+                    _calendarSelectedTextColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _calendarHighlightColor = Color.FromHex("#FF4081");
+        public Color CalendarHighlightColor
+        {
+            get
+            {
+                return _calendarHighlightColor;
+            }
+            set
+            {
+                if (_calendarHighlightColor != value)
+                {
+                    _calendarHighlightColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Command
