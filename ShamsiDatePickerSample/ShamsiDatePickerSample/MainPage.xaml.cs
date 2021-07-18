@@ -35,5 +35,10 @@ namespace ShamsiDatePickerSample
                 }
             } 
         }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            ShamsiDatePicker.ShowCalendar();
+        }
     }
 }

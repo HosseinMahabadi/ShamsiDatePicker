@@ -29,12 +29,18 @@ namespace ShamsiDatePicker.View
             var ShamsiDayLabel = CreateShamsiDayLabel();
             var BackgroundCircleShape = CreateBackgroundCircleShape();
             BackgroundCircleShape.Scale = 1.2;
-            var MainGrid = new Grid();
+            var MainGrid = new Grid()
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+            };
 
-            BackgroundCircleShape.Content = ShamsiDayLabel;
             MainGrid.Children.Add(BackgroundCircleShape);
-
+            MainGrid.Children.Add(ShamsiDayLabel);
             Content = MainGrid;
+
+            BackgroundCircleShape.HeightRequest = 1;
+            BackgroundCircleShape.HeightRequest = -1;
         }
 
         ShapeView CreateBackgroundCircleShape()
@@ -73,7 +79,7 @@ namespace ShamsiDatePicker.View
                 BackgroundColor = Color.Transparent,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                FontSize = 15.2,
+                FontSize = 18.5,
                 //FontFamily = (OnPlatform<string>)MyStyle.Resources["B_Nazanin"],
                 FontFamily = "B_Nazanin"
             };

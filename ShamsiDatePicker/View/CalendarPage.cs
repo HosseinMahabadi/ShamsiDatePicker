@@ -10,11 +10,16 @@ using System.Threading.Tasks;
 
 namespace ShamsiDatePicker.View
 {
-    public class CalendarPage : ContentPage
+    internal class CalendarPage : ContentPage
     {
         private ListView YearListView = null;
-        internal CalendarPageViewModel DataContext { get; set; } = null;
-        internal CalendarPage(CalendarPageViewModel DataContext)
+        public CalendarPageViewModel DataContext { get; set; } = null;
+
+        private StackLayout HeaderGrid = null;
+
+        private Grid MainGrid = null;
+
+        public CalendarPage(CalendarPageViewModel DataContext)
         {
             this.DataContext = DataContext;
             BindingContext = DataContext;
@@ -23,17 +28,41 @@ namespace ShamsiDatePicker.View
         }
 
         private void InitializeComponent()
-        { 
+        {
+            SizeChanged += UpdateElementOnLayoutChanged;
+            Appearing += UpdateElementOnLayoutChanged;
             BackgroundColor = Color.Transparent;
             FlowDirection = FlowDirection.RightToLeft;
             NavigationPage.SetHasNavigationBar(this, false);
             YearListView = CreateYearListView();
-            Content = CreateMainGrid();
+            HeaderGrid = CreateHeaderGrid();
+            MainGrid = CreateMainGrid();
+            Content = MainGrid;
+
+            Disappearing += async(sender, e) =>
+            {
+                await MainGrid.FadeTo(0, 150);
+            };
         }
 
-        public void FadeOut()
+        private void UpdateElementOnLayoutChanged(object sender, EventArgs e)
         {
-            Content.FadeTo(0, 100);
+            if (Height > Width)
+            {
+                HeaderGrid.SetValue(Grid.RowProperty, 0);
+                HeaderGrid.SetValue(Grid.RowSpanProperty, 1);
+                HeaderGrid.SetValue(Grid.ColumnProperty, 1);
+
+                MainGrid.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
+            }
+            else
+            {
+                HeaderGrid.SetValue(Grid.RowProperty, 0);
+                HeaderGrid.SetValue(Grid.RowSpanProperty, 3);
+                HeaderGrid.SetValue(Grid.ColumnProperty, 0);
+
+                MainGrid.RowDefinitions[1].Height = new GridLength(20, GridUnitType.Star);
+            }
         }
 
         #region MainGrid
@@ -43,6 +72,9 @@ namespace ShamsiDatePicker.View
             var MainGrid = new Grid
             {
                 Opacity = 0,
+                Margin = 0,
+                Padding = 0,
+
                 BackgroundColor = Color.Transparent,
 
                 ColumnDefinitions =
@@ -51,11 +83,12 @@ namespace ShamsiDatePicker.View
                     new ColumnDefinition() { Width = new GridLength(6, GridUnitType.Star) },
                     new ColumnDefinition()
                 },
+
                 RowDefinitions =
                 {
                     new RowDefinition(),
                     new RowDefinition() { Height = new GridLength(3, GridUnitType.Star) },
-                    new RowDefinition()
+                    new RowDefinition(),
                 },
 
                 Children =
@@ -96,6 +129,11 @@ namespace ShamsiDatePicker.View
         {
             var ContentGrid = new Grid()
             {
+                Padding = 0,
+                Margin = 0,
+                RowSpacing = 0,
+                ColumnSpacing = 0,
+
                 RowDefinitions =
                 {
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) },
@@ -103,23 +141,29 @@ namespace ShamsiDatePicker.View
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) }
                 },
 
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                },
+
                 Children =
                 {
-                    CreateHeaderGrid(),
+                    HeaderGrid,
                     CreateCarouselGrid(),
                     CreateYearListGrid(),
-                    CreateButtonStackLayout()
+                    CreateButtonStackLayout(),
                 }
             };
-
-            ContentGrid.SetValue(Grid.ColumnProperty, 1);
-            ContentGrid.SetValue(Grid.RowProperty, 1);
 
             ContentGrid.SetBinding(BackgroundColorProperty, new Binding()
             {
                 Path = "CalendarBackgroundColor",
                 Source = DataContext,
             });
+
+            ContentGrid.SetValue(Grid.ColumnProperty, 1);
+            ContentGrid.SetValue(Grid.RowProperty, 1);
 
             return ContentGrid;
         }
@@ -128,7 +172,10 @@ namespace ShamsiDatePicker.View
         private StackLayout CreateHeaderGrid()
         {
             var HeaderGrid = new StackLayout()
-            {                
+            { 
+                Margin = 0,
+                Padding = 0,
+
                 Children =
                 {
                     CreateYearLabel(),
@@ -143,6 +190,7 @@ namespace ShamsiDatePicker.View
             });
 
             HeaderGrid.SetValue(Grid.RowProperty, 0);
+            HeaderGrid.SetValue(Grid.ColumnProperty, 1);
 
             return HeaderGrid;
         }
@@ -151,12 +199,12 @@ namespace ShamsiDatePicker.View
         {
             var YearLabel = new Label()
             {
-                Margin = new Thickness(10, 0, 10, -5),
-                HorizontalTextAlignment = TextAlignment.End,
+                Margin = new Thickness(10, 0, 10, 0),
+                HorizontalTextAlignment = TextAlignment.Start,
                 VerticalTextAlignment = TextAlignment.Center,
                 VerticalOptions = LayoutOptions.Center,
                 FontFamily = "B_Nazanin",
-                FontSize = Device.GetNamedSize(NamedSize.Title, typeof(Label)),
+                FontSize = 24,
             };
 
             YearLabel.SetBinding(Label.TextProperty, new Binding()
@@ -192,7 +240,7 @@ namespace ShamsiDatePicker.View
         {
             var SelectedDayLabel = new Label()
             {
-                Margin = new Thickness(10, -5, 10, 5),
+                Margin = new Thickness(10, 0, 10, 5),
                 HorizontalTextAlignment = TextAlignment.Start,
                 VerticalTextAlignment = TextAlignment.Center,
                 VerticalOptions = LayoutOptions.Center,
@@ -217,7 +265,12 @@ namespace ShamsiDatePicker.View
             });
 
             var TapEvent = new TapGestureRecognizer();
-            TapEvent.SetBinding(TapGestureRecognizer.CommandProperty, new Binding() { Path = "GoToSelectedDay" });
+            TapEvent.SetBinding(TapGestureRecognizer.CommandProperty, 
+                new Binding() 
+                { 
+                    Path = "GoToSelectedDay", 
+                    Source = DataContext
+                });
             SelectedDayLabel.GestureRecognizers.Add(TapEvent);
 
             return SelectedDayLabel;
@@ -231,10 +284,16 @@ namespace ShamsiDatePicker.View
         {
             var CarouselGrid = new Grid()
             {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+
+                Padding = 0,
+                Margin = 0,
+
                 RowDefinitions =
                 {
-                    new RowDefinition() { Height = new GridLength(2, GridUnitType.Star) },
-                    new RowDefinition() { Height = new GridLength(7, GridUnitType.Star) },
+                    new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
+                    new RowDefinition() { Height = new GridLength(3.5, GridUnitType.Star) },
                 },
 
                 Children =
@@ -245,6 +304,7 @@ namespace ShamsiDatePicker.View
             };
 
             CarouselGrid.SetValue(Grid.RowProperty, 1);
+            CarouselGrid.SetValue(Grid.ColumnProperty, 1);
 
             return CarouselGrid;
         }
@@ -253,7 +313,10 @@ namespace ShamsiDatePicker.View
         {
             var carouselView = new CarouselViewControl()
             {
-                FlowDirection = FlowDirection.RightToLeft
+                FlowDirection = FlowDirection.RightToLeft,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Margin = 0,
             };
 
             carouselView.SetValue(Grid.RowSpanProperty, 2);
@@ -267,7 +330,8 @@ namespace ShamsiDatePicker.View
             carouselView.SetBinding(CarouselViewControl.PositionProperty, new Binding()
             {
                 Source = DataContext,
-                Path = "Position"
+                Path = "Position",
+                Mode = BindingMode.TwoWay,
             });
 
             carouselView.ItemTemplate = new DataTemplate(() => { return CreateTemplateCarouselMainGrid(); });
@@ -283,12 +347,14 @@ namespace ShamsiDatePicker.View
             {
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 0,
+                Margin = 0,
 
                 RowDefinitions =
                 {
-                    new RowDefinition() { Height = new GridLength(2, GridUnitType.Star) },
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-                    new RowDefinition() { Height = new GridLength(6, GridUnitType.Star) }
+                    new RowDefinition() { Height = new GridLength(0.5, GridUnitType.Star) },
+                    new RowDefinition() { Height = new GridLength(3, GridUnitType.Star) }
                 },
 
                 Children =
@@ -309,7 +375,7 @@ namespace ShamsiDatePicker.View
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
                 VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontFamily = "B_Nazanin_Bold",
                 FontSize = 16
             };
@@ -334,6 +400,9 @@ namespace ShamsiDatePicker.View
             var DayOfWeekTemplateGrid = new Grid()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Padding = 0,
+                Margin = 0,
 
                 ColumnDefinitions =
                 {
@@ -410,7 +479,11 @@ namespace ShamsiDatePicker.View
 
         private CalendarMonthGridView CreateTemplateCarouselCalendarMonth()
         {
-            var TemplateCalendarMonth = new CalendarMonthGridView();
+            var TemplateCalendarMonth = new CalendarMonthGridView() 
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+            };
             TemplateCalendarMonth.SetBinding(CalendarMonthGridView.ItemsProperty, new Binding() { Path = "Days" });
             TemplateCalendarMonth.SetValue(Grid.RowProperty, 2);
 
@@ -454,6 +527,11 @@ namespace ShamsiDatePicker.View
 
             var SignGrid = new Grid()
             {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Margin = 0,
+                Padding = 0,
+
                 ColumnDefinitions =
                 {
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) },
@@ -600,19 +678,22 @@ namespace ShamsiDatePicker.View
                     line,
                 }
             };
-
-            YearListGrid.SetBinding(BackgroundColorProperty, new Binding()
-            {
-                Source = DataContext,
-                Path = "CalendarBackgroundColor",
-            });
-
+            
             YearListGrid.SetBinding(IsVisibleProperty, new Binding() 
             {
                 Source = DataContext,
                 Path = "YearListVisibility" 
             });
+
+            YearListGrid.SetBinding(BackgroundColorProperty, new Binding()
+            {
+                Path = "CalendarBackgroundColor",
+                Source = DataContext,
+            });
+
+
             YearListGrid.SetValue(Grid.RowProperty, 1);
+            YearListGrid.SetValue(Grid.ColumnProperty, 1);
 
             return YearListGrid;
         }
@@ -651,11 +732,20 @@ namespace ShamsiDatePicker.View
                 EventName = "ItemSelected",
                 Converter = new SelectedItemEventArgsToSelectedItemConverter(),
             };
-            ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() { Path = "YearSelectedCommand" });
+            ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() 
+            { 
+                Path = "YearSelectedCommand" 
+            });
             YearListView.Behaviors.Add(ItemSelectedEvent);
 
-            var ItemTappedEvent = new EventToCommandBehavior() { EventName = "ItemTapped" };
-            ItemTappedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() { Path = "YearListTapped" });
+            var ItemTappedEvent = new EventToCommandBehavior() 
+            { 
+                EventName = "ItemTapped" 
+            };
+            ItemTappedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() 
+            { 
+                Path = "YearListTapped" 
+            });
             YearListView.Behaviors.Add(ItemTappedEvent);
 
             return YearListView;
@@ -683,6 +773,10 @@ namespace ShamsiDatePicker.View
         {
             var ButtonStackLayout = new StackLayout()
             {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Margin = 0,
+                Padding = 0,
                 Orientation = StackOrientation.Horizontal,
                 Children =
                 {
@@ -691,7 +785,14 @@ namespace ShamsiDatePicker.View
                 }
             };
 
+            /*ButtonStackLayout.SetBinding(StackLayout.OrientationProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "NotDeviceOrientation",
+            });*/
+
             ButtonStackLayout.SetValue(Grid.RowProperty, 2);
+            ButtonStackLayout.SetValue(Grid.ColumnProperty, 1);
 
             return ButtonStackLayout;
         }
@@ -703,7 +804,7 @@ namespace ShamsiDatePicker.View
                 Text = "تایید",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Button)),
                 FontFamily = "B_Nazanin",
-                Margin = new Thickness(5, 20, 10, 20),
+                Margin = new Thickness(5, 10, 10, 10),
                 CommandParameter = this,
             };
 
@@ -735,7 +836,7 @@ namespace ShamsiDatePicker.View
                 Text = "انصراف",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Button)),
                 FontFamily = "B_Nazanin",
-                Margin = new Thickness(0, 20, 0, 20),
+                Margin = new Thickness(10, 10, 0, 10),
                 CommandParameter = this,
             };
 

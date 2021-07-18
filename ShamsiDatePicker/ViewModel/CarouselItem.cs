@@ -6,6 +6,7 @@ using HMExtension.Xamarin.Component;
 using ShamsiDatePicker.View;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace ShamsiDatePicker.ViewModel
 {
@@ -21,35 +22,15 @@ namespace ShamsiDatePicker.ViewModel
         private int _month;
         public int Month
         {
-            get
-            {
-                return _month;
-            }
-            set
-            {
-                if (_month != value)
-                {
-                    _month = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _month;
+            set => SetProperty(ref _month, value);
         }
 
         private int _year;
         public int Year
         {
-            get
-            {
-                return _year;
-            }
-            set
-            {
-                if (_year != value)
-                {
-                    _year = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _year;
+            set => SetProperty(ref _year, value);
         }
         public string Header
         {
@@ -59,21 +40,11 @@ namespace ShamsiDatePicker.ViewModel
             }
         }
 
-        private List<CalendarDayBoxView> _days = null;
+        private List<CalendarDayBoxView> _days = new List<CalendarDayBoxView>();
         public List<CalendarDayBoxView> Days
         {
-            get
-            {
-                return _days;
-            }
-            set
-            {
-                if (_days != value)
-                {
-                    _days = value;
-                    OnPropertyChanged("Days");
-                }
-            }
+            get => _days;
+            set => SetProperty(ref _days, value);
         }
 
     }

@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.19</Version>
+    <Version>2.1.107</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>
       This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
@@ -16,33 +16,19 @@
       Copyright (c) 2020-2025 Hossein Mahabadi
       https://instagram.com/hossein.mahabadi468
     </Copyright>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1- Bugs fixed.
-
-2- Now you can style and customize your calendar control colors:
-*HeaderBackgroundColor
-*HeaderTitleColor
-*HeaderSubTitleColor
-*CalendarBackgroundColor
-*CalendarTextColor
-*CalendarTitleColor
-*CalendarSubtitleColor
-*CalendarHighlightColor
-*CalendarOKButtonTextColor
-*CalendarOKButtonBackgroundColor
-*CalendarCancelButtonTextColor
-*CalendarCancelButtonBackgroundColor
+    <PackageReleaseNotes>
+Supports landscape orientation.
+Use ShowCalendarAsync() to open calendar programaticaly.
 </PackageReleaseNotes>
-    <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran</PackageTags>
+    <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -91,7 +77,7 @@
 
   <ItemGroup>
     <PackageReference Include="CarouselView.FormsPlugin" Version="6.0.0" />
-    <PackageReference Include="HMExtension.Xamarin" Version="1.0.10" />
+    <PackageReference Include="HMExtension.Xamarin" Version="1.0.29" />
     <PackageReference Include="VG.XFShapeView" Version="1.0.5" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>

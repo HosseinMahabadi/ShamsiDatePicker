@@ -10,18 +10,8 @@ namespace ShamsiDatePicker.ViewModel
         private int _year = 1300;
         public int Year
         {
-            get
-            {
-                return _year;
-            }
-            set
-            {
-                if(_year != value)
-                {
-                    _year = value;
-                    OnPropertyChanged("Year");
-                }
-            }
+            get => _year;
+            set => SetProperty(ref _year, value);
         }
 
         public override string ToString()

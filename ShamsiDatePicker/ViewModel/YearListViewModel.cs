@@ -14,36 +14,15 @@ namespace ShamsiDatePicker.ViewModel
         private Color _foreColor = Color.Black;
         public Color ForeColor
         {
-            get
-            {
-                return _foreColor;
-            }
-            set
-            {
-                if(value != _foreColor)
-                {
-                    _foreColor = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _foreColor;
+            set => SetProperty(ref _foreColor, value);
         }
 
         private double _fontSize = 22;
-
         public double FontSize
         {
-            get
-            {
-                return _fontSize;
-            }
-            set
-            {
-                if(value != _fontSize)
-                {
-                    _fontSize = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _fontSize;
+            set => SetProperty(ref _fontSize, value);
         }
     }
 }

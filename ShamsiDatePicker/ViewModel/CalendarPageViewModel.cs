@@ -7,36 +7,69 @@ using System.Windows.Input;
 using ShamsiDatePicker.View;
 using HMExtension.Xamarin.Component;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Diagnostics;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class CalendarPageViewModel : ViewModelBase
+    internal class CalendarPageViewModel : ShareBaseViewModel
     {
         DateType Today = new DateType(DateTime.Now);
         Date MyDate = new Date();
 
         #region Functuin
-        public CalendarPageViewModel() { }
+        public CalendarPageViewModel() 
+        {
+            try
+            {
+                MessagingCenter.Subscribe<CalendarDayBoxViewModel, CalendarDayBoxViewModel>(this,
+                Globals.Messages[MessageType.NewDayIsSelected],
+                (sender, arg) =>
+                {
+                    SelectedDayBox = arg;
+                    SelectItemCallBak(arg.Month, arg.Day);
+                });
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("CalendarPageViewModel Error!!! " + ex.Message);
+            }
+        }
 
         public void Initialize()
         {
-            Today.Calendar = CalendarType.Shamsi;
+            try
+            {
+                Today.Calendar = CalendarType.Shamsi;
 
-            if (ShamsiSelectedDate.Year > CalendarData.MaxYear)
-            {
-                Year = CalendarData.MaxYear;
-            }
-            else
-            {
-                Year = ShamsiSelectedDate.Year;
-            }
+                var date = new DateType((DateTime)SelectedDate);
+                date.Calendar = CalendarType.Shamsi;
+                ShamsiSelectedDate = date;
 
-            List<YearListViewModel> Temp = new List<YearListViewModel>();
-            for (int i = CalendarData.MinYear; i <= CalendarData.MaxYear; i++)
-            {
-                Temp.Add(new YearListViewModel() { YearNumber = i, ForeColor = CalendarTextColor });
+                if (ShamsiSelectedDate.Year > MaxYear)
+                {
+                    Year = MaxYear;
+                }
+                else
+                {
+                    Year = ShamsiSelectedDate.Year;
+                }
+
+                List<YearListViewModel> Temp = new List<YearListViewModel>();
+                for (int i = MinYear; i <= MaxYear; i++)
+                {
+                    Temp.Add(new YearListViewModel() { YearNumber = i, ForeColor = CalendarTextColor });
+                }
+                YearList = Temp;
+
+                CreateAllDays();
+                CreateCarouselItems();
             }
-            YearList = Temp;
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Initialize on CalendarPageViewModel Error!!! " + ex.Message);
+            }
         }
 
         private void SelectItemCallBak(uint month, uint day)
@@ -85,35 +118,82 @@ namespace ShamsiDatePicker.ViewModel
             SelectedDay = string.Format("{0}, {1} {2}", dow, day.ToString(), (ShamsiMonthType)(month - 1));
         }
 
-        private async void CreateCarouselItems()
+        private void CreateCarouselItems()
         {
-            await Task.Run(() =>
+            try
             {
-                try
-                {
-                    var temp = new List<CarouselItem>()
+                var temp = new List<CarouselItem>()
                     {
-                        new CarouselItem(Year , 1) { Days = AllDays.FindAll(d => d.DataContext.Month == 1)},
-                        new CarouselItem(Year , 2) { Days = AllDays.FindAll(d => d.DataContext.Month == 2)},
-                        new CarouselItem(Year , 3) { Days = AllDays.FindAll(d => d.DataContext.Month == 3)},
-                        new CarouselItem(Year , 4) { Days = AllDays.FindAll(d => d.DataContext.Month == 4)},
-                        new CarouselItem(Year , 5) { Days = AllDays.FindAll(d => d.DataContext.Month == 5)},
-                        new CarouselItem(Year , 6) { Days = AllDays.FindAll(d => d.DataContext.Month == 6)},
-                        new CarouselItem(Year , 7) { Days = AllDays.FindAll(d => d.DataContext.Month == 7)},
-                        new CarouselItem(Year , 8) { Days = AllDays.FindAll(d => d.DataContext.Month == 8)},
-                        new CarouselItem(Year , 9) { Days = AllDays.FindAll(d => d.DataContext.Month == 9)},
-                        new CarouselItem(Year , 10) { Days = AllDays.FindAll(d => d.DataContext.Month == 10)},
-                        new CarouselItem(Year , 11) { Days = AllDays.FindAll(d => d.DataContext.Month == 11)},
-                        new CarouselItem(Year , 12) { Days = AllDays.FindAll(d => d.DataContext.Month == 12)},
+                        new CarouselItem(Year , 1)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 1))
+                        },
+                        new CarouselItem(Year , 2)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 2))
+                        },
+                        new CarouselItem(Year , 3)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 3))
+                        },
+                        new CarouselItem(Year , 4)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 4))
+                        },
+                        new CarouselItem(Year , 5)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 5))
+                        },
+                        new CarouselItem(Year , 6)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 6))
+                        },
+                        new CarouselItem(Year , 7)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 7))
+                        },
+                        new CarouselItem(Year , 8)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 8))
+                        },
+                        new CarouselItem(Year , 9)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 9))
+                        },
+                        new CarouselItem(Year , 10)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 10))
+                        },
+                        new CarouselItem(Year , 11)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 11))
+                        },
+                        new CarouselItem(Year , 12)
+                        {
+                            Days = new List<CalendarDayBoxView>(
+                                AllDays.Where(d => d.DataContext.Month == 12))
+                        },
                     };
 
-                    CarouselItems = temp;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            });
+                CarouselItems = temp;
+                Position = (int)SelectedDayBox.Month - 1;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public void CreateAllDays()
@@ -131,7 +211,7 @@ namespace ShamsiDatePicker.ViewModel
 
                     for (uint i = 1; i <= TotalDays; i++)
                     {
-                        var dayBox = new CalendarDayBoxView(new CalendarDayBoxViewModel(SelectItemCallBak)
+                        var dayBox = new CalendarDayBoxView(new CalendarDayBoxViewModel()
                         {
                             Day = i,
                             Month = m,
@@ -159,34 +239,16 @@ namespace ShamsiDatePicker.ViewModel
 
                 AllDays = items;
 
-                //if (CalendarData.SelectedDay == null)
-                //{
-                    var temp = AllDays.Find(d => d.DataContext.Day == ShamsiSelectedDate.Day &&
-                                d.DataContext.Month == ShamsiSelectedDate.Month);
-
-                    if(temp == null)
-                    {
-                        temp = AllDays.Find(d => d.DataContext.Day == 29 &&
+                var temp = AllDays.FirstOrDefault(d => d.DataContext.Day == ShamsiSelectedDate.Day &&
                             d.DataContext.Month == ShamsiSelectedDate.Month);
-                    }
 
-                    CalendarData.SelectedDay = null;
-                    temp.DataContext.IsSelected = true;
-                //}
-                /*else
+                if (temp == null)
                 {
-                    var temp = AllDays.Find(d => d.DataContext.Day == CalendarData.SelectedDay.Day &&
-                                d.DataContext.Month == CalendarData.SelectedDay.Month);
+                    temp = AllDays.FirstOrDefault(d => d.DataContext.Day == 29 &&
+                        d.DataContext.Month == ShamsiSelectedDate.Month);
+                }
 
-                    if (temp == null)
-                    {
-                        temp = AllDays.Find(d => d.DataContext.Day == 29 &&
-                            d.DataContext.Month == CalendarData.SelectedDay.Month);
-                    }
-
-                    CalendarData.SelectedDay = null;
-                    temp.DataContext.IsSelected = true;
-                }*/
+                temp.DataContext.Select();
             }
             catch (Exception ex)
             {
@@ -198,13 +260,26 @@ namespace ShamsiDatePicker.ViewModel
 
         #region Property
 
+        public Action<DateTime?> DateCallBack { get; set; } = null;
+
+        private int _minYear = 0;
+        public int MinYear
+        {
+            get => _minYear;
+            set => SetProperty(ref _minYear, value);
+        }
+
+        private int _maxYear = 0;
+        public int MaxYear
+        {
+            get => _maxYear;
+            set => SetProperty(ref _maxYear, value);
+        }
+
         private YearListViewModel _selectedYear = null;
         public YearListViewModel SelectedYear
         {
-            get
-            {
-                return _selectedYear;
-            }
+            get => _selectedYear;
             set
             {
                 if (value != _selectedYear)
@@ -226,31 +301,11 @@ namespace ShamsiDatePicker.ViewModel
                 }
             }
         }
-        public DateType ShamsiSelectedDate
-        {
-            get
-            {
-                var date = new DateType(CalendarData.SelectedDate);
-                date.Calendar = CalendarType.Shamsi;
 
-                return date;
-            }
-        }
-
-        private int _position = -1;
+        private int _position = 0;
         public int Position
         {
-            get
-            {
-                if(_position == -1)
-                {
-                    var date = new DateType(CalendarData.SelectedDate);
-                    date.Calendar = CalendarType.Shamsi;
-
-                    _position = date.Month - 1;
-                }
-                return _position;
-            }
+            get => _position;
             set
             {
                 if(_position != value && value > -1 && value < 12)
@@ -260,110 +315,51 @@ namespace ShamsiDatePicker.ViewModel
                 }
             }
         }
+
         List<CalendarDayBoxView> _allDays = new List<CalendarDayBoxView>();
         public List<CalendarDayBoxView> AllDays
         {
-            get
-            {
-                return _allDays;
-            }
-            set
-            {
-                if (_allDays != value)
-                {
-                    _allDays = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _allDays;
+            set => SetProperty(ref _allDays, value);
         }
-        public Action<int, int, int> CallBack { get; set; } = null;
+        //public Action<int, int, int> CallBack { get; set; } = null;
 
         //تاریخ انتخاب شده از تقویم
         private DateTime _selectedItem = DateTime.Now;
         public DateTime SelectedItem
         {
-            get
-            {
-                return _selectedItem;
-            }
-            set
-            {
-                if(_selectedItem != value)
-                {
-                    _selectedItem = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _selectedItem;
+            set => SetProperty(ref _selectedItem, value);
         }
 
         //تاریخ جاری تقویم
         private int _year = 0;
         public int Year
         {
-            get
-            {
-                if(_year == 0)
-                {
-                    _year = ShamsiSelectedDate.Year;
-                }
-                return _year;
-            }
-            set
-            {
-                if(_year != value)
-                {
-                    _year = value;
-                    OnPropertyChanged();
-
-                    CreateAllDays();
-                    CreateCarouselItems();
-                }
-            }
+            get => _year;
+            set => SetProperty(ref _year, value);
         }
 
         private string _selectedDay = null;
         public string SelectedDay
         {
-            get
-            {
-                return _selectedDay;
-            }
-            set
-            {
-                if(_selectedDay!=value)
-                {
-                    _selectedDay = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _selectedDay;
+            set => SetProperty(ref _selectedDay, value);
         }
 
         //دیدپذیری لیست سال ها
         private bool _yearListVisibility = false;
         public bool YearListVisibility
         {
-            get
-            {
-                return _yearListVisibility;
-            }
-            set
-            {
-                if(_yearListVisibility != value)
-                {
-                    _yearListVisibility = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _yearListVisibility;
+            set => SetProperty(ref _yearListVisibility, value);
         }
 
         //لیست سال های قابل انتخاب از تقویم
         private List<YearListViewModel> _yearList = new List<YearListViewModel> ();
         public List<YearListViewModel> YearList
         {
-            get
-            {
-                return _yearList;
-            }
+            get => _yearList;
             set
             {
                 if (_yearList != value)
@@ -373,10 +369,10 @@ namespace ShamsiDatePicker.ViewModel
 
                     if (value != null)
                     {
-                        var temp = _yearList.Find(y => y.YearNumber == ShamsiSelectedDate.Year);
+                        var temp = _yearList.FirstOrDefault(y => y.YearNumber == ShamsiSelectedDate.Year);
                         if(temp == null)
                         {
-                            temp = temp = _yearList.Find(y => y.YearNumber == CalendarData.MaxYear);
+                            temp = temp = _yearList.FirstOrDefault(y => y.YearNumber == MaxYear);
                         }
                         SelectedYear = temp;
                     }
@@ -388,239 +384,8 @@ namespace ShamsiDatePicker.ViewModel
 
         public List<CarouselItem> CarouselItems
         {
-            get
-            {
-                return _carouselItems;
-            }
-            set
-            {
-                if(_carouselItems != value)
-                {
-                    _carouselItems = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _headerBackgroundColor = Color.FromHex("#FF4081");
-        public Color HeaderBackgroundColor
-        {
-            get
-            {
-                return _headerBackgroundColor;
-            }
-            set
-            {
-                if(_headerBackgroundColor != value)
-                {
-                    _headerBackgroundColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _headerTitleTextColor = Color.White;
-        public Color HeaderTitleTextColor
-        {
-            get
-            {
-                return _headerTitleTextColor;
-            }
-            set
-            {
-                if(_headerTitleTextColor != value)
-                {
-                    _headerTitleTextColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _headerSubTitleTextColor = Color.White;
-        public Color HeaderSubTitleTextColor
-        {
-            get
-            {
-                return _headerSubTitleTextColor;
-            }
-            set
-            {
-                if (_headerSubTitleTextColor != value)
-                {
-                    _headerSubTitleTextColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarBackgroundColor = Color.White;
-        public Color CalendarBackgroundColor
-        {
-            get
-            {
-                return _calendarBackgroundColor;
-            }
-            set
-            {
-                if (_calendarBackgroundColor != value)
-                {
-                    _calendarBackgroundColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarTextColor = Color.Black;
-        public Color CalendarTextColor
-        {
-            get
-            {
-                return _calendarTextColor;
-            }
-            set
-            {
-                if (_calendarTextColor != value)
-                {
-                    _calendarTextColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarSelectedTextColor = Color.White;
-        public Color CalendarSelectedTextColor
-        {
-            get
-            {
-                return _calendarSelectedTextColor;
-            }
-            set
-            {
-                if (_calendarSelectedTextColor != value)
-                {
-                    _calendarSelectedTextColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarHighlightColor = Color.FromHex("#FF4081");
-        public Color CalendarHighlightColor
-        {
-            get
-            {
-                return _calendarHighlightColor;
-            }
-            set
-            {
-                if (_calendarHighlightColor != value)
-                {
-                    _calendarHighlightColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarTitleColor = Color.Black;
-        public Color CalendarTitleColor
-        {
-            get
-            {
-                return _calendarTitleColor;
-            }
-            set
-            {
-                if (_calendarTitleColor != value)
-                {
-                    _calendarTitleColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarSubTitleColor = Color.Black;
-        public Color CalendarSubTitleColor
-        {
-            get
-            {
-                return _calendarSubTitleColor;
-            }
-            set
-            {
-                if (_calendarSubTitleColor != value)
-                {
-                    _calendarSubTitleColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarOKButtonTextColor = Color.FromHex("#FF4081");
-        public Color CalendarOKButtonTextColor
-        {
-            get
-            {
-                return _calendarOKButtonTextColor;
-            }
-            set
-            {
-                if (_calendarOKButtonTextColor != value)
-                {
-                    _calendarOKButtonTextColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarOKButtonBackgroundColor = Color.Transparent;
-        public Color CalendarOKButtonBackgroundColor
-        {
-            get
-            {
-                return _calendarOKButtonBackgroundColor;
-            }
-            set
-            {
-                if (_calendarOKButtonBackgroundColor != value)
-                {
-                    _calendarOKButtonBackgroundColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarCancelButtonTextColor = Color.FromHex("#FF4081");
-        public Color CalendarCancelButtonTextColor
-        {
-            get
-            {
-                return _calendarCancelButtonTextColor;
-            }
-            set
-            {
-                if (_calendarCancelButtonTextColor != value)
-                {
-                    _calendarCancelButtonTextColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color _calendarCancelButtonBackgroundColor = Color.Transparent;
-        public Color CalendarCancelButtonBackgroundColor
-        {
-            get
-            {
-                return _calendarCancelButtonBackgroundColor;
-            }
-            set
-            {
-                if (_calendarCancelButtonBackgroundColor != value)
-                {
-                    _calendarCancelButtonBackgroundColor = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _carouselItems;
+            set => SetProperty(ref _carouselItems, value);
         }
 
         #endregion
@@ -637,16 +402,15 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     _cancelCommand = new Command<CalendarPage>((sender) =>
                     {
-                        sender.FadeTo(0, 50);
-                        CallBack(-1, -1, -1);
+                        if(DateCallBack != null)
+                        {
+                            DateCallBack(null);
+                        }
+                        //MessagingCenter.Send(this, Globals.Messages[MessageType.CancelButtonClicked]);
                     });
                 }
 
                 return _cancelCommand;
-            }
-            set
-            {
-                _cancelCommand = value;
             }
         }
 
@@ -660,16 +424,19 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     _okCommand = new Command<CalendarPage>((sender) =>
                     {
-                        sender.FadeTo(0, 50);
-                        CallBack(Year, (int)CalendarData.SelectedDay.Month, (int)CalendarData.SelectedDay.Day);
+                        var dt = new DateType(Year, (int)SelectedDayBox.Month, (int)SelectedDayBox.Day);
+                        dt.Calendar = CalendarType.Miladi;
+                        var d = new DateTime(dt.Year, dt.Month, dt.Day);
+                        if(DateCallBack != null)
+                        {
+                            DateCallBack(d);
+                        }
+                        //MessagingCenter.Send(this, 
+                            //Globals.Messages[MessageType.OkButtonClicked], d);
                     });
                 }
 
                 return _okCommand;
-            }
-            set
-            {
-                _okCommand = value;
             }
         }
 
@@ -702,10 +469,6 @@ namespace ShamsiDatePicker.ViewModel
 
                 return _yearTappedCommand;
             }
-            set
-            {
-                _yearTappedCommand = value;
-            }
         }
 
         private ICommand _yearSelectedCommand = null;      
@@ -715,17 +478,18 @@ namespace ShamsiDatePicker.ViewModel
             {
                 if(_yearSelectedCommand == null)
                 {
-                    _yearSelectedCommand = new Command<YearListViewModel>((year) =>
+                    _yearSelectedCommand = new Command<YearListViewModel>(async (year) =>
                     {
                         Year = year.YearNumber;
+                        await Task.Run(() =>
+                         {
+                             CreateAllDays();
+                             CreateCarouselItems();
+                         });
                     });
                 }
 
                 return _yearSelectedCommand;
-            }
-            set
-            {
-                _yearSelectedCommand = value;
             }
         }
 
@@ -768,10 +532,6 @@ namespace ShamsiDatePicker.ViewModel
 
                 return _forwardCommand;
             }
-            set
-            {
-                _forwardCommand = value;
-            }
         }
 
         private ICommand _backwardCommand = null;
@@ -796,10 +556,6 @@ namespace ShamsiDatePicker.ViewModel
 
                 return _backwardCommand;
             }
-            set
-            {
-                _backwardCommand = value;
-            }
         }
 
         private ICommand _goToSelectedDay = null;
@@ -812,18 +568,14 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     _goToSelectedDay = new Command(() =>
                     {
-                        if(CalendarData.SelectedDay != null)
+                        if(SelectedDayBox != null)
                         {
-                            Position = (int)CalendarData.SelectedDay.Month - 1;
+                            Position = (int)SelectedDayBox.Month - 1;
                         }
                     });
                 }
 
                 return _goToSelectedDay;
-            }
-            set
-            {
-                _goToSelectedDay = value;
             }
         }
 

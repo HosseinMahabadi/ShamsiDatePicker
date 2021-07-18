@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Collections.ObjectModel;
 
 namespace ShamsiDatePicker.View
 {
@@ -16,7 +17,8 @@ namespace ShamsiDatePicker.View
             {
                 BackgroundColor = Color.Transparent,
 
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
 
                 ColumnDefinitions =
                 {
@@ -52,7 +54,7 @@ namespace ShamsiDatePicker.View
     defaultValue: null,
     propertyChanged: OnItemsChanged);
 
-        internal List<CalendarDayBoxView> Items
+        public List<CalendarDayBoxView> Items
         {
             get
             {
@@ -82,7 +84,7 @@ namespace ShamsiDatePicker.View
             DrawItems((List<CalendarDayBoxView>)newValue);
         }
 
-        internal void DrawItems(List<CalendarDayBoxView> Items)
+        public void DrawItems(List<CalendarDayBoxView> Items)
         {
             try
             {

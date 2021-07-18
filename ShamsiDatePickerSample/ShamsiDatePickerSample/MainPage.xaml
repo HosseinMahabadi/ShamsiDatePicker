@@ -7,12 +7,12 @@
              mc:Ignorable="d"
              x:Class="ShamsiDatePickerSample.MainPage">
     <ContentPage.Resources>
-        <Style TargetType="sdp:ShamsiDatePicker">
+   <!--     <Style TargetType="sdp:ShamsiDatePicker">
             <Setter Property="HeaderBackgroundColor" Value="SteelBlue"/>
             <Setter Property="HeaderTitleTextColor" Value="Gold"/>
             <Setter Property="HeaderSubTitleTextColor" Value="LightYellow"/>
             <Setter Property="CalendarBackgroundColor" Value="WhiteSmoke"/>
-            <Setter Property="CalendarTitleColor" Value="Gold"/>
+            <Setter Property="CalendarTitleColor" Value="DarkGoldenrod"/>
             <Setter Property="CalendarSubTitleColor" Value="DarkBlue"/>
             <Setter Property="CalendarTextColor" Value="BlueViolet"/>
             <Setter Property="CalendarSelectedTextColor" Value="Cyan"/>
@@ -21,10 +21,12 @@
             <Setter Property="CalendarOKButtonBackgroundColor" Value="LightBlue"/>
             <Setter Property="CalendarCancelButtonTextColor" Value="Red"/>
             <Setter Property="CalendarCancelButtonBackgroundColor" Value="LightBlue"/>
-        </Style>
+        </Style>-->
     </ContentPage.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -72,6 +74,11 @@
                               Margin="5"
                               Grid.Row="2"
                               Grid.Column="1"/>
+
+        <Button Text="OpenCalendar"
+                Clicked="Button_Clicked"
+                Grid.Row="3"
+                Grid.Column="1"/>
 
     </Grid>
 

@@ -4,6 +4,7 @@ using System.Text;
 using HMExtension.Xamarin.Mvvm;
 using System.Windows.Input;
 using ShamsiDatePicker.View;
+using System.Collections.ObjectModel;
 
 namespace ShamsiDatePicker.ViewModel
 {
@@ -12,73 +13,29 @@ namespace ShamsiDatePicker.ViewModel
         private List<CarouselItem> _carouselItems = null;
         public List<CarouselItem> CarouselItems
         {
-            get
-            {
-                return _carouselItems;
-            }
-            set
-            {
-                if (_carouselItems != value)
-                {
-                    _carouselItems = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _carouselItems;
+            set => SetProperty(ref _carouselItems, value);
         }
 
         private CalendarDayBoxView _selectedItem = null;
         public CalendarDayBoxView SelectedItem
         {
-            get
-            {
-                return _selectedItem;
-            }
-            set
-            {
-                if (_selectedItem != value)
-                {
-                    _selectedItem = value;
-
-                    OnPropertyChanged("SelectedItem");
-                    OnPropertyChanged("MonthName");
-                    OnPropertyChanged("YearString");
-                }
-            }
+            get => _selectedItem;
+            set => SetProperty(ref _selectedItem, value);
         }
 
         private int _carouselPosition = 0;
         public int CarouselPosition
         {
-            get
-            {
-                return _carouselPosition;
-            }
-            set
-            {
-                if (_carouselPosition != value)
-                {
-                    _carouselPosition = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _carouselPosition;
+            set => SetProperty(ref _carouselPosition, value);
         }
 
         private List<YearViewModel> _yearList = new List<YearViewModel>();
         public List<YearViewModel> YearList
         {
-            get
-            {
-                return _yearList;
-            }
-            set
-            {
-                if (_yearList != value)
-                {
-                    _yearList = value;
-                    OnPropertyChanged("YearList");
-                }
-            }
+            get => _yearList;
+            set => SetProperty(ref _yearList, value);
         }
-
     }
 }

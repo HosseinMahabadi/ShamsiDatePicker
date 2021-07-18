@@ -5,76 +5,109 @@ using Xamarin.Forms;
 using ShamsiDatePicker.ViewModel;
 using HMExtension.Xamarin.Component;
 using ShamsiDatePicker.View;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ShamsiDatePicker
 {
     public class ShamsiDatePicker : Entry
     {
-        CalendarPageViewModel TargetViewModel = null;
-        public ShamsiDatePicker()
-        { 
-            var TextBinding = new Binding()
-            {
-                Source = this,
-                Path = "ShamsiDateString",
-                Mode = BindingMode.OneWay
-            };
-            SetBinding(TextProperty, TextBinding);
-                        
-            /*var Tap = new TapGestureRecognizer();
-            Tap.Tapped += OpenCalendar;
-            GestureRecognizers.Add(Tap);*/
-            
-            Focused += OpenCalendar;
+        private CalendarPage RootPage { get; set; } = null;
+        private CalendarPageViewModel RootPageViewModel { get; set; } = null;
 
-            TargetViewModel = new CalendarPageViewModel()
+        public ShamsiDatePicker()
+        {
+            try
             {
-                CallBack = CloseCalendar,
-            };
+                var temp = new DateType((DateTime)Date);
+                temp.Calendar = CalendarType.Shamsi;
+
+                ShamsiDateString = temp.GetDateString('/');
+
+                var TextBinding = new Binding()
+                {
+                    Source = this,
+                    Path = "ShamsiDateString",
+                    Mode = BindingMode.OneWay
+                };
+                SetBinding(TextProperty, TextBinding);
+
+                Focused += OpenCalendar;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ShamsiDatePicker Error!!! " + ex.Message);
+            }
         }
 
         private async void OpenCalendar(object sender, EventArgs e)
         {
+            await ShowCalendarAsync();
+        }
+
+        public async Task ShowCalendarAsync()
+        {
             try
             {
-                TargetViewModel.Initialize();
-                var rootPage = new CalendarPage(TargetViewModel);
+                RootPageViewModel = new CalendarPageViewModel()
+                {
+                    SelectedDate = Date,
+                    CalendarBackgroundColor = CalendarBackgroundColor,
+                    CalendarCancelButtonBackgroundColor = CalendarCancelButtonBackgroundColor,
+                    CalendarCancelButtonTextColor = CalendarCancelButtonTextColor,
+                    CalendarOKButtonBackgroundColor = CalendarOKButtonBackgroundColor,
+                    CalendarHighlightColor = CalendarHighlightColor,
+                    CalendarOKButtonTextColor = CalendarOKButtonTextColor,
+                    CalendarSelectedTextColor = CalendarSelectedTextColor,
+                    CalendarSubTitleColor = CalendarSubTitleColor,
+                    CalendarTextColor = CalendarTextColor,
+                    CalendarTitleColor = CalendarTitleColor,
+                    HeaderBackgroundColor = HeaderBackgroundColor,
+                    HeaderSubTitleTextColor = HeaderSubTitleTextColor,
+                    HeaderTitleTextColor = HeaderTitleTextColor,
+                    MaxYear = MaximumShamsiYear,
+                    MinYear = MinimumShamsiYear,
+                    DateCallBack = CloseCalendar,
+                };
 
-                await Navigation.PushModalAsync(rootPage, false);
+                RootPageViewModel.Initialize();
+                RootPage = new CalendarPage(RootPageViewModel);
+                await Navigation.PushModalAsync(RootPage, false);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException);
+                Debug.WriteLine("OpenCalendar Error!!! " + ex.Message);
             }
         }
-
-        private void CloseCalendar(int year, int month, int day)
+        private void CloseCalendar(DateTime? date = null)
         {
-            Navigation.PopModalAsync(false);
-            if (year != -1)
+            try
             {
-                var temp = new DateType(year, month, day);
-                temp.Calendar = CalendarType.Miladi;
-
-                Date = new DateTime(temp.Year, temp.Month, temp.Day);
-                CalendarData.SelectedDate = (DateTime)Date;
+                if (date != null)
+                {
+                    Date = date;
+                }
             }
-
-            Unfocus();
+            catch(Exception ex)
+            {
+                Debug.WriteLine("CloseCalendar Error!!! " + ex.Message);
+            }
+            finally
+            {
+                _ = Navigation.PopModalAsync(false);
+                Unfocus();
+                RootPageViewModel = null;
+                RootPage = null;
+            }
         }
 
         public Color HeaderBackgroundColor
         {
-            get
-            {
-                return (Color)GetValue(HeaderBackgroundColorProperty);
-            }
-            set
-            {
-                SetValue(HeaderBackgroundColorProperty, value);
-            }
+            get => (Color)GetValue(HeaderBackgroundColorProperty);
+            set => SetValue(HeaderBackgroundColorProperty, value);
         }
-        public static readonly BindableProperty HeaderBackgroundColorProperty = BindableProperty.Create("HeaderBackgroundColor",
+        public static readonly BindableProperty HeaderBackgroundColorProperty = BindableProperty.Create(
+            "HeaderBackgroundColor",
             typeof(Color),
             typeof(ShamsiDatePicker),
             defaultValue: Color.FromHex("#FF4081"),
@@ -92,7 +125,7 @@ namespace ShamsiDatePicker
 
         private void OnHeaderBackgroundColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.HeaderBackgroundColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.HeaderBackgroundColorIsChanged], (Color)newValue);
         }
 
         public Color HeaderTitleTextColor
@@ -124,7 +157,7 @@ namespace ShamsiDatePicker
 
         private void OnHeaderTitleTextColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.HeaderTitleTextColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.HeaderTitleTextColorIsChanged], (Color)newValue);
         }
 
         public Color HeaderSubTitleTextColor
@@ -156,7 +189,7 @@ namespace ShamsiDatePicker
 
         private void OnHeaderSubTitleTextColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.HeaderSubTitleTextColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.HeaderSubTitleTextColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarBackgroundColor
@@ -189,7 +222,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarBackgroundColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarBackgroundColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarBackgroundColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarTextColor
@@ -222,7 +255,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarTextColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarTextColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarTextColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarSelectedTextColor
@@ -254,7 +287,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarSelectedTextColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarSelectedTextColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarSelectedTextColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarHighlightColor
@@ -287,7 +320,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarHighlightColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarHighlightColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarHighlightColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarTitleColor
@@ -320,7 +353,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarTitleColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarTitleColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarTitleColorIsChanged], (Color)newValue);
         }
 
 
@@ -354,7 +387,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarSubTitleColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarSubTitleColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarSubTitleColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarOKButtonTextColor
@@ -387,7 +420,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarOKButtonTextColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarOKButtonTextColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarOKButtonTextColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarOKButtonBackgroundColor
@@ -405,7 +438,7 @@ namespace ShamsiDatePicker
         public static readonly BindableProperty CalendarOKButtonBackgroundColorProperty = BindableProperty.Create("CalendarOKButtonBackgroundColor",
             typeof(Color),
             typeof(ShamsiDatePicker),
-            defaultValue: Color.Black,
+            defaultValue: Color.Transparent,
             propertyChanged: OnCalendarOKButtonBackgroundColorChanged);
 
         private static void OnCalendarOKButtonBackgroundColorChanged(BindableObject sender, object oldValue, object newValue)
@@ -420,7 +453,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarOKButtonBackgroundColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarOKButtonBackgroundColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarOKButtonBackgroundColorIsChanged], (Color)newValue);
         }
         //***
 
@@ -454,7 +487,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarCancelButtonTextColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarCancelButtonTextColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarCancelButtonTextColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarCancelButtonBackgroundColor
@@ -472,7 +505,7 @@ namespace ShamsiDatePicker
         public static readonly BindableProperty CalendarCancelButtonBackgroundColorProperty = BindableProperty.Create("CalendarCancelButtonBackgroundColor",
             typeof(Color),
             typeof(ShamsiDatePicker),
-            defaultValue: Color.Black,
+            defaultValue: Color.Transparent,
             propertyChanged: OnCalendarCancelButtonBackgroundColorChanged);
 
         private static void OnCalendarCancelButtonBackgroundColorChanged(BindableObject sender, object oldValue, object newValue)
@@ -487,28 +520,21 @@ namespace ShamsiDatePicker
 
         private void OnCalendarCancelButtonBackgroundColorChanged(object oldValue, object newValue)
         {
-            TargetViewModel.CalendarCancelButtonBackgroundColor = (Color)newValue;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarCancelButtonBackgroundColorIsChanged], (Color)newValue);
         }
 
         //*************************************************
         public DateTime? Date
         {
-            get
-            {
-                return (DateTime)GetValue(DateProperty);
-            }
-            set
-            {
-                SetValue(DateProperty, value);
-            }
+            get => (DateTime)GetValue(DateProperty);
+            set => SetValue(DateProperty, value);
         }
 
         public static readonly BindableProperty DateProperty = BindableProperty.Create("Date",
             typeof(DateTime?),
             typeof(ShamsiDatePicker),
             defaultValue: DateTime.Now,
-            propertyChanged: OnDateChanged
-           );
+            propertyChanged: OnDateChanged);
 
         private static void OnDateChanged(BindableObject sender, object oldValue, object newValue)
         {
@@ -522,51 +548,29 @@ namespace ShamsiDatePicker
 
         private void OnDateChanged(object oldValue, object newValue)
         {
-            CalendarData.SelectedDate = (DateTime)newValue;
-
-            OnPropertyChanged("ShamsiDate");
-            OnPropertyChanged("ShamsiDateString");
-        }
-
-        public DateType ShamsiDate
-        {
-            get
+            if (newValue != null)
             {
-                try
-                {
-                    if (Date != null)
-                    {
-                        var temp = new DateType((DateTime)Date);
-                        temp.Calendar = CalendarType.Shamsi;
+                var temp = new DateType((DateTime)Date);
+                temp.Calendar = CalendarType.Shamsi;
 
-                        return temp;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                catch
-                {
-                    return null;
-                }
+                ShamsiDateString = temp.GetDateString('/');
+            }
+            else
+            {
+                ShamsiDateString = null;
             }
         }
 
+        private string _shamsiDateString = null;
         public string ShamsiDateString
         {
-            get
+            get => _shamsiDateString;
+            set
             {
-                if (Date != null)
+                if(_shamsiDateString != value)
                 {
-                    var temp = new DateType((DateTime)Date);
-                    temp.Calendar = CalendarType.Shamsi;
-
-                    return temp.GetDateString('/');
-                }
-                else
-                {
-                    return null;
+                    _shamsiDateString = value;
+                    OnPropertyChanged(nameof(ShamsiDateString));
                 }
             }
         }
@@ -609,7 +613,7 @@ namespace ShamsiDatePicker
             try
             {
                 var temp = Convert.ToInt32(newValue);
-                CalendarData.MinYear = temp;
+                MessagingCenter.Send(this, Globals.Messages[MessageType.MinYearIsChanged], temp);
             }
             catch (Exception ex)
             {
@@ -652,7 +656,7 @@ namespace ShamsiDatePicker
 
         private void OnMaximumDateChanged(object oldValue, object newValue)
         {
-            CalendarData.MaxYear = Convert.ToInt32(newValue);
+            MessagingCenter.Send(this, Globals.Messages[MessageType.MinYearIsChanged], Convert.ToInt32(newValue));
         }
     }
 }
