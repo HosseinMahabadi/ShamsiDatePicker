@@ -7,10 +7,14 @@ using HMExtension.Xamarin.Component;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class ShareBaseViewModel : ViewModelBase
+    internal class ShareViewModelBase : ViewModelBase
     {
-        public ShareBaseViewModel()
+        public ShareViewModelBase()
         {
+            var date = new DateType((DateTime)SelectedDate);
+            date.Calendar = CalendarType.Shamsi;
+            ShamsiSelectedDate = date;
+
             MessagingCenter.Subscribe<ShamsiDatePicker, Color>(this,
                 Globals.Messages[MessageType.HeaderBackgroundColorIsChanged],
                 (sender, arg) =>
@@ -95,7 +99,12 @@ namespace ShamsiDatePicker.ViewModel
         public DateTime? SelectedDate
         {
             get => _selectedDate;
-            set => SetProperty(ref _selectedDate, value);
+            set => SetProperty(ref _selectedDate, value, null, () =>
+            {
+                var date = new DateType((DateTime)value);
+                date.Calendar = CalendarType.Shamsi;
+                ShamsiSelectedDate = date;
+            });
         }
 
         private DateType _shamsiSelectedDate = null;
@@ -109,7 +118,14 @@ namespace ShamsiDatePicker.ViewModel
         public CalendarDayBoxViewModel SelectedDayBox
         {
             get => _selectedDayBox;
-            set => SetProperty(ref _selectedDayBox, value);
+            set
+            {
+                if(value != _selectedDayBox && _selectedDayBox != null)
+                {
+                    _selectedDayBox.Unselect();
+                }
+                SetProperty(ref _selectedDayBox, value);
+            }
         }
 
         private Color _headerBackgroundColor = Color.FromHex("#FF4081");

@@ -1,7 +1,7 @@
 ﻿using Xamarin.Forms;
 using HMExtension.Xamarin.Platform.Android.Renderers;
+using ShamsiDatePicker.Platform.Android.Renderers;
+using ShamsiDatePicker.View;
+using HMExtension.Xamarin.Component;
 
-// Effects:
-[assembly: ResolutionGroupName(HMExtension.Xamarin.Component.TintImageEffect.GroupName)]
-[assembly: ExportEffect(typeof(TintImageEffect), HMExtension.Xamarin.Component.TintImageEffect.Name)]
 

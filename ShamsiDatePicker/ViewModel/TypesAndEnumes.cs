@@ -26,4 +26,10 @@ namespace ShamsiDatePicker.ViewModel
         OkButtonClicked,
         CancelButtonClicked,
     }
+
+    public enum RenderModeType
+    {
+        Default,
+        Standard,
+    }
 }

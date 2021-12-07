@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class CalendarPageViewModel : ShareBaseViewModel
+    internal class CalendarPageViewModel : ShareViewModelBase
     {
         DateType Today = new DateType(DateTime.Now);
         Date MyDate = new Date();
@@ -29,6 +29,7 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     SelectedDayBox = arg;
                     SelectItemCallBak(arg.Month, arg.Day);
+                    SetSelectedDate();
                 });
             }
             catch(Exception ex)
@@ -37,36 +38,41 @@ namespace ShamsiDatePicker.ViewModel
             }
         }
 
-        public void Initialize()
+        public async void Initialize()
         {
             try
             {
                 Today.Calendar = CalendarType.Shamsi;
 
-                var date = new DateType((DateTime)SelectedDate);
-                date.Calendar = CalendarType.Shamsi;
-                ShamsiSelectedDate = date;
-
                 if (ShamsiSelectedDate.Year > MaxYear)
                 {
                     Year = MaxYear;
+                }
+                else if(ShamsiSelectedDate.Year < MinYear)
+                {
+                    Year = MinYear;
                 }
                 else
                 {
                     Year = ShamsiSelectedDate.Year;
                 }
 
-                List<YearListViewModel> Temp = new List<YearListViewModel>();
-                for (int i = MinYear; i <= MaxYear; i++)
+                await Task.Run(() =>
                 {
-                    Temp.Add(new YearListViewModel() { YearNumber = i, ForeColor = CalendarTextColor });
-                }
-                YearList = Temp;
+                    List<YearListViewModel> Temp = new List<YearListViewModel>();
+                    for (int i = MinYear; i <= MaxYear; i++)
+                    {
+                        Temp.Add(new YearListViewModel() { YearNumber = i, ForeColor = CalendarTextColor });
+                    }
+                    YearList = Temp;
+                });
 
-                CreateAllDays();
-                CreateCarouselItems();
+                await Task.Run(() =>
+                {
+                    CreateAllDays();
+                });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("Initialize on CalendarPageViewModel Error!!! " + ex.Message);
             }
@@ -118,89 +124,13 @@ namespace ShamsiDatePicker.ViewModel
             SelectedDay = string.Format("{0}, {1} {2}", dow, day.ToString(), (ShamsiMonthType)(month - 1));
         }
 
-        private void CreateCarouselItems()
-        {
-            try
-            {
-                var temp = new List<CarouselItem>()
-                    {
-                        new CarouselItem(Year , 1)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 1))
-                        },
-                        new CarouselItem(Year , 2)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 2))
-                        },
-                        new CarouselItem(Year , 3)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 3))
-                        },
-                        new CarouselItem(Year , 4)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 4))
-                        },
-                        new CarouselItem(Year , 5)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 5))
-                        },
-                        new CarouselItem(Year , 6)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 6))
-                        },
-                        new CarouselItem(Year , 7)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 7))
-                        },
-                        new CarouselItem(Year , 8)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 8))
-                        },
-                        new CarouselItem(Year , 9)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 9))
-                        },
-                        new CarouselItem(Year , 10)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 10))
-                        },
-                        new CarouselItem(Year , 11)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 11))
-                        },
-                        new CarouselItem(Year , 12)
-                        {
-                            Days = new List<CalendarDayBoxView>(
-                                AllDays.Where(d => d.DataContext.Month == 12))
-                        },
-                    };
-
-                CarouselItems = temp;
-                Position = (int)SelectedDayBox.Month - 1;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public void CreateAllDays()
         {
             try
             {
-                var items = new List<CalendarDayBoxView>();
+                var tempAllDays = new List<CalendarDayBoxView>();
+
+                var tempCarouselItems = new ObservableCollection<CarouselItem>();
 
                 for (uint m = 1; m <= 12; m++)
                 {
@@ -208,17 +138,20 @@ namespace ShamsiDatePicker.ViewModel
                     int Column = MyDate.GetDayOfWeek(StartDayOfWeek);
                     int Row = 0;
                     int TotalDays = MyDate.GetDaysCountOfMonth(Year, (int)m);
+                    var tempDays = new List<CalendarDayBoxView>();
 
                     for (uint i = 1; i <= TotalDays; i++)
                     {
-                        var dayBox = new CalendarDayBoxView(new CalendarDayBoxViewModel()
+                        var TargetViewModel = new CalendarDayBoxViewModel()
                         {
                             Day = i,
                             Month = m,
                             CalendarTextColor = CalendarTextColor,
                             CalendarSelectedTextColor = CalendarSelectedTextColor,
                             CalendarHighlightColor = CalendarHighlightColor,
-                        })
+                        };
+
+                        var dayBox = new CalendarDayBoxView(TargetViewModel)
                         {
                             VerticalOptions = LayoutOptions.FillAndExpand,
                             HorizontalOptions = LayoutOptions.FillAndExpand
@@ -226,7 +159,8 @@ namespace ShamsiDatePicker.ViewModel
                         dayBox.SetValue(Grid.ColumnProperty, Column + 1);
                         dayBox.SetValue(Grid.RowProperty, Row);
 
-                        items.Add(dayBox);
+                        tempAllDays.Add(dayBox);
+                        tempDays.Add(dayBox);
 
                         Column++;
                         if (Column > 6)
@@ -235,12 +169,18 @@ namespace ShamsiDatePicker.ViewModel
                             Row++;
                         }
                     }
+
+                    tempCarouselItems.Add(new CarouselItem(Year, (int)m)
+                    {
+                        Days = tempDays
+                    });
                 }
 
-                AllDays = items;
+                AllDays = tempAllDays;
+                CarouselItems = tempCarouselItems;
 
                 var temp = AllDays.FirstOrDefault(d => d.DataContext.Day == ShamsiSelectedDate.Day &&
-                            d.DataContext.Month == ShamsiSelectedDate.Month);
+                    d.DataContext.Month == ShamsiSelectedDate.Month);
 
                 if (temp == null)
                 {
@@ -249,11 +189,20 @@ namespace ShamsiDatePicker.ViewModel
                 }
 
                 temp.DataContext.Select();
+
+                Position = (int)SelectedDayBox.Month - 1;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
+        }
+
+        public void SetSelectedDate()
+        {
+            var dt = new DateType(Year, (int)SelectedDayBox.Month, (int)SelectedDayBox.Day);
+            dt.Calendar = CalendarType.Miladi;
+            SelectedDate = new DateTime(dt.Year, dt.Month, dt.Day);
         }
 
         #endregion
@@ -308,10 +257,9 @@ namespace ShamsiDatePicker.ViewModel
             get => _position;
             set
             {
-                if(_position != value && value > -1 && value < 12)
+                if(value > -1 && value < 12)
                 {
-                    _position = value;
-                    OnPropertyChanged();
+                    SetProperty(ref _position, value);
                 }
             }
         }
@@ -380,9 +328,9 @@ namespace ShamsiDatePicker.ViewModel
             }
         }
 
-        private List<CarouselItem> _carouselItems = null;
+        private ObservableCollection<CarouselItem> _carouselItems = new ObservableCollection<CarouselItem>();
 
-        public List<CarouselItem> CarouselItems
+        public ObservableCollection<CarouselItem> CarouselItems
         {
             get => _carouselItems;
             set => SetProperty(ref _carouselItems, value);
@@ -424,12 +372,9 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     _okCommand = new Command<CalendarPage>((sender) =>
                     {
-                        var dt = new DateType(Year, (int)SelectedDayBox.Month, (int)SelectedDayBox.Day);
-                        dt.Calendar = CalendarType.Miladi;
-                        var d = new DateTime(dt.Year, dt.Month, dt.Day);
                         if(DateCallBack != null)
                         {
-                            DateCallBack(d);
+                            DateCallBack(SelectedDate);
                         }
                         //MessagingCenter.Send(this, 
                             //Globals.Messages[MessageType.OkButtonClicked], d);
@@ -484,7 +429,7 @@ namespace ShamsiDatePicker.ViewModel
                         await Task.Run(() =>
                          {
                              CreateAllDays();
-                             CreateCarouselItems();
+                             //CreateCarouselItems();
                          });
                     });
                 }
@@ -521,12 +466,12 @@ namespace ShamsiDatePicker.ViewModel
                     {
                         var item = sender as XFShapeView.ShapeView;
 
-                        await Task.Run(() => Position++);
+                        _ = await Task.Run(() => Position++);
 
-                        item.ScaleTo(2.5, 100);
-                        await item.FadeTo(0.2, 100);
-                        await item.FadeTo(0, 100);
-                        await Task.Run(() => item.Scale = 1);
+                        _ = item.ScaleTo(2.5, 100);
+                        _ = await item.FadeTo(0.2, 100);
+                        _ = await item.FadeTo(0, 100);
+                        _ = await Task.Run(() => item.Scale = 1);
                     });
                 }
 
@@ -545,12 +490,12 @@ namespace ShamsiDatePicker.ViewModel
                     {
                         var item = sender as XFShapeView.ShapeView;
 
-                        await Task.Run(() => Position--);
+                        _ = await Task.Run(() => Position--);
 
-                        item.ScaleTo(2.5, 100);
-                        await item.FadeTo(0.2, 100);
-                        await item.FadeTo(0, 100);
-                        await Task.Run(() => item.Scale = 1);
+                        _ = item.ScaleTo(2.5, 100);
+                        _ = await item.FadeTo(0.2, 100);
+                        _ = await item.FadeTo(0, 100);
+                        _ = await Task.Run(() => item.Scale = 1);
                     });
                 }
 

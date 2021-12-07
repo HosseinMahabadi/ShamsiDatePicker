@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ShamsiDatePicker": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

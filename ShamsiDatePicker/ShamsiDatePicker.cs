@@ -7,13 +7,17 @@ using HMExtension.Xamarin.Component;
 using ShamsiDatePicker.View;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace ShamsiDatePicker
 {
     public class ShamsiDatePicker : Entry
     {
-        private CalendarPage RootPage { get; set; } = null;
-        private CalendarPageViewModel RootPageViewModel { get; set; } = null;
+        private ContentPage MasterParent { get; set; } = null;
+        public bool Focusable { get; private set; } = true;
+        public bool IsMasterParentAppear { get; private set; } = true;
 
         public ShamsiDatePicker()
         {
@@ -21,18 +25,14 @@ namespace ShamsiDatePicker
             {
                 var temp = new DateType((DateTime)Date);
                 temp.Calendar = CalendarType.Shamsi;
-
                 ShamsiDateString = temp.GetDateString('/');
-
-                var TextBinding = new Binding()
+                SetBinding(TextProperty, new Binding
                 {
                     Source = this,
-                    Path = "ShamsiDateString",
-                    Mode = BindingMode.OneWay
-                };
-                SetBinding(TextProperty, TextBinding);
-
-                Focused += OpenCalendar;
+                    Path = nameof(ShamsiDateString),
+                });
+ 
+                Focused += ShamsiDatePicker_Focused;
             }
             catch (Exception ex)
             {
@@ -40,16 +40,49 @@ namespace ShamsiDatePicker
             }
         }
 
-        private async void OpenCalendar(object sender, EventArgs e)
+        public async void ShamsiDatePicker_Focused(object sender, FocusEventArgs e)
         {
-            await ShowCalendarAsync();
+            if (MasterParent == null)
+            {
+                MasterParent = Globals.GetParent<ContentPage>(this);
+                if (MasterParent != null)
+                {
+                    MasterParent.Appearing -= MasterParent_Appearing;
+                    MasterParent.Disappearing -= MasterParent_Disappearing;
+
+                    MasterParent.Appearing += MasterParent_Appearing;
+                    MasterParent.Disappearing += MasterParent_Disappearing;
+                }
+            }
+
+            if (Focusable && IsMasterParentAppear)
+            {
+                await ShowCalendarAsync();
+            }
+            else
+            {
+                Unfocus();
+            }
+        }
+
+        private async void MasterParent_Appearing(object sender, EventArgs e)
+        {
+            Focusable = false;
+            await Task.Delay(200);
+            Focusable = true;
+            IsMasterParentAppear = true;
+        }
+
+        private void MasterParent_Disappearing(object sender, EventArgs e)
+        {
+            IsMasterParentAppear = false;
         }
 
         public async Task ShowCalendarAsync()
         {
             try
             {
-                RootPageViewModel = new CalendarPageViewModel()
+                var RootPageViewModel = new CalendarPageViewModel()
                 {
                     SelectedDate = Date,
                     CalendarBackgroundColor = CalendarBackgroundColor,
@@ -70,8 +103,7 @@ namespace ShamsiDatePicker
                     DateCallBack = CloseCalendar,
                 };
 
-                RootPageViewModel.Initialize();
-                RootPage = new CalendarPage(RootPageViewModel);
+                var RootPage = new CalendarPage(RootPageViewModel);
                 await Navigation.PushModalAsync(RootPage, false);
             }
             catch (Exception ex)
@@ -79,7 +111,7 @@ namespace ShamsiDatePicker
                 Debug.WriteLine("OpenCalendar Error!!! " + ex.Message);
             }
         }
-        private void CloseCalendar(DateTime? date = null)
+        private async void CloseCalendar(DateTime? date = null)
         {
             try
             {
@@ -94,12 +126,11 @@ namespace ShamsiDatePicker
             }
             finally
             {
-                _ = Navigation.PopModalAsync(false);
-                Unfocus();
-                RootPageViewModel = null;
-                RootPage = null;
+                await Navigation.PopModalAsync(true);
             }
         }
+
+        public RenderModeType RenderMode { get; set; } = RenderModeType.Default;
 
         public Color HeaderBackgroundColor
         {
@@ -255,7 +286,8 @@ namespace ShamsiDatePicker
 
         private void OnCalendarTextColorChanged(object oldValue, object newValue)
         {
-            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarTextColorIsChanged], (Color)newValue);
+            MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarTextColorIsChanged]
+                 , (Color)newValue);
         }
 
         public Color CalendarSelectedTextColor
@@ -658,5 +690,43 @@ namespace ShamsiDatePicker
         {
             MessagingCenter.Send(this, Globals.Messages[MessageType.MinYearIsChanged], Convert.ToInt32(newValue));
         }
+
+        public static BindableProperty CornerRadiusProperty =
+            BindableProperty.Create(nameof(CornerRadius), typeof(int), typeof(ShamsiDatePicker), 0);
+
+        public static BindableProperty BorderThicknessProperty =
+            BindableProperty.Create(nameof(BorderThickness), typeof(double), typeof(ShamsiDatePicker), 1d);
+
+        public static BindableProperty PaddingProperty =
+            BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ShamsiDatePicker), new Thickness(5));
+
+        public static BindableProperty BorderColorProperty =
+            BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(ShamsiDatePicker), Color.Black);
+
+        public int CornerRadius
+        {
+            get => (int)GetValue(CornerRadiusProperty);
+            set => SetValue(CornerRadiusProperty, value);
+        }
+
+        public double BorderThickness
+        {
+            get => (double)GetValue(BorderThicknessProperty);
+            set => SetValue(BorderThicknessProperty, value);
+        }
+        public Color BorderColor
+        {
+            get => (Color)GetValue(BorderColorProperty);
+            set => SetValue(BorderColorProperty, value);
+        }
+        /// <summary>
+        /// This property cannot be changed at runtime in iOS.
+        /// </summary>
+        public Thickness Padding
+        {
+            get => (Thickness)GetValue(PaddingProperty);
+            set => SetValue(PaddingProperty, value);
+        }
+
     }
 }

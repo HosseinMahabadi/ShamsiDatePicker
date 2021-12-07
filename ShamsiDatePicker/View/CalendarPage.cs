@@ -22,26 +22,31 @@ namespace ShamsiDatePicker.View
         public CalendarPage(CalendarPageViewModel DataContext)
         {
             this.DataContext = DataContext;
-            BindingContext = DataContext;
-            
+            this.DataContext.Initialize();
             InitializeComponent();
         }
 
         private void InitializeComponent()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+            Content = null;
             SizeChanged += UpdateElementOnLayoutChanged;
-            Appearing += UpdateElementOnLayoutChanged;
+            Appearing += (sender, e) =>
+            {
+                var AppearingAnimation = new Animation(v => MainGrid.Opacity = v, 0, 1);
+                AppearingAnimation.Commit(MainGrid, nameof(AppearingAnimation), 16, 150, Easing.Linear, (d, b) => UpdateChildrenLayout());
+            };
             BackgroundColor = Color.Transparent;
             FlowDirection = FlowDirection.RightToLeft;
-            NavigationPage.SetHasNavigationBar(this, false);
+
             YearListView = CreateYearListView();
             HeaderGrid = CreateHeaderGrid();
             MainGrid = CreateMainGrid();
             Content = MainGrid;
 
-            Disappearing += async(sender, e) =>
+            Disappearing += async (sender, e) =>
             {
-                await MainGrid.FadeTo(0, 150);
+                await MainGrid.FadeTo(0, 100);
             };
         }
 
@@ -97,8 +102,6 @@ namespace ShamsiDatePicker.View
                     CreateContentGrid()
                 }
             };
-
-            Task.Run(async () => await MainGrid.FadeTo(1, 150));
 
             return MainGrid;
         }
@@ -561,6 +564,7 @@ namespace ShamsiDatePicker.View
                 ShapeType = XFShapeView.ShapeType.Circle,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
+                Color = Color.Silver,
                 Opacity = 0
             };
 
@@ -590,11 +594,7 @@ namespace ShamsiDatePicker.View
             ForwardImage.SetValue(Grid.ColumnProperty, 1);
 
             var TintEffect = new TintImageEffect();
-            TintEffect.Bindable.SetBinding(TintImageEffect.TintColorProperty, new Binding()
-            {
-                Source = DataContext,
-                Path = "CalendarTitleColor",
-            });
+            TintEffect.TintColor = DataContext.CalendarTitleColor;
 
             ForwardImage.Effects.Add(TintEffect);
 
@@ -638,11 +638,7 @@ namespace ShamsiDatePicker.View
             BackwardImage.SetValue(Grid.ColumnProperty, 3);
 
             var TintEffect = new TintImageEffect();
-            TintEffect.Bindable.SetBinding(TintImageEffect.TintColorProperty, new Binding()
-            {
-                Source = DataContext,
-                Path = "CalendarTitleColor",
-            });
+            TintEffect.TintColor = DataContext.CalendarTitleColor;
 
             BackwardImage.Effects.Add(TintEffect);
 
@@ -734,7 +730,8 @@ namespace ShamsiDatePicker.View
             };
             ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() 
             { 
-                Path = "YearSelectedCommand" 
+                Source = DataContext,
+                Path = "YearSelectedCommand"
             });
             YearListView.Behaviors.Add(ItemSelectedEvent);
 
@@ -744,6 +741,7 @@ namespace ShamsiDatePicker.View
             };
             ItemTappedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding() 
             { 
+                Source = DataContext,
                 Path = "YearListTapped" 
             });
             YearListView.Behaviors.Add(ItemTappedEvent);

@@ -13,9 +13,7 @@ namespace ShamsiDatePicker.View
 
         public CalendarDayBoxView(CalendarDayBoxViewModel BindingContext)
         {
-            this.BindingContext = BindingContext;
             DataContext = BindingContext;
-
             InitializeComponent();
         }
 
@@ -23,34 +21,72 @@ namespace ShamsiDatePicker.View
         {
             var ThisTaped = new TapGestureRecognizer();
             ThisTaped.SetBinding(TapGestureRecognizer.CommandProperty,
-                new Binding() { Source = DataContext, Path = "TapCommand" });
+                new Binding() 
+                { 
+                    Source = DataContext, 
+                    Path = "TapCommand" 
+                });
             GestureRecognizers.Add(ThisTaped);
 
-            var ShamsiDayLabel = CreateShamsiDayLabel();
-            var BackgroundCircleShape = CreateBackgroundCircleShape();
-            BackgroundCircleShape.Scale = 1.2;
             var MainGrid = new Grid()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                {
+                    CreateBackgroundCircleShape(),
+                    CreateShamsiDayLabel(),
+                }
             };
 
-            MainGrid.Children.Add(BackgroundCircleShape);
-            MainGrid.Children.Add(ShamsiDayLabel);
             Content = MainGrid;
-
-            BackgroundCircleShape.HeightRequest = 1;
-            BackgroundCircleShape.HeightRequest = -1;
         }
 
-        ShapeView CreateBackgroundCircleShape()
+        private BoxView CreateBackgroundCircleShape()
         {
-            ShapeView BackgroundCircleShape = new ShapeView()
+            BoxView BackgroundCircleShape = new BoxView()
+            {
+                BackgroundColor = Color.Transparent,
+                CornerRadius = 15,
+                Scale = 1.2,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+            };
+
+            DataTrigger BackgroundCircleShapeSelectedTrigger = new DataTrigger(typeof(BoxView))
+            {
+                Value = true,
+                Binding = new Binding()
+                {
+                    Source = DataContext,
+                    Path = "IsSelected"
+                },
+            };
+            BackgroundCircleShapeSelectedTrigger.Setters.Add(new Setter()
+            {
+                Property = BoxView.BackgroundColorProperty,
+                Value = new Binding() 
+                { 
+                    Source = DataContext, 
+                    Path = "CalendarHighlightColor" 
+                },
+            });
+
+            BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger); 
+
+            /*ShapeView BackgroundCircleShape = new ShapeView()
             {
                 ShapeType = ShapeType.Circle,
                 BorderWidth = 0,
                 BorderColor = Color.Transparent,
+                Scale = 1.2,
             };
+
+            BackgroundCircleShape.SetBinding(ShapeView.ColorProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = "SelectedColor",
+            });
 
             DataTrigger BackgroundCircleShapeSelectedTrigger = new DataTrigger(typeof(ShapeView))
             {
@@ -67,12 +103,12 @@ namespace ShamsiDatePicker.View
                 Value = new Binding() { Source = DataContext, Path = "CalendarHighlightColor" },
             });
 
-            BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger);
+            BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger);*/
 
             return BackgroundCircleShape;
         }
 
-        Label CreateShamsiDayLabel()
+        private Label CreateShamsiDayLabel()
         {
             var ShamsiDayLabel = new Label()
             {

@@ -8,28 +8,33 @@ using System.Windows.Input;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class CalendarDayBoxViewModel : ShareBaseViewModel
+    internal class CalendarDayBoxViewModel : ShareViewModelBase
     {
-        public CalendarDayBoxViewModel()
-        {
-            MessagingCenter.Subscribe<CalendarDayBoxViewModel, CalendarDayBoxViewModel>(this,
-                Globals.Messages[MessageType.NewDayIsSelected],
-                (sender, arg) =>
-                {
-                    if (arg != this && IsSelected)
-                    {
-                        IsSelected = false;
-                    }
-                });
-        }
-
         public void Select()
         {
-            IsSelected = true;
-            MessagingCenter.Send(this, Globals.Messages[MessageType.NewDayIsSelected], this);
+            try
+            {
+                IsSelected = true;
+                SelectedColor = CalendarHighlightColor;
+                MessagingCenter.Send(this, Globals.Messages[MessageType.NewDayIsSelected], this);
+            }
+            catch { }
+        }
+
+        public void Unselect()
+        {
+            IsSelected = false;
+            SelectedColor = Color.Transparent;
         }
 
         #region Property
+
+        private Color _selectedColor = Color.Transparent;
+        public Color SelectedColor
+        {
+            get => _selectedColor;
+            set => SetProperty(ref _selectedColor, value);
+        }
 
         private uint _day = 1;
         public uint Day

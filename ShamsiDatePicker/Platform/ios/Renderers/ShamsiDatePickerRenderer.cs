@@ -1,10 +1,11 @@
 ﻿using Xamarin.Forms.Platform.iOS;
 using Xamarin.Forms;
 using UIKit;
-using ShamsiDatePicker.Platform.ios.Renderers;
-
+using ShamsiDatePicker.Platform.iOS.Renderers;
+using System;
 [assembly: ExportRenderer(typeof(ShamsiDatePicker.ShamsiDatePicker), typeof(ShamsiDatePickerRenderer))]
-namespace ShamsiDatePicker.Platform.ios.Renderers
+
+namespace ShamsiDatePicker.Platform.iOS.Renderers
 {
     class ShamsiDatePickerRenderer : EntryRenderer
     {
@@ -13,7 +14,12 @@ namespace ShamsiDatePicker.Platform.ios.Renderers
             base.OnElementChanged(e);
 
             // Disabling the keyboard
-            this.Control.InputView = new UIView();
+            Control.InputView = new UIView();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
     }
 }
