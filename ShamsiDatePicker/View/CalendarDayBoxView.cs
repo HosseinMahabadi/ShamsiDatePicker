@@ -42,10 +42,11 @@ namespace ShamsiDatePicker.View
             Content = MainGrid;
         }
 
-        private BoxView CreateBackgroundCircleShape()
+        private Frame CreateBackgroundCircleShape()
         {
-            BoxView BackgroundCircleShape = new BoxView()
+            Frame BackgroundCircleShape = new Frame()
             {
+                HasShadow = false,
                 BackgroundColor = Color.Transparent,
                 CornerRadius = 15,
                 Scale = 1.2,
@@ -53,7 +54,7 @@ namespace ShamsiDatePicker.View
                 VerticalOptions = LayoutOptions.FillAndExpand,
             };
 
-            DataTrigger BackgroundCircleShapeSelectedTrigger = new DataTrigger(typeof(BoxView))
+            DataTrigger BackgroundCircleShapeSelectedTrigger = new DataTrigger(typeof(Frame))
             {
                 Value = true,
                 Binding = new Binding()
@@ -62,9 +63,10 @@ namespace ShamsiDatePicker.View
                     Path = "IsSelected"
                 },
             };
+
             BackgroundCircleShapeSelectedTrigger.Setters.Add(new Setter()
             {
-                Property = BoxView.BackgroundColorProperty,
+                Property = Frame.BackgroundColorProperty,
                 Value = new Binding() 
                 { 
                     Source = DataContext, 
@@ -73,37 +75,6 @@ namespace ShamsiDatePicker.View
             });
 
             BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger); 
-
-            /*ShapeView BackgroundCircleShape = new ShapeView()
-            {
-                ShapeType = ShapeType.Circle,
-                BorderWidth = 0,
-                BorderColor = Color.Transparent,
-                Scale = 1.2,
-            };
-
-            BackgroundCircleShape.SetBinding(ShapeView.ColorProperty, new Binding()
-            {
-                Source = DataContext,
-                Path = "SelectedColor",
-            });
-
-            DataTrigger BackgroundCircleShapeSelectedTrigger = new DataTrigger(typeof(ShapeView))
-            {
-                Value = true,
-                Binding = new Binding()
-                {
-                    Source = DataContext,
-                    Path = "IsSelected"
-                },
-            };
-            BackgroundCircleShapeSelectedTrigger.Setters.Add(new Setter()
-            {
-                Property = ShapeView.ColorProperty,
-                Value = new Binding() { Source = DataContext, Path = "CalendarHighlightColor" },
-            });
-
-            BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger);*/
 
             return BackgroundCircleShape;
         }

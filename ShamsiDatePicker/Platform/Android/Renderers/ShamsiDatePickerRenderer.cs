@@ -35,9 +35,6 @@ namespace ShamsiDatePicker.Platform.Android.Renderers
             base.OnElementChanged(e);
             var MainElement = (ShamsiDatePicker)Element;
 
-            /*var nativeEditText = (global::Android.Widget.EditText)Control;
-            nativeEditText.FocusedByDefault = false;*/
-
             try
             {
                 if (e.NewElement != null)
@@ -121,15 +118,24 @@ namespace ShamsiDatePicker.Platform.Android.Renderers
 
             control.SetPadding(padLeft, padTop, padRight, padBottom);
         }
+
+        protected override void UpdateBackgroundColor()
+        {
+            if (MainElement.RenderMode == ViewModel.RenderModeType.Standard)
+            {
+                UpdateBackground();
+            }
+        }
+
         protected override void UpdateBackground()
         {
             UpdateBackground(Control);
         }
 
-        /*protected override void Dispose(bool disposing) 
+        protected override void Dispose(bool disposing) 
         {
-            //MainElement.PropertyChanging -= OnPropertyChanging;
+            MainElement.PropertyChanging -= OnPropertyChanging;
             base.Dispose(disposing);
-        }*/
+        }
     }
 }

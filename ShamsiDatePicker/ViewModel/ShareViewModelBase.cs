@@ -11,11 +11,11 @@ namespace ShamsiDatePicker.ViewModel
     {
         public ShareViewModelBase()
         {
-            var date = new DateType((DateTime)SelectedDate);
+            var date = new DateType(SelectedDate);
             date.Calendar = CalendarType.Shamsi;
             ShamsiSelectedDate = date;
 
-            MessagingCenter.Subscribe<ShamsiDatePicker, Color>(this,
+            /*MessagingCenter.Subscribe<ShamsiDatePicker, Color>(this,
                 Globals.Messages[MessageType.HeaderBackgroundColorIsChanged],
                 (sender, arg) =>
                 {
@@ -92,16 +92,16 @@ namespace ShamsiDatePicker.ViewModel
                 (sender, arg) =>
                 {
                     CalendarCancelButtonBackgroundColor = arg;
-                });
+                });*/
 
         }
-        private DateTime? _selectedDate = DateTime.Today;
-        public DateTime? SelectedDate
+        private DateTime _selectedDate = DateTime.Today;
+        public DateTime SelectedDate
         {
             get => _selectedDate;
             set => SetProperty(ref _selectedDate, value, null, () =>
             {
-                var date = new DateType((DateTime)value);
+                var date = new DateType(value);
                 date.Calendar = CalendarType.Shamsi;
                 ShamsiSelectedDate = date;
             });

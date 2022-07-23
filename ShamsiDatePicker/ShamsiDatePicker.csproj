@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.1.298</Version>
+    <Version>2.1.353</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>
       This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
@@ -18,8 +18,7 @@
     </Copyright>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>improvs speed.
-bugs fixed.
+    <PackageReleaseNotes>Fixed an error that prevented the corner radius from being applied to the background in satndard renderer mode.
 </PackageReleaseNotes>
     <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
@@ -35,9 +34,7 @@ bugs fixed.
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Platform\Android\Renderers\AssemblyInfo.cs" />
     <Compile Remove="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
-    <Compile Remove="Platform\iOS\Renderers\AssemblyInfo.cs" />
     <Compile Remove="Platform\iOS\Renderers\ShamsiDatePickerRenderer.cs" />
   </ItemGroup>
 
@@ -52,9 +49,7 @@ bugs fixed.
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="Platform\Android\Renderers\AssemblyInfo.cs" />
     <None Include="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
-    <None Include="Platform\iOS\Renderers\AssemblyInfo.cs" />
     <None Include="Platform\iOS\Renderers\ShamsiDatePickerRenderer.cs" />
     <None Include="Resources\Images\ShamsiDatePickerIcon.png">
       <Pack>True</Pack>
@@ -80,9 +75,9 @@ bugs fixed.
 
   <ItemGroup>
     <PackageReference Include="CarouselView.FormsPlugin" Version="6.0.0" />
-    <PackageReference Include="HMExtension.Xamarin" Version="1.0.39" />
+    <PackageReference Include="HMExtension.Xamarin" Version="1.0.52" />
     <PackageReference Include="VG.XFShapeView" Version="1.0.5" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">

@@ -13,31 +13,44 @@ namespace ShamsiDatePicker.View
     internal class CalendarPage : ContentPage
     {
         private ListView YearListView = null;
-        public CalendarPageViewModel DataContext { get; set; } = null;
+
+        private CalendarPageViewModel _dataContext = null;
+        public CalendarPageViewModel DataContext 
+        {
+            get => _dataContext;
+            set
+            {
+                if(_dataContext != value)
+                {
+                    _dataContext = value;
+                    OnPropertyChanged();
+                    InitializeComponent();
+                }
+            }
+        }
 
         private StackLayout HeaderGrid = null;
 
         private Grid MainGrid = null;
 
-        public CalendarPage(CalendarPageViewModel DataContext)
-        {
-            this.DataContext = DataContext;
-            this.DataContext.Initialize();
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
+        public CalendarPage()
         {
             NavigationPage.SetHasNavigationBar(this, false);
             Content = null;
             SizeChanged += UpdateElementOnLayoutChanged;
             Appearing += (sender, e) =>
             {
-                var AppearingAnimation = new Animation(v => MainGrid.Opacity = v, 0, 1);
-                AppearingAnimation.Commit(MainGrid, nameof(AppearingAnimation), 16, 150, Easing.Linear, (d, b) => UpdateChildrenLayout());
+                /*var AppearingAnimation = new Animation(v => MainGrid.Opacity = v, 0, 1);
+                AppearingAnimation.Commit(MainGrid, nameof(AppearingAnimation), 16, 150, Easing.Linear, (d, b) => UpdateChildrenLayout());*/
+
+                DataContext.Initialize();
             };
             BackgroundColor = Color.Transparent;
             FlowDirection = FlowDirection.RightToLeft;
+        }
+
+        private void InitializeComponent()
+        {
 
             YearListView = CreateYearListView();
             HeaderGrid = CreateHeaderGrid();
@@ -76,7 +89,7 @@ namespace ShamsiDatePicker.View
         {
             var MainGrid = new Grid
             {
-                Opacity = 0,
+                //Opacity = 0,
                 Margin = 0,
                 Padding = 0,
 

@@ -67,10 +67,7 @@ namespace ShamsiDatePicker.ViewModel
                     YearList = Temp;
                 });
 
-                await Task.Run(() =>
-                {
-                    CreateAllDays();
-                });
+                CreateAllDays();
             }
             catch (Exception ex)
             {
@@ -128,9 +125,8 @@ namespace ShamsiDatePicker.ViewModel
         {
             try
             {
-                var tempAllDays = new List<CalendarDayBoxView>();
-
-                var tempCarouselItems = new ObservableCollection<CarouselItem>();
+                CarouselItems.Clear();
+                var AllDays = new List<CalendarDayBoxView>();
 
                 for (uint m = 1; m <= 12; m++)
                 {
@@ -159,7 +155,7 @@ namespace ShamsiDatePicker.ViewModel
                         dayBox.SetValue(Grid.ColumnProperty, Column + 1);
                         dayBox.SetValue(Grid.RowProperty, Row);
 
-                        tempAllDays.Add(dayBox);
+                        AllDays.Add(dayBox);
                         tempDays.Add(dayBox);
 
                         Column++;
@@ -170,14 +166,11 @@ namespace ShamsiDatePicker.ViewModel
                         }
                     }
 
-                    tempCarouselItems.Add(new CarouselItem(Year, (int)m)
+                    CarouselItems.Add(new CarouselItem(Year, (int)m)
                     {
                         Days = tempDays
                     });
                 }
-
-                AllDays = tempAllDays;
-                CarouselItems = tempCarouselItems;
 
                 var temp = AllDays.FirstOrDefault(d => d.DataContext.Day == ShamsiSelectedDate.Day &&
                     d.DataContext.Month == ShamsiSelectedDate.Month);
@@ -209,7 +202,7 @@ namespace ShamsiDatePicker.ViewModel
 
         #region Property
 
-        public Action<DateTime?> DateCallBack { get; set; } = null;
+        public Action<DateTime, bool> DateCallBack { get; set; } = null;
 
         private int _minYear = 0;
         public int MinYear
@@ -264,14 +257,6 @@ namespace ShamsiDatePicker.ViewModel
             }
         }
 
-        List<CalendarDayBoxView> _allDays = new List<CalendarDayBoxView>();
-        public List<CalendarDayBoxView> AllDays
-        {
-            get => _allDays;
-            set => SetProperty(ref _allDays, value);
-        }
-        //public Action<int, int, int> CallBack { get; set; } = null;
-
         //تاریخ انتخاب شده از تقویم
         private DateTime _selectedItem = DateTime.Now;
         public DateTime SelectedItem
@@ -320,7 +305,7 @@ namespace ShamsiDatePicker.ViewModel
                         var temp = _yearList.FirstOrDefault(y => y.YearNumber == ShamsiSelectedDate.Year);
                         if(temp == null)
                         {
-                            temp = temp = _yearList.FirstOrDefault(y => y.YearNumber == MaxYear);
+                            temp = _yearList.FirstOrDefault(y => y.YearNumber == MaxYear);
                         }
                         SelectedYear = temp;
                     }
@@ -350,11 +335,7 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     _cancelCommand = new Command<CalendarPage>((sender) =>
                     {
-                        if(DateCallBack != null)
-                        {
-                            DateCallBack(null);
-                        }
-                        //MessagingCenter.Send(this, Globals.Messages[MessageType.CancelButtonClicked]);
+                        DateCallBack?.Invoke(SelectedDate, true);
                     });
                 }
 
@@ -372,12 +353,7 @@ namespace ShamsiDatePicker.ViewModel
                 {
                     _okCommand = new Command<CalendarPage>((sender) =>
                     {
-                        if(DateCallBack != null)
-                        {
-                            DateCallBack(SelectedDate);
-                        }
-                        //MessagingCenter.Send(this, 
-                            //Globals.Messages[MessageType.OkButtonClicked], d);
+                        DateCallBack?.Invoke(SelectedDate, false);
                     });
                 }
 
@@ -426,11 +402,10 @@ namespace ShamsiDatePicker.ViewModel
                     _yearSelectedCommand = new Command<YearListViewModel>(async (year) =>
                     {
                         Year = year.YearNumber;
-                        await Task.Run(() =>
-                         {
+                        //await Task.Run(() =>
+                         //{
                              CreateAllDays();
-                             //CreateCarouselItems();
-                         });
+                         //});
                     });
                 }
 
