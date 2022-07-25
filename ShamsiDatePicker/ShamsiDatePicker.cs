@@ -32,48 +32,74 @@ namespace ShamsiDatePicker
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
             }
+        }
+
+        ~ShamsiDatePicker()
+        {
+            Dispose();
         }
 
         public void ShamsiDatePicker_Focused(object sender, FocusEventArgs e)
         {
-            if (MasterParent == null)
+            try
             {
-                MasterParent = Globals.GetParent<ContentPage>(this);
-                if (MasterParent != null)
+                if (MasterParent == null)
                 {
-                    MasterParent.Appearing -= MasterParent_Appearing;
-                    MasterParent.Disappearing -= MasterParent_Disappearing;
+                    MasterParent = Globals.GetParent<ContentPage>(this);
+                    if (MasterParent != null)
+                    {
+                        MasterParent.Appearing -= MasterParent_Appearing;
+                        MasterParent.Disappearing -= MasterParent_Disappearing;
 
-                    MasterParent.Appearing += MasterParent_Appearing;
-                    MasterParent.Disappearing += MasterParent_Disappearing;
+                        MasterParent.Appearing += MasterParent_Appearing;
+                        MasterParent.Disappearing += MasterParent_Disappearing;
+                    }
+                }
+
+                if (Focusable && IsMasterParentAppear)
+                {
+                    ShowCalendar();
+                }
+                else
+                {
+                    Unfocus();
                 }
             }
-
-            if (Focusable && IsMasterParentAppear)
+            catch(Exception ex)
             {
-                ShowCalendar();
-            }
-            else
-            {
-                Unfocus();
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
             }
         }
 
         private async void MasterParent_Appearing(object sender, EventArgs e)
         {
-            Debug.WriteLine("Shamsidatepicker masterparent appearing ****************************************");
-            Focusable = false;
-            await Task.Delay(200);
-            Focusable = true;
-            IsMasterParentAppear = true;
+            try
+            {
+                Debug.WriteLine("Shamsidatepicker masterparent appearing ****************************************");
+                Focusable = false;
+                await Task.Delay(200);
+                Focusable = true;
+                IsMasterParentAppear = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
         }
 
         private void MasterParent_Disappearing(object sender, EventArgs e)
         {
-            Debug.WriteLine("Shamsidatepicker masterparent disppearing ****************************************");
-            IsMasterParentAppear = false;
+            try
+            {
+                Debug.WriteLine("Shamsidatepicker masterparent disppearing ****************************************");
+                IsMasterParentAppear = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
         }
 
         public async void ShowCalendar()
@@ -107,7 +133,7 @@ namespace ShamsiDatePicker
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("OpenCalendar Error!!! " + ex.Message);
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
             }
         }
 
@@ -115,16 +141,17 @@ namespace ShamsiDatePicker
         {
             try
             {
-                await Navigation.PopModalAsync(true);
+                var Result = await Navigation.PopModalAsync(true);
+                Result = null;
 
                 if (!IsCancel)
                 {
                     Date = date;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine("CloseCalendar Error!!! " + ex.Message);
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
             }
         }
 
@@ -743,11 +770,18 @@ namespace ShamsiDatePicker
 
         public void Dispose()
         {
-            UnapplyBindings();
-            MasterParent.Appearing -= MasterParent_Appearing;
-            MasterParent.Disappearing -= MasterParent_Disappearing;
-            Focused -= ShamsiDatePicker_Focused;
-            MasterParent = null;
+            try
+            {
+                UnapplyBindings();
+                MasterParent.Appearing -= MasterParent_Appearing;
+                MasterParent.Disappearing -= MasterParent_Disappearing;
+                Focused -= ShamsiDatePicker_Focused;
+                MasterParent = null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
         }
 
     }

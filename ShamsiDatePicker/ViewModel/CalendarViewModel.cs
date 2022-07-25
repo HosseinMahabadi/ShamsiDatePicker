@@ -8,8 +8,19 @@ using System.Collections.ObjectModel;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class CalendarViewModel : ViewModelBase
+    internal class CalendarViewModel : ViewModelBase, IDisposable
     {
+        ~CalendarViewModel()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            CarouselItems = null;
+            YearList = null;
+        }
+
         private List<CarouselItem> _carouselItems = null;
         public List<CarouselItem> CarouselItems
         {

@@ -5,7 +5,7 @@
              x:Class="ShamdiDatePickerSample.MainPage">
 
     <ContentPage.Resources>
-        <!--     <Style TargetType="sdp:ShamsiDatePicker">
+        <!--<Style TargetType="sdp:ShamsiDatePicker">
             <Setter Property="HeaderBackgroundColor" Value="SteelBlue"/>
             <Setter Property="HeaderTitleTextColor" Value="Gold"/>
             <Setter Property="HeaderSubTitleTextColor" Value="LightYellow"/>

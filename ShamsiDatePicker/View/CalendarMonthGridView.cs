@@ -4,6 +4,7 @@ using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ShamsiDatePicker.View
 {
@@ -13,14 +14,16 @@ namespace ShamsiDatePicker.View
 
         public CalendarMonthGridView()
         {
-            DateGrid = new Grid()
+            try
             {
-                BackgroundColor = Color.Transparent,
+                DateGrid = new Grid()
+                {
+                    BackgroundColor = Color.Transparent,
 
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
 
-                ColumnDefinitions =
+                    ColumnDefinitions =
                 {
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) },
                     new ColumnDefinition(),
@@ -33,7 +36,7 @@ namespace ShamsiDatePicker.View
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) },
                 },
 
-                RowDefinitions =
+                    RowDefinitions =
                 {
                     new RowDefinition(),
                     new RowDefinition(),
@@ -42,17 +45,22 @@ namespace ShamsiDatePicker.View
                     new RowDefinition(),
                     new RowDefinition(),
                 }
-            };
+                };
 
-            Content = DateGrid;
+                Content = DateGrid;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
         }
 
         public static readonly BindableProperty ItemsProperty = BindableProperty.Create(
-    "Items",
-    typeof(List<CalendarDayBoxView>),
-    typeof(CalendarMonthGridView),
-    defaultValue: null,
-    propertyChanged: OnItemsChanged);
+            "Items",
+            typeof(List<CalendarDayBoxView>),
+            typeof(CalendarMonthGridView),
+            defaultValue: null,
+            propertyChanged: OnItemsChanged);
 
         public List<CalendarDayBoxView> Items
         {
@@ -81,7 +89,14 @@ namespace ShamsiDatePicker.View
 
         private void OnItemsChanged(object oldValue, object newValue)
         {
-            DrawItems((List<CalendarDayBoxView>)newValue);
+            try
+            {
+                DrawItems((List<CalendarDayBoxView>)newValue);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
         }
 
         public void DrawItems(List<CalendarDayBoxView> Items)

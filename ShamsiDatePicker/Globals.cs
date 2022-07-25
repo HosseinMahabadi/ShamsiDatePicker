@@ -8,6 +8,8 @@ namespace ShamsiDatePicker
 {
     internal static class Globals
     {
+        public static int Position = 0;
+
         public static string AppUniqId = Guid.NewGuid().ToString();
         public static Dictionary<MessageType, string> Messages = new Dictionary<MessageType, string>()
         {
@@ -47,6 +49,14 @@ namespace ShamsiDatePicker
 
                 return default(T);
             }
+        }
+
+        public static string GetErrorMessage(Exception ex)
+        {
+            return $"An error accoured in ShamsiDatePicker ===> " +
+                $"{ex.StackTrace}{Environment.NewLine}" +
+                $"{ex.TargetSite.Name}{Environment.NewLine}" +
+                $"{ex.Message}";
         }
     }
 }

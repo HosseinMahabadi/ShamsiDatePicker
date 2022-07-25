@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.1.353</Version>
+    <Version>3.0.0</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>
       This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
@@ -18,7 +18,8 @@
     </Copyright>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Fixed an error that prevented the corner radius from being applied to the background in satndard renderer mode.
+    <PackageReleaseNotes>1. Improved startup speed.
+2. Fixed 30th of Esfand bug for Kabise years.
 </PackageReleaseNotes>
     <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>

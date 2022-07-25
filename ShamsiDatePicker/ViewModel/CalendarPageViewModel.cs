@@ -13,12 +13,13 @@ using System.Diagnostics;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class CalendarPageViewModel : ShareViewModelBase
+    internal class CalendarPageViewModel : ShareViewModelBase, IDisposable
     {
         DateType Today = new DateType(DateTime.Now);
         Date MyDate = new Date();
 
-        #region Functuin
+        #region Methods
+
         public CalendarPageViewModel() 
         {
             try
@@ -27,15 +28,28 @@ namespace ShamsiDatePicker.ViewModel
                 Globals.Messages[MessageType.NewDayIsSelected],
                 (sender, arg) =>
                 {
-                    SelectedDayBox = arg;
-                    SelectItemCallBak(arg.Month, arg.Day);
-                    SetSelectedDate();
+                    if (arg != SelectedDayBox)
+                    {
+                        SelectedDayBox = arg;
+                        SelectItemCallBak(arg.Month, arg.Day);
+                        SetSelectedDate();
+                    }
                 });
             }
             catch(Exception ex)
             {
                 Debug.WriteLine("CalendarPageViewModel Error!!! " + ex.Message);
             }
+        }
+
+        ~CalendarPageViewModel()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            MessagingCenter.Unsubscribe<CalendarDayBoxViewModel, CalendarDayBoxViewModel>(this, Globals.Messages[MessageType.NewDayIsSelected]);
         }
 
         public async void Initialize()
@@ -65,6 +79,7 @@ namespace ShamsiDatePicker.ViewModel
                         Temp.Add(new YearListViewModel() { YearNumber = i, ForeColor = CalendarTextColor });
                     }
                     YearList = Temp;
+                    Temp = null;
                 });
 
                 CreateAllDays();
@@ -78,7 +93,7 @@ namespace ShamsiDatePicker.ViewModel
         private void SelectItemCallBak(uint month, uint day)
         {
             var temp = MyDate.GetDayOfWeekForShamsiCalendar(Year, (int)month, (int)day);
-
+            //Debug.WriteLine(temp.ToString());
             string dow = null;
             switch(temp)
             {
@@ -119,6 +134,8 @@ namespace ShamsiDatePicker.ViewModel
                     }
             }
             SelectedDay = string.Format("{0}, {1} {2}", dow, day.ToString(), (ShamsiMonthType)(month - 1));
+
+            dow = null;
         }
 
         public void CreateAllDays()
@@ -126,64 +143,23 @@ namespace ShamsiDatePicker.ViewModel
             try
             {
                 CarouselItems.Clear();
-                var AllDays = new List<CalendarDayBoxView>();
 
                 for (uint m = 1; m <= 12; m++)
                 {
-                    DayOfWeek StartDayOfWeek = MyDate.GetDayOfWeekForShamsiCalendar(Year, (int)m, 1);
-                    int Column = MyDate.GetDayOfWeek(StartDayOfWeek);
-                    int Row = 0;
-                    int TotalDays = MyDate.GetDaysCountOfMonth(Year, (int)m);
-                    var tempDays = new List<CalendarDayBoxView>();
-
-                    for (uint i = 1; i <= TotalDays; i++)
-                    {
-                        var TargetViewModel = new CalendarDayBoxViewModel()
-                        {
-                            Day = i,
-                            Month = m,
-                            CalendarTextColor = CalendarTextColor,
-                            CalendarSelectedTextColor = CalendarSelectedTextColor,
-                            CalendarHighlightColor = CalendarHighlightColor,
-                        };
-
-                        var dayBox = new CalendarDayBoxView(TargetViewModel)
-                        {
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            HorizontalOptions = LayoutOptions.FillAndExpand
-                        };
-                        dayBox.SetValue(Grid.ColumnProperty, Column + 1);
-                        dayBox.SetValue(Grid.RowProperty, Row);
-
-                        AllDays.Add(dayBox);
-                        tempDays.Add(dayBox);
-
-                        Column++;
-                        if (Column > 6)
-                        {
-                            Column = 0;
-                            Row++;
-                        }
-                    }
-
                     CarouselItems.Add(new CarouselItem(Year, (int)m)
                     {
-                        Days = tempDays
+                        ShamsiSelectedDate = ShamsiSelectedDate,
+                        CalendarTextColor = CalendarTextColor,
+                        CalendarSelectedTextColor = CalendarSelectedTextColor,
+                        CalendarHighlightColor = CalendarHighlightColor,
                     });
                 }
 
-                var temp = AllDays.FirstOrDefault(d => d.DataContext.Day == ShamsiSelectedDate.Day &&
-                    d.DataContext.Month == ShamsiSelectedDate.Month);
+                SelectItemCallBak((uint)ShamsiSelectedDate.Month, (uint)ShamsiSelectedDate.Day);
 
-                if (temp == null)
-                {
-                    temp = AllDays.FirstOrDefault(d => d.DataContext.Day == 29 &&
-                        d.DataContext.Month == ShamsiSelectedDate.Month);
-                }
+                Position = ShamsiSelectedDate.Month - 1;
 
-                temp.DataContext.Select();
-
-                Position = (int)SelectedDayBox.Month - 1;
+                CarouselItems[ShamsiSelectedDate.Month - 1].CreateDaysIfNeeded();
             }
             catch (Exception ex)
             {
@@ -193,9 +169,16 @@ namespace ShamsiDatePicker.ViewModel
 
         public void SetSelectedDate()
         {
-            var dt = new DateType(Year, (int)SelectedDayBox.Month, (int)SelectedDayBox.Day);
-            dt.Calendar = CalendarType.Miladi;
-            SelectedDate = new DateTime(dt.Year, dt.Month, dt.Day);
+            try
+            {
+                var dt = new DateType(Year, (int)SelectedDayBox.Month, (int)SelectedDayBox.Day);
+                dt.Calendar = CalendarType.Miladi;
+                SelectedDate = new DateTime(dt.Year, dt.Month, dt.Day);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         #endregion

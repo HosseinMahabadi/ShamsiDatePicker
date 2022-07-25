@@ -1,15 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 //using System.Drawing;
 using HMExtension.Xamarin.Mvvm;
 using Xamarin.Forms;
-using System.Windows.Input;
 
 namespace ShamsiDatePicker.ViewModel
 {
-    internal class CalendarDayBoxViewModel : ShareViewModelBase
+    internal class CalendarDayBoxViewModel : ShareViewModelBase, IDisposable
     {
+        public CalendarDayBoxViewModel()
+        {
+            TapCommand = new Command(() =>
+            {
+                Select();
+            });
+        }
+        
+        ~CalendarDayBoxViewModel()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                TapCommand = null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
+        }
+
         public void Select()
         {
             try
@@ -18,7 +43,10 @@ namespace ShamsiDatePicker.ViewModel
                 SelectedColor = CalendarHighlightColor;
                 MessagingCenter.Send(this, Globals.Messages[MessageType.NewDayIsSelected], this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(Globals.GetErrorMessage(ex));
+            }
         }
 
         public void Unselect()
@@ -68,25 +96,11 @@ namespace ShamsiDatePicker.ViewModel
 
         #region Command
 
-        private ICommand _tapCommand = null;
-        public ICommand TapCommand
+        private Command _tapCommand = null;
+        public Command TapCommand
         {
-            get
-            {
-                if(_tapCommand == null)
-                {
-                    _tapCommand = new Command(() =>
-                    {
-                        Select();
-                    });
-                }
-
-                return _tapCommand;
-            }
-            set
-            {
-                _tapCommand = value;
-            }
+            get => _tapCommand;
+            set => SetProperty(ref _tapCommand, value);
         }
 
         #endregion 
