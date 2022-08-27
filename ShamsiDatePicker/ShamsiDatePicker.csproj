@@ -4,23 +4,19 @@
     <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.0</Version>
+    <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
+    <Version>3.0.20</Version>
     <Authors>Hossein Mahabadi</Authors>
-    <Description>
-      This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
+    <Description>This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
 
-      https://instagram.com/hossein.mahabadi468
-    </Description>
+https://instagram.com/hossein.mahabadi468</Description>
     <PackageIcon>ShamsiDatePickerIcon.png</PackageIcon>
-    <Copyright>
-      Copyright (c) 2020-2025 Hossein Mahabadi
+    <Copyright>Copyright (c) 2020-2025 Hossein Mahabadi
       https://instagram.com/hossein.mahabadi468
-    </Copyright>
+</Copyright>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Improved startup speed.
-2. Fixed 30th of Esfand bug for Kabise years.
-</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed some bugs.</PackageReleaseNotes>
     <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
@@ -35,11 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
-    <Compile Remove="Platform\iOS\Renderers\ShamsiDatePickerRenderer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Remove="C:\Users\h.mahabadi.ALIGODARZ-MAN01\.nuget\packages\hmcontrols\1.0.5\contentFiles\any\netstandard2.0\Platform\Android\Renderers\StandardEditorRenderer.cs" />
     <None Remove="Resources\bnazanin.ttf" />
     <None Remove="Resources\Fonts\bnazanin_bold.ttf" />
     <None Remove="Resources\Images\background-blue.jpg" />
@@ -50,8 +42,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="Platform\Android\Renderers\ShamsiDatePickerRenderer.cs" />
-    <None Include="Platform\iOS\Renderers\ShamsiDatePickerRenderer.cs" />
     <None Include="Resources\Images\ShamsiDatePickerIcon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -76,19 +66,9 @@
 
   <ItemGroup>
     <PackageReference Include="CarouselView.FormsPlugin" Version="6.0.0" />
-    <PackageReference Include="HMExtension.Xamarin" Version="1.0.52" />
+    <PackageReference Include="HMControls" Version="1.0.7" />
+    <PackageReference Include="HMExtension.Xamarin" Version="2.1.7" />
     <PackageReference Include="VG.XFShapeView" Version="1.0.5" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
   </ItemGroup>
-
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
-    <Compile Include="Platform\Android\Renderers\*.cs" />
-    <AndroidResource Include="Platform\Android\Resources\values\styles.xml" Link="Resources\values\styles.xml" />
-   <!-- <AndroidResource Include="Platform\Android\Resources\values\colors.xml" Link="Resources\values\colors.xml" />-->
-  </ItemGroup>
-
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('xamarinios')) ">
-    <Compile Include="Platform\iOS\Renderers\*.cs" />
-  </ItemGroup>
-
 </Project>

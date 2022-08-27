@@ -55,9 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ShamsiDatePicker">
-      <Version>3.0.0</Version>
+      <Version>3.0.20</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +90,9 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ShamdiDatePickerSample\ShamdiDatePickerSample.csproj">
-      <Project>{27404C50-57B0-4FEE-9E8D-1E47922F8B7A}</Project>
-      <Name>ShamdiDatePickerSample</Name>
+    <ProjectReference Include="..\ShamdiDatePickerSample\ShamsiDatePickerSample.csproj">
+      <Project>{8C281AEF-3715-4AE3-98A5-29CC1CDE8688}</Project>
+      <Name>ShamsiDatePickerSample</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

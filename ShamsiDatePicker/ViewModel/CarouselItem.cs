@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HMExtension.Xamarin.Mvvm;
-using HMExtension.Xamarin.Component;
+using HMExtension.Xamarin;
 using ShamsiDatePicker.View;
 using Xamarin.Forms;
 using System.Threading.Tasks;
@@ -19,15 +18,16 @@ namespace ShamsiDatePicker.ViewModel
             Dispose();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             try
             {
                 Days = null;
+                base.Dispose();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -66,7 +66,13 @@ namespace ShamsiDatePicker.ViewModel
             set => SetProperty(ref _days, value);
         }
 
-        private bool DaysCreated = false;
+        
+        private bool _daysCreated = false;
+        public bool DaysCreated
+        {
+            get => _daysCreated;
+            set => SetProperty(ref _daysCreated, value);
+        }
 
         public void CreateDaysIfNeeded()
         {

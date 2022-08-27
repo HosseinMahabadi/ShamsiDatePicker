@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HMExtension.Xamarin.Mvvm;
+using HMExtension.Xamarin;
 
 namespace ShamsiDatePicker.ViewModel
 {

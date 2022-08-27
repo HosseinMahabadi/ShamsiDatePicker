@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 using ShamsiDatePicker.ViewModel;
+using HMExtension.Xamarin;
 
 namespace ShamsiDatePicker
 {
@@ -33,30 +34,5 @@ namespace ShamsiDatePicker
             { MessageType.OkButtonClicked, "OkButtonClicked" + AppUniqId},
             { MessageType.CancelButtonClicked, "CancelButtonClicked" + AppUniqId},
         };
-
-        public static T GetParent<T>(this Element element) where T : Element
-        {
-            if (element is T)
-            {
-                return element as T;
-            }
-            else
-            {
-                if (element.Parent != null)
-                {
-                    return element.Parent.GetParent<T>();
-                }
-
-                return default(T);
-            }
-        }
-
-        public static string GetErrorMessage(Exception ex)
-        {
-            return $"An error accoured in ShamsiDatePicker ===> " +
-                $"{ex.StackTrace}{Environment.NewLine}" +
-                $"{ex.TargetSite.Name}{Environment.NewLine}" +
-                $"{ex.Message}";
-        }
     }
 }

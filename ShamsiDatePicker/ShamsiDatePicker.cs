@@ -1,20 +1,17 @@
 ﻿using System;
 using Xamarin.Forms;
 using ShamsiDatePicker.ViewModel;
-using HMExtension.Xamarin.Component;
+using HMExtension.Xamarin;
 using ShamsiDatePicker.View;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using HMControls;
 
 namespace ShamsiDatePicker
 {
-    public class ShamsiDatePicker : Entry, IDisposable
+    public class ShamsiDatePicker : KeyboardlessEntry, IDisposable
     {
-        private ContentPage MasterParent { get; set; } = null;
-        public bool Focusable { get; private set; } = true;
-        public bool IsMasterParentAppear { get; private set; } = true;
-
-        public ShamsiDatePicker()
+        public ShamsiDatePicker() : base()
         {
             try
             {
@@ -27,12 +24,10 @@ namespace ShamsiDatePicker
                     Source = this,
                     Path = nameof(ShamsiDateString),
                 });
-
-                Focused += ShamsiDatePicker_Focused;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -41,65 +36,9 @@ namespace ShamsiDatePicker
             Dispose();
         }
 
-        public void ShamsiDatePicker_Focused(object sender, FocusEventArgs e)
+        public override void ActionOnFocused()
         {
-            try
-            {
-                if (MasterParent == null)
-                {
-                    MasterParent = Globals.GetParent<ContentPage>(this);
-                    if (MasterParent != null)
-                    {
-                        MasterParent.Appearing -= MasterParent_Appearing;
-                        MasterParent.Disappearing -= MasterParent_Disappearing;
-
-                        MasterParent.Appearing += MasterParent_Appearing;
-                        MasterParent.Disappearing += MasterParent_Disappearing;
-                    }
-                }
-
-                if (Focusable && IsMasterParentAppear)
-                {
-                    ShowCalendar();
-                }
-                else
-                {
-                    Unfocus();
-                }
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
-            }
-        }
-
-        private async void MasterParent_Appearing(object sender, EventArgs e)
-        {
-            try
-            {
-                Debug.WriteLine("Shamsidatepicker masterparent appearing ****************************************");
-                Focusable = false;
-                await Task.Delay(200);
-                Focusable = true;
-                IsMasterParentAppear = true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
-            }
-        }
-
-        private void MasterParent_Disappearing(object sender, EventArgs e)
-        {
-            try
-            {
-                Debug.WriteLine("Shamsidatepicker masterparent disppearing ****************************************");
-                IsMasterParentAppear = false;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
-            }
+            ShowCalendar();
         }
 
         public async void ShowCalendar()
@@ -133,7 +72,7 @@ namespace ShamsiDatePicker
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -151,17 +90,16 @@ namespace ShamsiDatePicker
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
-
-        public RenderModeType RenderMode { get; set; } = RenderModeType.Default;
 
         public Color HeaderBackgroundColor
         {
             get => (Color)GetValue(HeaderBackgroundColorProperty);
             set => SetValue(HeaderBackgroundColorProperty, value);
         }
+
         public static readonly BindableProperty HeaderBackgroundColorProperty = BindableProperty.Create(
             "HeaderBackgroundColor",
             typeof(Color),
@@ -312,7 +250,7 @@ namespace ShamsiDatePicker
         private void OnCalendarTextColorChanged(object oldValue, object newValue)
         {
             //MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarTextColorIsChanged]
-                 //, (Color)newValue);
+            //, (Color)newValue);
         }
 
         public Color CalendarSelectedTextColor
@@ -344,7 +282,7 @@ namespace ShamsiDatePicker
 
         private void OnCalendarSelectedTextColorChanged(object oldValue, object newValue)
         {
-            ///MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarSelectedTextColorIsChanged], (Color)newValue);
+            //MessagingCenter.Send(this, Globals.Messages[MessageType.CalendarSelectedTextColorIsChanged], (Color)newValue);
         }
 
         public Color CalendarHighlightColor
@@ -731,56 +669,16 @@ namespace ShamsiDatePicker
             //MessagingCenter.Send(this, Globals.Messages[MessageType.MinYearIsChanged], Convert.ToInt32(newValue));
         }
 
-        public static BindableProperty CornerRadiusProperty =
-            BindableProperty.Create(nameof(CornerRadius), typeof(int), typeof(ShamsiDatePicker), 0);
-
-        public static BindableProperty BorderThicknessProperty =
-            BindableProperty.Create(nameof(BorderThickness), typeof(double), typeof(ShamsiDatePicker), 1d);
-
-        public static BindableProperty PaddingProperty =
-            BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ShamsiDatePicker), new Thickness(5));
-
-        public static BindableProperty BorderColorProperty =
-            BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(ShamsiDatePicker), Color.Black);
-
-        public int CornerRadius
-        {
-            get => (int)GetValue(CornerRadiusProperty);
-            set => SetValue(CornerRadiusProperty, value);
-        }
-
-        public double BorderThickness
-        {
-            get => (double)GetValue(BorderThicknessProperty);
-            set => SetValue(BorderThicknessProperty, value);
-        }
-        public Color BorderColor
-        {
-            get => (Color)GetValue(BorderColorProperty);
-            set => SetValue(BorderColorProperty, value);
-        }
-        /// <summary>
-        /// This property cannot be changed at runtime in iOS.
-        /// </summary>
-        public Thickness Padding
-        {
-            get => (Thickness)GetValue(PaddingProperty);
-            set => SetValue(PaddingProperty, value);
-        }
-
         public void Dispose()
         {
             try
             {
                 UnapplyBindings();
-                MasterParent.Appearing -= MasterParent_Appearing;
-                MasterParent.Disappearing -= MasterParent_Disappearing;
-                Focused -= ShamsiDatePicker_Focused;
-                MasterParent = null;
+                //MasterParent = null;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 

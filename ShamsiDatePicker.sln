@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShamsiDatePicker", "ShamsiDatePicker\ShamsiDatePicker.csproj", "{B1AB7E62-18F1-4447-95E9-D23A7A9C68B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShamdiDatePickerSample.Android", "ShamdiDatePickerSample\ShamdiDatePickerSample.Android\ShamdiDatePickerSample.Android.csproj", "{ABF1A159-D445-43B6-A4F2-7679FE255BC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShamsiDatePickerSample.Android", "ShamdiDatePickerSample\ShamdiDatePickerSample.Android\ShamsiDatePickerSample.Android.csproj", "{ABF1A159-D445-43B6-A4F2-7679FE255BC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShamdiDatePickerSample.iOS", "ShamdiDatePickerSample\ShamdiDatePickerSample.iOS\ShamdiDatePickerSample.iOS.csproj", "{F1B816EB-F62B-4A85-A40B-2237927A3728}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShamsiDatePickerSample.iOS", "ShamdiDatePickerSample\ShamdiDatePickerSample.iOS\ShamsiDatePickerSample.iOS.csproj", "{F1B816EB-F62B-4A85-A40B-2237927A3728}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShamdiDatePickerSample", "ShamdiDatePickerSample\ShamdiDatePickerSample\ShamdiDatePickerSample.csproj", "{8C281AEF-3715-4AE3-98A5-29CC1CDE8688}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShamsiDatePickerSample", "ShamdiDatePickerSample\ShamdiDatePickerSample\ShamsiDatePickerSample.csproj", "{8C281AEF-3715-4AE3-98A5-29CC1CDE8688}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,10 +4,10 @@ using System.Text;
 using ShamsiDatePicker.ViewModel;
 using Xamarin.Forms;
 using CarouselView.FormsPlugin.Abstractions;
-using HMExtension.Xamarin.Mvvm;
-using HMExtension.Xamarin.Component;
+using HMExtension.Xamarin;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using HMControls;
 
 namespace ShamsiDatePicker.View
 {
@@ -33,6 +33,7 @@ namespace ShamsiDatePicker.View
         private StackLayout HeaderGrid = null;
 
         private Grid MainGrid = null;
+        private Grid contentGrid = null;
 
         public CalendarPage()
         {
@@ -59,7 +60,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -78,7 +79,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -88,17 +89,13 @@ namespace ShamsiDatePicker.View
             {
                 YearListView = CreateYearListView();
                 HeaderGrid = CreateHeaderGrid();
+                contentGrid = CreateContentGrid();
                 MainGrid = CreateMainGrid();
                 Content = MainGrid;
-
-                /*Disappearing += async (sender, e) =>
-                {
-                    await MainGrid.FadeTo(0, 100);
-                };*/
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -113,6 +110,8 @@ namespace ShamsiDatePicker.View
                     HeaderGrid.SetValue(Grid.ColumnProperty, 1);
 
                     MainGrid.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
+                    contentGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Auto);
+                    contentGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                 }
                 else
                 {
@@ -121,11 +120,13 @@ namespace ShamsiDatePicker.View
                     HeaderGrid.SetValue(Grid.ColumnProperty, 0);
 
                     MainGrid.RowDefinitions[1].Height = new GridLength(20, GridUnitType.Star);
+                    contentGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    contentGrid.ColumnDefinitions[1].Width = new GridLength(4, GridUnitType.Star);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -137,7 +138,6 @@ namespace ShamsiDatePicker.View
             {
                 var MainGrid = new Grid
                 {
-                    //Opacity = 0,
                     Margin = 0,
                     Padding = 0,
 
@@ -146,7 +146,7 @@ namespace ShamsiDatePicker.View
                     ColumnDefinitions =
                 {
                     new ColumnDefinition(),
-                    new ColumnDefinition() { Width = new GridLength(6, GridUnitType.Star) },
+                    new ColumnDefinition() { Width = new GridLength(7, GridUnitType.Star) },
                     new ColumnDefinition()
                 },
 
@@ -158,17 +158,17 @@ namespace ShamsiDatePicker.View
                 },
 
                     Children =
-                {
-                    CreateBackGroundFrame(),
-                    CreateContentGrid()
-                }
+                    {
+                        CreateBackGroundFrame(),
+                        contentGrid,
+                    }
                 };
 
                 return MainGrid;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
 
@@ -197,7 +197,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -250,7 +250,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -285,7 +285,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -334,7 +334,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -382,7 +382,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -423,7 +423,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -444,10 +444,10 @@ namespace ShamsiDatePicker.View
                 {
                     try
                     {
-                        //Debug.WriteLine(carouselView.SelectedItem.ToString());
                         if (carouselView.SelectedItem != null)
                         {
                             ((CarouselItem)carouselView.SelectedItem).CreateDaysIfNeeded();
+
                         }
                     }
                     catch { }
@@ -474,7 +474,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -511,7 +511,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -546,7 +546,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -636,7 +636,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -650,14 +650,14 @@ namespace ShamsiDatePicker.View
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                 };
-                TemplateCalendarMonth.SetBinding(CalendarMonthGridView.ItemsProperty, new Binding() { Path = "Days" });
+                TemplateCalendarMonth.SetBinding(CalendarMonthGridView.ItemsProperty, new Binding() { Path = nameof(CarouselItem.Days) });
                 TemplateCalendarMonth.SetValue(Grid.RowProperty, 2);
 
                 return TemplateCalendarMonth;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -729,7 +729,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -759,37 +759,38 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
 
-        private Image CreateForwardImage()
+        private ImageTinted CreateForwardImage()
         {
             try
             {
-                var ForwardImage = new Image()
+                var ForwardImage = new ImageTinted()
                 {
                     Source = ImageSource.FromResource("ShamsiDatePicker.Resources.Images.right.png"),
                     Aspect = Aspect.AspectFill,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     WidthRequest = 15,
-                    HeightRequest = 15
+                    HeightRequest = 15,
+                    TintColor = DataContext.CalendarTitleColor,
                 };
 
                 ForwardImage.SetValue(Grid.ColumnProperty, 1);
 
-                var TintEffect = new TintImageEffect();
+                /*var TintEffect = new TintImageEffect();
                 TintEffect.TintColor = DataContext.CalendarTitleColor;
 
-                ForwardImage.Effects.Add(TintEffect);
+                ForwardImage.Effects.Add(TintEffect);*/
 
                 return ForwardImage;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -819,37 +820,38 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
 
-        private Image CreateBackwardImage()
+        private ImageTinted CreateBackwardImage()
         {
             try
             {
-                var BackwardImage = new Image()
+                var BackwardImage = new ImageTinted()
                 {
                     Source = ImageSource.FromResource("ShamsiDatePicker.Resources.Images.left.png"),
                     Aspect = Aspect.AspectFill,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     WidthRequest = 15,
-                    HeightRequest = 15
+                    HeightRequest = 15,
+                    TintColor = DataContext.CalendarTitleColor,
                 };
 
                 BackwardImage.SetValue(Grid.ColumnProperty, 3);
 
-                var TintEffect = new TintImageEffect();
+                /*var TintEffect = new TintImageEffect();
                 TintEffect.TintColor = DataContext.CalendarTitleColor;
 
-                BackwardImage.Effects.Add(TintEffect);
+                BackwardImage.Effects.Add(TintEffect);*/
 
                 return BackwardImage;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -906,7 +908,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -969,7 +971,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -993,7 +995,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -1031,7 +1033,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -1071,7 +1073,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -1111,7 +1113,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }

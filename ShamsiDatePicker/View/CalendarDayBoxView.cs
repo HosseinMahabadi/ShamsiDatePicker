@@ -5,6 +5,7 @@ using Xamarin.Forms;
 using ShamsiDatePicker.ViewModel;
 using XFShapeView;
 using System.Diagnostics;
+using HMExtension.Xamarin;
 
 namespace ShamsiDatePicker.View
 {
@@ -21,7 +22,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -40,7 +41,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -72,7 +73,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -116,7 +117,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }
@@ -187,7 +188,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
                 return null;
             }
         }

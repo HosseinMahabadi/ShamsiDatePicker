@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HMExtension.Xamarin.Mvvm;
+using HMExtension.Xamarin;
 using System.Windows.Input;
 using ShamsiDatePicker.View;
 using System.Collections.ObjectModel;
@@ -10,15 +10,11 @@ namespace ShamsiDatePicker.ViewModel
 {
     internal class CalendarViewModel : ViewModelBase, IDisposable
     {
-        ~CalendarViewModel()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             CarouselItems = null;
             YearList = null;
+            base.Dispose();
         }
 
         private List<CarouselItem> _carouselItems = null;

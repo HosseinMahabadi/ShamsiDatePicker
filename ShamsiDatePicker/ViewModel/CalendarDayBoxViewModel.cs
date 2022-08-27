@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 //using System.Drawing;
-using HMExtension.Xamarin.Mvvm;
+using HMExtension.Xamarin;
 using Xamarin.Forms;
 
 namespace ShamsiDatePicker.ViewModel
@@ -23,15 +23,16 @@ namespace ShamsiDatePicker.ViewModel
             Dispose();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             try
             {
                 TapCommand = null;
+                base.Dispose();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -45,7 +46,7 @@ namespace ShamsiDatePicker.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 

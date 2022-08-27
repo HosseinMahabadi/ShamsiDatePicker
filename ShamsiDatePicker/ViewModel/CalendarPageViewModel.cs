@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
-using HMExtension.Xamarin.Mvvm;
+using HMExtension.Xamarin;
 using System.Windows.Input;
 using ShamsiDatePicker.View;
-using HMExtension.Xamarin.Component;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -42,14 +41,10 @@ namespace ShamsiDatePicker.ViewModel
             }
         }
 
-        ~CalendarPageViewModel()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             MessagingCenter.Unsubscribe<CalendarDayBoxViewModel, CalendarDayBoxViewModel>(this, Globals.Messages[MessageType.NewDayIsSelected]);
+            base.Dispose();
         }
 
         public async void Initialize()

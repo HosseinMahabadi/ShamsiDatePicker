@@ -5,6 +5,10 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using HMExtension.Xamarin;
+using ShamsiDatePicker.ViewModel;
+using System.Linq;
 
 namespace ShamsiDatePicker.View
 {
@@ -51,7 +55,7 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
@@ -95,21 +99,21 @@ namespace ShamsiDatePicker.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(Globals.GetErrorMessage(ex));
+                Debug.WriteLine(ex.GetErrorMessage());
             }
         }
 
-        public void DrawItems(List<CalendarDayBoxView> Items)
+        public void DrawItems(List<CalendarDayBoxView> items)
         {
             try
             {
                 DateGrid.Children.Clear();
 
-                if (Items != null)
+                if (items != null)
                 {
-                    if (Items.Count > 0)
+                    if (items.Count > 0)
                     {
-                        foreach (var item in Items)
+                        foreach (CalendarDayBoxView item in items)
                         {
                             DateGrid.Children.Add(item);
                         }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
-using HMExtension.Xamarin.Mvvm;
+using HMExtension.Xamarin;
 using System.Windows.Input;
-using HMExtension.Xamarin.Component;
 namespace ShamsiDatePicker.ViewModel
 {
     internal class YearListViewModel : ViewModelBase
