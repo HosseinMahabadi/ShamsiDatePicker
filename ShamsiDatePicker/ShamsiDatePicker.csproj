@@ -32,6 +32,7 @@ https://instagram.com/hossein.mahabadi468</Description>
 
   <ItemGroup>
     <None Remove="C:\Users\h.mahabadi.ALIGODARZ-MAN01\.nuget\packages\hmcontrols\1.0.5\contentFiles\any\netstandard2.0\Platform\Android\Renderers\StandardEditorRenderer.cs" />
+    <None Remove="README.md" />
     <None Remove="Resources\bnazanin.ttf" />
     <None Remove="Resources\Fonts\bnazanin_bold.ttf" />
     <None Remove="Resources\Images\background-blue.jpg" />
@@ -58,10 +59,7 @@ https://instagram.com/hossein.mahabadi468</Description>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="readme.txt">
-      <Pack>true</Pack>
-      <PackagePath>readme.txt</PackagePath>
-    </Content>
+    <Content Include="README.md" />
   </ItemGroup>
 
   <ItemGroup>
