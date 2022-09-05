@@ -30,9 +30,7 @@ xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
 - #### سپس در محتوای صفحه به شکل زیر کنترل را اضافه کنید:
 ```xaml
 <sdp:ShamsiDatePicker Date="{Binding TargetDate, Mode=TwoWay}"
-                      MinimumShamsiYear="1320"
-                      MaximumShamsiYear="1420"
-                      RenderMode="Default"/>
+                      RenderMode="Default"/> <!-- RenderMode به شما اجازه می دهد تا حالت پیش فرض زامارین فرمزیا حالت استاندارد را برای نمایش جعبه متن تاریخ استفاده کنید-->
 ```
 
 - #### می توانید خصوصیات تقویم را به شکل زیر مقدار دهی کنید:
