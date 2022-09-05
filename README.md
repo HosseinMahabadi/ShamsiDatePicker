@@ -5,7 +5,9 @@
 
 # تقویم فارسی برای زامارین فرمز
 این کنترل سفارشی برای برنامه نویسان زامارین فرمز تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
-این کنترل در با پلتفرم های اندروید و آی او اس سازگار است.
+<br/>
+این کنترل با پلتفرم های اندروید و آی او اس سازگار است.
+<br/>
 این کنترل از پترن MVVM پشتیبانی می کند.
 
 <br/>
@@ -31,4 +33,57 @@ xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
                       MinimumShamsiYear="1320"
                       MaximumShamsiYear="1420"
                       RenderMode="Default"/>
+```
+
+- #### می توانید خصوصیات تقویم را به شکل زیر مقدار دهی کنید:
+```xaml
+<ContentPage.Resources>
+    <Style TargetType="sdp:ShamsiDatePicker">
+
+        <!-- کمترین سال شمسی قابل انتخاب از تقویم -->
+        <Setter Property="MinimumShamsiYear" Value="1320"/>
+
+        <!-- بیشترین سال شمسی قابل انتخاب از تقویم -->
+        <Setter Property="MaximumShamsiYear" Value="1420"/>
+            
+        <!-- رنگ سربرگ تقویم -->
+        <Setter Property="HeaderBackgroundColor" Value="SteelBlue"/>
+            
+        <!-- رنگ متن عنوان سربرگ تقویم -->
+        <Setter Property="HeaderTitleTextColor" Value="Gold"/>
+            
+        <!-- رنگ متن زیر عنوان سربرگ تقویم -->
+        <Setter Property="HeaderSubTitleTextColor" Value="LightYellow"/>
+            
+        <!-- رنگ صفحه تقویم تقویم -->
+        <Setter Property="CalendarBackgroundColor" Value="WhiteSmoke"/>
+            
+        <!-- رنگ متن عنوان صفحه تقویم -->
+        <Setter Property="CalendarTitleColor" Value="DarkGoldenrod"/>
+            
+        <!-- رنگ متن زیر عنوان صفحه تقویم -->
+        <Setter Property="CalendarSubTitleColor" Value="DarkBlue"/>
+            
+        <!-- رنگ متن اعداد صفحه تقویم -->
+        <Setter Property="CalendarTextColor" Value="BlueViolet"/>
+            
+        <!-- رنگ متن روز انتخاب شده صفحه تقویم -->
+        <Setter Property="CalendarSelectedTextColor" Value="Cyan"/>
+            
+        <!-- رنگ هایلایت روز انتخاب شده صفحه تقویم -->
+        <Setter Property="CalendarHighlightColor" Value="SteelBlue"/>
+            
+        <!-- رنگ متن کلید انتخاب تقویم -->
+        <Setter Property="CalendarOKButtonTextColor" Value="ForestGreen"/>
+            
+        <!-- رنگ پس زمینه کلید انتخاب تقویم -->
+        <Setter Property="CalendarOKButtonBackgroundColor" Value="LightBlue"/>
+            
+        <!-- رنگ متن کلید انصراف تقویم -->
+        <Setter Property="CalendarCancelButtonTextColor" Value="Red"/>
+            
+        <!-- رنگ پس زمینه کلید انصراف تقویم -->
+        <Setter Property="CalendarCancelButtonBackgroundColor" Value="LightBlue"/>
+    </Style>
+</ContentPage.Resources>
 ```

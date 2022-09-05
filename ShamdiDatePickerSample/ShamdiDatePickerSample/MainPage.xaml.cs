@@ -19,10 +19,7 @@ namespace ShamdiDatePickerSample
         private DateTime _targetDate = DateTime.Now;
         public DateTime TargetDate
         {
-            get
-            {
-                return _targetDate;
-            }
+            get => _targetDate;
             set
             {
                 if (_targetDate != value)
