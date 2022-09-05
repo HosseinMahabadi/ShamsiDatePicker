@@ -5,3 +5,7 @@
 
 # ShamsiDatePicker
 این کنترل سفارشی برای برنامه نویسان زامارین فرمز تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
+این کنترل در با پلتفرم های اندروید و آی او اس سازگار است.
+
+# روش نصب
+- `Plugin.LocalNotification` در سایت ناگت قابل دسترسی است: https://www.nuget.org/packages/ShamsiDatePicker
