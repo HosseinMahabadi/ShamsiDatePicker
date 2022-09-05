@@ -19,7 +19,17 @@
 	- Tools -> NuGet Pckage Manager -> Package Manager Console -> Install-Package ShamsiDatePicker -Version 3.0.20
 
 # روش استفاده
-- #### پس ازنصب پکیج، کد زیر را در سرفایل صفحه زمل پیج مورد نظر استفاده کنید: 
+- #### پس از نصب پکیج، کد زیر را در سرفایل صفحه پیج مورد نظر استفاده کنید: 
 ```xaml
 xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker" 
+```
+
+-#### سپس در محتوای صفحه به شکل زیر کنترل را اضافه کنید:
+```xaml
+        <sdp:ShamsiDatePicker x:Name="ShamsiDatePicker"
+                              Date="{Binding TargetDate, Mode=TwoWay}"
+                              MinimumShamsiYear="1320"
+                              MaximumShamsiYear="1420"
+                              CalendarBackgroundColor="AliceBlue"
+                              RenderMode="Default"/>
 ```
