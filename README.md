@@ -4,4 +4,4 @@
 [![NuGet](https://img.shields.io/nuget/dt/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/)
 
 # ShamsiDatePicker
-This custom control shows shamsi calendar just like XamarinForms date picker.
+این کنترل سفارشی برای برنامه نویسان زامارین فرمز تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
