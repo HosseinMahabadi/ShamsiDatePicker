@@ -26,10 +26,8 @@ xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
 
 -#### سپس در محتوای صفحه به شکل زیر کنترل را اضافه کنید:
 ```xaml
-        <sdp:ShamsiDatePicker x:Name="ShamsiDatePicker"
-                              Date="{Binding TargetDate, Mode=TwoWay}"
-                              MinimumShamsiYear="1320"
-                              MaximumShamsiYear="1420"
-                              CalendarBackgroundColor="AliceBlue"
-                              RenderMode="Default"/>
+<sdp:ShamsiDatePicker Date="{Binding TargetDate, Mode=TwoWay}"
+                      MinimumShamsiYear="1320"
+                      MaximumShamsiYear="1420"
+                      RenderMode="Default"/>
 ```
