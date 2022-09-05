@@ -8,8 +8,8 @@
 این کنترل در با پلتفرم های اندروید و آی او اس سازگار است.
 
 <p float="left">
-<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="350" />
-<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="350" />
+<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="250" />
+<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="250" />
 </p>
 
 # روش نصب
