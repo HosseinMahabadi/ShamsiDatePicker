@@ -6,11 +6,12 @@
 # تقویم فارسی برای زامارین فرمز
 این کنترل سفارشی برای برنامه نویسان زامارین فرمز تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
 این کنترل در با پلتفرم های اندروید و آی او اس سازگار است.
+این کنترل از پترن MVVM پشتیبانی می کند.
 
 <br/>
 <p float="right">
-<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="150" />
-<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="150" />
+<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="200" />
+<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="200" />
 </p>
 
 # روش نصب
@@ -24,7 +25,7 @@
 xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker" 
 ```
 
--#### سپس در محتوای صفحه به شکل زیر کنترل را اضافه کنید:
+- #### سپس در محتوای صفحه به شکل زیر کنترل را اضافه کنید:
 ```xaml
 <sdp:ShamsiDatePicker Date="{Binding TargetDate, Mode=TwoWay}"
                       MinimumShamsiYear="1320"
