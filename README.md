@@ -8,4 +8,4 @@
 این کنترل در با پلتفرم های اندروید و آی او اس سازگار است.
 
 # روش نصب
-- `Plugin.LocalNotification` در سایت ناگت قابل دسترسی است: https://www.nuget.org/packages/ShamsiDatePicker
+- `کنترل تقویم فارسی برای زامارین` در سایت ناگت قابل دسترسی است : https://www.nuget.org/packages/ShamsiDatePicker
