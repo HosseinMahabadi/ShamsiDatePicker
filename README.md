@@ -7,12 +7,19 @@
 این کنترل سفارشی برای برنامه نویسان زامارین فرمز تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
 این کنترل در با پلتفرم های اندروید و آی او اس سازگار است.
 
-<p float="left">
-<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="250" />
-<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="250" />
+<br/>
+<p float="right">
+<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="150" />
+<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="150" />
 </p>
 
 # روش نصب
 - `کنترل تقویم فارسی برای زامارین` در سایت ناگت قابل دسترسی است : https://www.nuget.org/packages/ShamsiDatePicker
 - #### نصب از طریق ویژوال استودیو
 	- Tools -> NuGet Pckage Manager -> Package Manager Console -> Install-Package ShamsiDatePicker -Version 3.0.20
+
+# روش استفاده
+- #### پس ازنصب پکیج، کد زیر را در سرفایل صفحه زمل پیج مورد نظر استفاده کنید: 
+```xaml
+xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker" 
+```
