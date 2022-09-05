@@ -1,4 +1,4 @@
-﻿<img source="" width="128">
+﻿<img source="ShamsiDatePicker\Resources\Images\ShamsiDatePickerIcon.png" width="128">
 
 [![NuGet](https://img.shields.io/nuget/v/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/) 
 [![NuGet](https://img.shields.io/nuget/dt/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/)
@@ -10,4 +10,4 @@
 # روش نصب
 - `کنترل تقویم فارسی برای زامارین` در سایت ناگت قابل دسترسی است : https://www.nuget.org/packages/ShamsiDatePicker
 - #### نصب از طریق ویژوال استودیو
-	- Tools -> Nuget Pckage Manager -> Package Manager Console -> Install-Package ShamsiDatePicker -Version 3.0.20
+	- Tools -> NuGet Pckage Manager -> Package Manager Console -> Install-Package ShamsiDatePicker -Version 3.0.20
