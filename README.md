@@ -1,4 +1,4 @@
-﻿<img src="ShamsiDatePicker\Resources\Images\ShamsiDatePickerIcon.png?raw=true" width="128">
+![ShamsiDatePickerIcon](https://user-images.githubusercontent.com/76768870/188611980-a9c6a0f6-f7bf-4224-a48b-c09fef5b837d.png)
 
 [![NuGet](https://img.shields.io/nuget/v/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/) 
 [![NuGet](https://img.shields.io/nuget/dt/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/)
