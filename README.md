@@ -10,11 +10,10 @@
 <br/>
 این کنترل از پترن MVVM پشتیبانی می کند.
 
-<br/>
-<p float="right">
-<img alt="ShamsiDatePicker calendar page" src="ShamsiDatePicker\Resources\Images\sdp1.jpg?raw=true" width="200" />
-<img alt="ShamsiDatePicker year page" src="ShamsiDatePicker\Resources\Images\sdp2.jpg?raw=true" width="200" />
-</p>
+
+![sdp1](https://user-images.githubusercontent.com/76768870/188799594-599b7007-36ce-49ea-b086-a06c6692cce2.jpg)
+![sdp2](https://user-images.githubusercontent.com/76768870/188799712-d23e72fb-634b-494f-a204-6811dedc3b53.jpg)
+
 
 # روش نصب
 - `کنترل تقویم فارسی برای زامارین` در سایت ناگت قابل دسترسی است : https://www.nuget.org/packages/ShamsiDatePicker
