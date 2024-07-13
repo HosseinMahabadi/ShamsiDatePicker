@@ -1,196 +1,177 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Xamarin.Forms;
 using ShamsiDatePicker.ViewModel;
-using XFShapeView;
 using System.Diagnostics;
-using HMExtension.Xamarin;
+using HMExtension.Maui;
+using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
 
-namespace ShamsiDatePicker.View
+namespace ShamsiDatePicker.View;
+
+internal class CalendarDayBoxView : Frame
 {
-    internal class CalendarDayBoxView : ContentView, IDisposable
+    public CalendarDayBoxView(int month, int day)
     {
-        public CalendarDayBoxViewModel DataContext { get; set; } = null;
-
-        public CalendarDayBoxView(CalendarDayBoxViewModel BindingContext)
+        try
         {
-            try
+            BindingContext = this;
+
+            Month = month;
+            Day = day;
+            TapCommand = new Command(Select);
+            BackgroundColor = Colors.Transparent;
+            CornerRadius = 60;
+            Padding = 0;
+            HasShadow = false;
+
+            Label label = new()
             {
-                DataContext = BindingContext;
-                InitializeComponent();
-            }
-            catch (Exception ex)
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                FontSize = 18.5,
+                FontFamily = "B_Nazanin",
+                TextColor = Globals.CalendarTextColor,
+                Text = Day.ToString(),
+            };
+
+            DataTrigger isSelectedTriggerFrame = new(typeof(Frame))
             {
-                Debug.WriteLine(ex.GetErrorMessage());
-            }
+                Value = true,
+                Binding = new Binding() { Path = nameof(IsSelected) },
+            };
+
+            DataTrigger isSelectedTriggerLabel = new(typeof(Label))
+            {
+                Value = true,
+                Binding = new Binding() { Path = nameof(IsSelected) },
+            };
+
+            DataTrigger isEnabledTriggerLabel = new(typeof(Label))
+            {
+                Value = false,
+                Binding = new Binding() { Path = nameof(IsEnabled) },
+            };
+
+            isSelectedTriggerFrame.Setters.Add(new Setter()
+            {
+                Property = BackgroundColorProperty,
+                Value = Globals.CalendarHighlightColor,
+            });
+
+            isSelectedTriggerFrame.Setters.Add(new Setter()
+            {
+                Property = ScaleProperty,
+                Value = 1.2,
+            });
+
+            isSelectedTriggerLabel.Setters.Add(new Setter()
+            {
+                Property = Label.TextColorProperty,
+                Value = Globals.CalendarSelectedTextColor,
+            });
+
+            isEnabledTriggerLabel.Setters.Add(new Setter()
+            {
+                Property = Label.TextColorProperty,
+                Value = Colors.DarkGray,
+            });
+
+            Triggers.Add(isSelectedTriggerFrame);
+            label.Triggers.Add(isSelectedTriggerLabel);
+            label.Triggers.Add(isEnabledTriggerLabel);
+
+            TapGestureRecognizer thisTaped = new();
+            thisTaped.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
+            {
+                Path = nameof(TapCommand)
+            });
+            GestureRecognizers.Add(thisTaped);
+
+            Content = label;
         }
-
-        ~CalendarDayBoxView()
+        catch (Exception ex)
         {
-            Dispose();
+            Debug.WriteLine(ex.GetErrorMessage());
         }
+    }
 
-        public void Dispose()
+    public void Select()
+    {
+        try
         {
-            try
-            {
-                DataContext.Dispose();
-                DataContext = null;
-                UnapplyBindings();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-            }
+            IsSelected = true;
+            //SelectedColor = Globals.CalendarHighlightColor;
+            MessagingCenter.Send(this, Globals.Messages[MessageType.NewDayIsSelected], this);
         }
-
-        private void InitializeComponent()
+        catch (Exception ex)
         {
-            try
-            {
-                var ThisTaped = new TapGestureRecognizer();
-                ThisTaped.SetBinding(TapGestureRecognizer.CommandProperty,
-                    new Binding()
-                    {
-                        Source = DataContext,
-                        Path = "TapCommand"
-                    });
-                GestureRecognizers.Add(ThisTaped);
-
-                var MainGrid = new Grid()
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children =
-                {
-                    CreateBackgroundCircleShape(),
-                    CreateShamsiDayLabel(),
-                }
-                };
-
-                Content = MainGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-            }
+            Debug.WriteLine(ex.GetErrorMessage());
         }
+    }
 
-        private Frame CreateBackgroundCircleShape()
+    public void Unselect()
+    {
+        IsSelected = false;
+        //SelectedColor = Colors.Transparent;
+    }
+
+    #region Property
+
+    //public Microsoft.Maui.Graphics.Color SelectedColor { get; set; } = Colors.Transparent;
+
+
+    public int Month { get; set; } = 0;
+
+    public int Day { get; set; } = 0;
+
+    private bool _isSelected = false;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
         {
-            try
+            if (_isSelected != value)
             {
-                Frame BackgroundCircleShape = new Frame()
-                {
-                    HasShadow = false,
-                    BackgroundColor = Color.Transparent,
-                    CornerRadius = 15,
-                    Scale = 1.2,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                };
-
-                DataTrigger BackgroundCircleShapeSelectedTrigger = new DataTrigger(typeof(Frame))
-                {
-                    Value = true,
-                    Binding = new Binding()
-                    {
-                        Source = DataContext,
-                        Path = "IsSelected"
-                    },
-                };
-
-                BackgroundCircleShapeSelectedTrigger.Setters.Add(new Setter()
-                {
-                    Property = Frame.BackgroundColorProperty,
-                    Value = new Binding()
-                    {
-                        Source = DataContext,
-                        Path = "CalendarHighlightColor"
-                    },
-                });
-
-                BackgroundCircleShape.Triggers.Add(BackgroundCircleShapeSelectedTrigger);
-
-                return BackgroundCircleShape;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
-        }
-
-        private Label CreateShamsiDayLabel()
-        {
-            try
-            {
-                var ShamsiDayLabel = new Label()
-                {
-                    BackgroundColor = Color.Transparent,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 18.5,
-                    //FontFamily = (OnPlatform<string>)MyStyle.Resources["B_Nazanin"],
-                    FontFamily = "B_Nazanin"
-                };
-
-                ShamsiDayLabel.SetBinding(Label.TextColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarTextColor",
-                });
-
-                ShamsiDayLabel.SetBinding(Label.TextProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "Day",
-                    Mode = BindingMode.OneWay,
-                });
-
-                DataTrigger LabelIsEnabledTrigger = new DataTrigger(typeof(Label))
-                {
-                    Binding = new Binding()
-                    {
-                        Source = this,
-                        Path = "IsEnabled"
-                    },
-                    Value = false,
-                };
-                LabelIsEnabledTrigger.Setters.Add(new Setter()
-                {
-                    Property = Label.TextColorProperty,
-                    Value = Color.DarkGray,
-                });
-
-                DataTrigger LabelIsSelectedTrigger = new DataTrigger(typeof(Label))
-                {
-                    Binding = new Binding()
-                    {
-                        Source = DataContext,
-                        Path = "IsSelected"
-                    },
-                    Value = true,
-                };
-                var setter = new Setter() { Property = Label.TextColorProperty };
-
-                LabelIsSelectedTrigger.Setters.Add(new Setter()
-                {
-                    Property = Label.TextColorProperty,
-                    Value = new Binding() { Source = DataContext, Path = "CalendarSelectedTextColor" },
-                });
-
-                ShamsiDayLabel.Triggers.Add(LabelIsEnabledTrigger);
-                ShamsiDayLabel.Triggers.Add(LabelIsSelectedTrigger);
-
-                return ShamsiDayLabel;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
+                _isSelected = value;
+                OnPropertyChanged();
             }
         }
     }
+
+    private bool _isToday = false;
+    public bool IsToday
+    {
+        get => _isToday;
+        set
+        {
+            if (_isToday != value)
+            {
+                _isToday = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+    #region Command
+
+    private Command _tapCommand = null;
+    public Command TapCommand
+    {
+        get => _tapCommand;
+        set 
+        {
+            if (_tapCommand != value)
+            {
+                _tapCommand = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
 }

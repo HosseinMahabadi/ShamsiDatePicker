@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
+             x:Class="ShamsiDatePickerSample.MainPage">
+
+    <ContentPage.Resources>
+        <Style TargetType="sdp:ShamsiDatePicker">
+
+            <!-- کمترین سال شمسی قابل انتخاب از تقویم -->
+            <Setter Property="MinimumShamsiYear" Value="1320"/>
+
+            <!-- بیشترین سال شمسی قابل انتخاب از تقویم -->
+            <Setter Property="MaximumShamsiYear" Value="1420"/>
+
+            <!-- رنگ سربرگ تقویم -->
+            <Setter Property="HeaderBackgroundColor" Value="{AppThemeBinding Dark=steelblue, Light=lightsteelblue}"/>
+
+            <!-- رنگ متن عنوان سربرگ تقویم -->
+            <Setter Property="HeaderTitleTextColor" Value="{AppThemeBinding Dark=Gold, Light=drakgold}"/>
+
+            <!-- رنگ متن زیر عنوان سربرگ تقویم -->
+            <Setter Property="HeaderSubTitleTextColor" Value="{AppThemeBinding Dark=Gold, Light=drakgold}"/>
+
+            <!-- رنگ صفحه تقویم تقویم -->
+            <Setter Property="CalendarBackgroundColor" Value="{AppThemeBinding Dark=gray, Light=whitesmoke}"/>
+
+            <!-- رنگ متن عنوان صفحه تقویم -->
+            <Setter Property="CalendarTitleColor" Value="{AppThemeBinding Dark=whitesmoke, Light=gray}"/>
+
+            <!-- رنگ متن زیر عنوان صفحه تقویم -->
+            <Setter Property="CalendarSubTitleColor" Value="{AppThemeBinding Dark=whitesmoke, Light=gray}"/>
+
+            <!-- رنگ متن اعداد صفحه تقویم -->
+            <Setter Property="CalendarTextColor" Value="{AppThemeBinding Dark=whitesmoke, Light=gray}"/>
+
+            <!-- رنگ متن روز انتخاب شده صفحه تقویم -->
+            <Setter Property="CalendarSelectedTextColor" Value="{AppThemeBinding Dark=gray, Light=whitesmoke}"/>
+
+            <!-- رنگ هایلایت روز انتخاب شده صفحه تقویم -->
+            <Setter Property="CalendarHighlightColor" Value="{AppThemeBinding Dark=steelblue, Light=lightsteelblue}"/>
+
+            <!-- رنگ متن کلید انتخاب تقویم -->
+            <Setter Property="CalendarOKButtonTextColor" Value="{AppThemeBinding Dark=whitesmoke, Light=gray}"/>
+
+            <!-- رنگ پس زمینه کلید انتخاب تقویم -->
+            <Setter Property="CalendarOKButtonBackgroundColor" Value="Transparent"/>
+
+            <!-- رنگ متن کلید انصراف تقویم -->
+            <Setter Property="CalendarCancelButtonTextColor" Value="{AppThemeBinding Dark=whitesmoke, Light=gray}"/>
+
+            <!-- رنگ پس زمینه کلید انصراف تقویم -->
+            <Setter Property="CalendarCancelButtonBackgroundColor" Value="Transparent"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Label x:Name="HeaderLabel"
+               Text="Shamsi Date Picker Sample"
+               FontSize="Title"
+               TextColor="DeepPink"
+               Margin="10"
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Grid.ColumnSpan="2"/>
+
+        <Label x:Name="GregorianLabel"
+               Text="Gregorian Date: "
+               Margin="5"
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
+               Grid.Row="1"/>
+
+        <DatePicker x:Name="GregorianDatePicker"
+                    Date="{Binding TargetDate, Mode=TwoWay}"
+                    Margin="5"
+                    Grid.Row="1"
+                    Grid.Column="1"/>
+
+        <Label x:Name="ShamsiLabel"
+               Text="Shamsi Date: "
+               Margin="5"
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
+               Grid.Row="2"/>
+
+        <sdp:ShamsiDatePicker x:Name="ShamsiDatePicker"
+            Date="{Binding TargetDate, Mode=TwoWay}"
+                              Margin="5"
+                              Grid.Row="2"
+                              Grid.Column="1"
+                              CalendarBackgroundColor="AliceBlue"
+                              RenderMode="Default"/>
+
+        <Button Text="OpenCalendar"
+                Clicked="Button_Clicked"
+                Grid.Row="3"
+                Grid.Column="1"/>
+
+    </Grid>
+</ContentPage>

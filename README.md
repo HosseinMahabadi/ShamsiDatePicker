@@ -3,8 +3,8 @@
 [![NuGet](https://img.shields.io/nuget/v/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/) 
 [![NuGet](https://img.shields.io/nuget/dt/ShamsiDatePicker.svg)](https://www.nuget.org/packages/ShamsiDatePicker/)
 
-# تقویم فارسی برای زامارین فرمز
-#### این کنترل سفارشی برای برنامه نویسان زامارین فرمز تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
+# تقویم فارسی برای زامارین فرمز و ام ای یو آی
+#### این کنترل سفارشی برای برنامه نویسان زامارین فرمز(تا نسخه 3.0.20) و ام ای یو آی(از نسخه 4.0.95) تدارک دیده شده است و تاریخ هجری شمسی را شبیه کنترل DatePicker ماکروسافت، نمایش می دهد.
 #### این کنترل با پلتفرم های اندروید و آی او اس سازگار است.
 #### این کنترل از پترن MVVM پشتیبانی می کند.
 
@@ -37,20 +37,20 @@ xmlns:sdp="clr-namespace:ShamsiDatePicker;assembly=ShamsiDatePicker"
 | Date | DateTime | DateTime.Now | ✅ | تاریخ انتخاب شده به هجری شمسی را  به میلادی ترجمه و در خود ذخیره می کند. تاریخ را از میلادی  به شمسی ترجمه کرده و در تقویم نمایش می دهد. |
 | MinimumShamsiYear | int | 1300 | ✅ | کمترین سال شمسی قابل انتخاب از تقویم |
 | MaximumShamsiYear | int | 1500 | ✅ | بیشترین سال شمسی قابل انتخاب از تقویم |
-| HeaderBackgroundColor | Xamarin.Forms.Color | Color.FromHex("#FF4081") | ✅ | رنگ سربرگ تقویم |
-| HeaderTitleTextColor | Xamarin.Forms.Color | Color.White | ✅ | رنگ متن عنوان سربرگ تقویم |
-| HeaderSubTitleTextColor | Xamarin.Forms.Color | Color.White | ✅ | رنگ متن زیر عنوان سربرگ تقویم |
-| CalendarBackgroundColor| Xamarin.Forms.Color | Color.White | ✅ | رنگ صفحه تقویم |
-| CalendarTitleColor | Xamarin.Forms.Color | Color.Black | ✅ | رنگ متن عنوان صفحه تقویم |
-| CalendarSubTitleColor | Xamarin.Forms.Color | Color.Black | ✅ | رنگ متن زیر عنوان صفحه تقویم |
-| CalendarTextColor | Xamarin.Forms.Color | Color.Black | ✅ | رنگ متن اعداد صفحه تقویم |
-| CalendarSelectedTextColor | Xamarin.Forms.Color | Color.White | ✅ | رنگ متن روز انتخاب شده صفحه تقویم |
-| CalendarHighlightColor | Xamarin.Forms.Color | Color.FromHex("#FF4081") | ✅ | رنگ هایلایت روز انتخاب شده صفحه تقویم |
-| CalendarOKButtonTextColor | Xamarin.Forms.Color | Color.FromHex("#FF4081") | ✅ | رنگ متن کلید انتخاب تقویم |
-| CalendarOKButtonBackgroundColor | Xamarin.Forms.Color | Color.Transparent | ✅ | رنگ پس زمینه کلید انتخاب تقویم |
-| CalendarCancelButtonTextColor | Xamarin.Forms.Color | Color.FromHex("#FF4081") | ✅ | رنگ پس زمینه کلید انتخاب تقویم |
-| CalendarCancelButtonBackgroundColor | Xamarin.Forms.Color | Color.Transparent | ✅ | رنگ پس زمینه کلید انصراف تقویم |
-| CalendarCancelButtonBackgroundColor | Xamarin.Forms.Color | Color.Transparent | ✅ | رنگ پس زمینه کلید انصراف تقویم |
+| HeaderBackgroundColor | Microsoft.Maui.Graphics.Color | Color.FromHex("#FF4081") | ✅ | رنگ سربرگ تقویم |
+| HeaderTitleTextColor | Microsoft.Maui.Graphics.Color | Color.White | ✅ | رنگ متن عنوان سربرگ تقویم |
+| HeaderSubTitleTextColor | Microsoft.Maui.Graphics.Color | Color.White | ✅ | رنگ متن زیر عنوان سربرگ تقویم |
+| CalendarBackgroundColor| Microsoft.Maui.Graphics.Color | Color.White | ✅ | رنگ صفحه تقویم |
+| CalendarTitleColor | Microsoft.Maui.Graphics.Color | Color.Black | ✅ | رنگ متن عنوان صفحه تقویم |
+| CalendarSubTitleColor | Microsoft.Maui.Graphics.Color | Color.Black | ✅ | رنگ متن زیر عنوان صفحه تقویم |
+| CalendarTextColor | Microsoft.Maui.Graphics.Color | Color.Black | ✅ | رنگ متن اعداد صفحه تقویم |
+| CalendarSelectedTextColor | Microsoft.Maui.Graphics.Color | Color.White | ✅ | رنگ متن روز انتخاب شده صفحه تقویم |
+| CalendarHighlightColor | Microsoft.Maui.Graphics.Color | Color.FromHex("#FF4081") | ✅ | رنگ هایلایت روز انتخاب شده صفحه تقویم |
+| CalendarOKButtonTextColor | Microsoft.Maui.Graphics.Color | Color.FromHex("#FF4081") | ✅ | رنگ متن کلید انتخاب تقویم |
+| CalendarOKButtonBackgroundColor | Microsoft.Maui.Graphics.Color | Color.Transparent | ✅ | رنگ پس زمینه کلید انتخاب تقویم |
+| CalendarCancelButtonTextColor | Microsoft.Maui.Graphics.Color | Color.FromHex("#FF4081") | ✅ | رنگ پس زمینه کلید انتخاب تقویم |
+| CalendarCancelButtonBackgroundColor | Microsoft.Maui.Graphics.Color | Color.Transparent | ✅ | رنگ پس زمینه کلید انصراف تقویم |
+| CalendarCancelButtonBackgroundColor | Microsoft.Maui.Graphics.Color | Color.Transparent | ✅ | رنگ پس زمینه کلید انصراف تقویم |
 | BorderColor | Xamarin.Forms.Color | Color.Black | ✅ | رنگ حاشیه جعبه متن تاریخ |
 | BorderThickness | double | 1d | ✅ | اندازه حاشیه جعبه متن تاریخ |
 | CornerRadius | int | 0 | ✅ | میزان انحنای لبه های جعبه متن تاریخ |

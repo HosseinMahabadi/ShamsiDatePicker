@@ -2,567 +2,588 @@
 using System.Collections.Generic;
 using System.Text;
 using ShamsiDatePicker.ViewModel;
-using Xamarin.Forms;
-using CarouselView.FormsPlugin.Abstractions;
-using HMExtension.Xamarin;
+using HMExtension.Maui;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using HMControls;
+using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls.Shapes;
+using System.Linq;
 
-namespace ShamsiDatePicker.View
+namespace ShamsiDatePicker.View;
+
+internal class CalendarPage : ContentPage
 {
-    internal class CalendarPage : ContentPage, IDisposable
+    public CalendarPage()
     {
-        private ListView YearListView = null;
-
-        private CalendarPageViewModel _dataContext = null;
-        public CalendarPageViewModel DataContext 
+        try
         {
-            get => _dataContext;
-            set  
+            NavigationPage.SetHasNavigationBar(this, false);
+            SizeChanged += UpdateElementOnLayoutChanged;
+            Appearing += (s, e) =>
             {
-                if(_dataContext != value && value != null)
-                {
-                    _dataContext = value;
-                    OnPropertyChanged();
-                    InitializeComponent();
-                }
+                DataContext.Initialize();
+            };
+            BackgroundColor = Color.FromArgb("#80000000");
+            FlowDirection = FlowDirection.RightToLeft;
+
+            Disappearing += async (s, e) =>
+            {
+                await MainGrid.FadeTo(0, 100);
+            };
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.GetErrorMessage());
+        }
+    }
+
+    private CalendarPageViewModel _dataContext = null;
+    public CalendarPageViewModel DataContext 
+    {
+        get => _dataContext;
+        set  
+        {
+            if(_dataContext != value && value != null)
+            {
+                _dataContext = value;
+                OnPropertyChanged();
+                Initialize();
             }
         }
+    }
 
-        private StackLayout HeaderGrid = null;
+    private ListView YearListView { get; set; } = null;
 
-        private Grid MainGrid = null;
-        private Grid contentGrid = null;
+    private VerticalStackLayout HeaderStackLayout { get; set; } = null;
 
-        public CalendarPage()
+    private Grid CarouselGrid { get; set; } = null;
+
+    private Grid YearListGrid { get; set; } = null;
+
+    private HorizontalStackLayout ButtonStackLayout { get; set; } = null;
+
+    private Grid MainGrid { get; set; } = null;
+
+    private Grid ContentGrid { get; set; } = null;
+
+    private void Initialize()
+    {
+        try
         {
-            try
+            YearListView = CreateYearListView();
+            HeaderStackLayout = CreateHeaderStackLayout();
+            YearListGrid = CreateYearListGrid();
+            CarouselGrid = CreateCarouselGrid();
+            ButtonStackLayout = CreateButtonStackLayout();
+            ContentGrid = CreateContentGrid();
+            MainGrid = CreateMainGrid();
+            Content = MainGrid;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.GetErrorMessage());
+        }
+    }
+
+    private void UpdateElementOnLayoutChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Height > Width)
             {
-                NavigationPage.SetHasNavigationBar(this, false);
-                Content = null;
-                SizeChanged += UpdateElementOnLayoutChanged;
-                Appearing += (sender, e) =>
-                {
-                /*var AppearingAnimation = new Animation(v => MainGrid.Opacity = v, 0, 1);
-                AppearingAnimation.Commit(MainGrid, nameof(AppearingAnimation), 16, 150, Easing.Linear, (d, b) => UpdateChildrenLayout());*/
+                HeaderStackLayout.SetValue(Grid.RowSpanProperty, 1);
+                HeaderStackLayout.SetValue(Grid.ColumnSpanProperty, 2);
 
-                    DataContext.Initialize();
-                };
-                BackgroundColor = Color.Transparent;
-                FlowDirection = FlowDirection.RightToLeft;
+                CarouselGrid.SetValue(Grid.RowProperty, 1);
+                CarouselGrid.SetValue(Grid.RowSpanProperty, 1);
+                CarouselGrid.SetValue(Grid.ColumnProperty, 0);
+                CarouselGrid.SetValue(Grid.ColumnSpanProperty, 2);
 
-                Disappearing += async(s, e) =>
-                {
-                    await MainGrid.FadeTo(0, 100);
-                    Dispose();
-                };
+                YearListGrid.SetValue(Grid.RowProperty, 1);
+                YearListGrid.SetValue(Grid.RowSpanProperty, 1);
+                YearListGrid.SetValue(Grid.ColumnProperty, 0);
+                YearListGrid.SetValue(Grid.ColumnSpanProperty, 2);
+
+                ButtonStackLayout.SetValue(Grid.ColumnProperty, 0);
+                ButtonStackLayout.SetValue(Grid.ColumnSpanProperty, 2);
+
+                MainGrid.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine(ex.GetErrorMessage());
+                HeaderStackLayout.SetValue(Grid.RowSpanProperty, 3);
+                HeaderStackLayout.SetValue(Grid.ColumnProperty, 0);
+                HeaderStackLayout.SetValue(Grid.ColumnSpanProperty, 1);
+
+                CarouselGrid.SetValue(Grid.RowProperty, 0);
+                CarouselGrid.SetValue(Grid.RowSpanProperty, 2);
+                CarouselGrid.SetValue(Grid.ColumnProperty, 1);
+                CarouselGrid.SetValue(Grid.ColumnSpanProperty, 1);
+
+                YearListGrid.SetValue(Grid.RowProperty, 0);
+                YearListGrid.SetValue(Grid.RowSpanProperty, 2);
+                YearListGrid.SetValue(Grid.ColumnProperty, 1);
+                YearListGrid.SetValue(Grid.ColumnSpanProperty, 1);
+
+                ButtonStackLayout.SetValue(Grid.ColumnProperty, 1);
+                ButtonStackLayout.SetValue(Grid.ColumnSpanProperty, 1);
+
+                MainGrid.RowDefinitions[1].Height = new GridLength(20, GridUnitType.Star);
             }
         }
-
-        ~CalendarPage()
+        catch (Exception ex)
         {
-            Dispose();
+            Debug.WriteLine(ex.GetErrorMessage());
         }
+    }
 
-        public void Dispose()
+    #region MainGrid
+
+    private Grid CreateMainGrid()
+    {
+        try
         {
-            try
+            Grid grid = new()
             {
-                DataContext.Dispose();
-                DataContext = null;
-                UnapplyBindings();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-            }
-        }
+                Margin = 0,
+                Padding = 0,
 
-        private void InitializeComponent()
-        {
-            try
-            {
-                YearListView = CreateYearListView();
-                HeaderGrid = CreateHeaderGrid();
-                contentGrid = CreateContentGrid();
-                MainGrid = CreateMainGrid();
-                Content = MainGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-            }
-        }
+                BackgroundColor = Colors.Transparent,
 
-        private void UpdateElementOnLayoutChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (Height > Width)
-                {
-                    HeaderGrid.SetValue(Grid.RowProperty, 0);
-                    HeaderGrid.SetValue(Grid.RowSpanProperty, 1);
-                    HeaderGrid.SetValue(Grid.ColumnProperty, 1);
-
-                    MainGrid.RowDefinitions[1].Height = new GridLength(3, GridUnitType.Star);
-                    contentGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Auto);
-                    contentGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
-                }
-                else
-                {
-                    HeaderGrid.SetValue(Grid.RowProperty, 0);
-                    HeaderGrid.SetValue(Grid.RowSpanProperty, 3);
-                    HeaderGrid.SetValue(Grid.ColumnProperty, 0);
-
-                    MainGrid.RowDefinitions[1].Height = new GridLength(20, GridUnitType.Star);
-                    contentGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-                    contentGrid.ColumnDefinitions[1].Width = new GridLength(4, GridUnitType.Star);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-            }
-        }
-
-        #region MainGrid
-
-        private Grid CreateMainGrid()
-        {
-            try
-            {
-                var MainGrid = new Grid
-                {
-                    Margin = 0,
-                    Padding = 0,
-
-                    BackgroundColor = Color.Transparent,
-
-                    ColumnDefinitions =
+                ColumnDefinitions =
                 {
                     new ColumnDefinition(),
                     new ColumnDefinition() { Width = new GridLength(7, GridUnitType.Star) },
                     new ColumnDefinition()
                 },
 
-                    RowDefinitions =
+                RowDefinitions =
                 {
                     new RowDefinition(),
                     new RowDefinition() { Height = new GridLength(3, GridUnitType.Star) },
                     new RowDefinition(),
-                },
+                 },
 
-                    Children =
-                    {
-                        CreateBackGroundFrame(),
-                        contentGrid,
-                    }
-                };
+                Children =
+                {
+                    ContentGrid,
+                }
+            };
 
-                return MainGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
-
+            return grid;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
 
-        private Frame CreateBackGroundFrame()
+    }
+
+    #region ContentGrid
+
+    private Grid CreateContentGrid()
+    {
+        try
         {
-            try
+            Grid grid = new()
             {
-                var BackgroundFrame = new Frame()
-                {
-                    BorderColor = Color.Transparent,
-                    BackgroundColor = Color.FromHex("#80000000"),
-                };
+                Padding = 0,
+                Margin = 0,
+                RowSpacing = 0,
+                ColumnSpacing = 0,
+                BackgroundColor = Globals.CalendarBackgroundColor,
 
-                BackgroundFrame.SetValue(Grid.ColumnSpanProperty, 3);
-                BackgroundFrame.SetValue(Grid.RowSpanProperty, 3);
-
-                var tempBinding = new Binding() { Source = DataContext, Path = "CancelCommand", };
-                var tempTapGesture = new TapGestureRecognizer() { CommandParameter = this };
-                tempTapGesture.SetBinding(TapGestureRecognizer.CommandProperty, tempBinding);
-
-                BackgroundFrame.GestureRecognizers.Add(tempTapGesture);
-
-                return BackgroundFrame;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
-        }
-
-        #region ContentGrid
-
-        private Grid CreateContentGrid()
-        {
-            try
-            {
-                var ContentGrid = new Grid()
-                {
-                    Padding = 0,
-                    Margin = 0,
-                    RowSpacing = 0,
-                    ColumnSpacing = 0,
-
-                    RowDefinitions =
+                RowDefinitions =
                 {
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) },
                     new RowDefinition(),
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) }
                 },
 
-                    ColumnDefinitions =
+                ColumnDefinitions =
                 {
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(2.5, GridUnitType.Star) },
                 },
 
-                    Children =
+                Children =
                 {
-                    HeaderGrid,
-                    CreateCarouselGrid(),
-                    CreateYearListGrid(),
-                    CreateButtonStackLayout(),
+                    HeaderStackLayout,
+                    CarouselGrid,
+                    YearListGrid,
+                    ButtonStackLayout,
                 }
-                };
+            };
 
-                ContentGrid.SetBinding(BackgroundColorProperty, new Binding()
-                {
-                    Path = "CalendarBackgroundColor",
-                    Source = DataContext,
-                });
+            grid.SetValue(Grid.ColumnProperty, 1);
+            grid.SetValue(Grid.RowProperty, 1);
 
-                ContentGrid.SetValue(Grid.ColumnProperty, 1);
-                ContentGrid.SetValue(Grid.RowProperty, 1);
-
-                return ContentGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return grid;
         }
-
-        #region HeaderGrid
-        private StackLayout CreateHeaderGrid()
+        catch (Exception ex)
         {
-            try
-            {
-                var HeaderGrid = new StackLayout()
-                {
-                    Margin = 0,
-                    Padding = 0,
+            throw new Exception(ex.Message);
+        }
+    }
 
-                    Children =
+    #region HeaderGrid
+
+    private VerticalStackLayout CreateHeaderStackLayout()
+    {
+        try
+        {
+            VerticalStackLayout stack = new()
+            {
+                Margin = 0,
+                Padding = 0,
+                BackgroundColor = Globals.HeaderBackgroundColor,
+
+                Children =
                 {
                     CreateYearLabel(),
                     CreateSelectedDayLabel()
                 }
-                };
+            };
 
-                HeaderGrid.SetBinding(BackgroundColorProperty, new Binding()
-                {
-                    Path = "HeaderBackgroundColor",
-                    Source = DataContext
-                });
+            stack.SetValue(Grid.RowProperty, 0);
+            stack.SetValue(Grid.ColumnProperty, 0);
+            stack.SetValue(Grid.ColumnSpanProperty, 2);
 
-                HeaderGrid.SetValue(Grid.RowProperty, 0);
-                HeaderGrid.SetValue(Grid.ColumnProperty, 1);
-
-                return HeaderGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return stack;
         }
-
-        private Label CreateYearLabel()
+        catch (Exception ex)
         {
-            try
-            {
-                var YearLabel = new Label()
-                {
-                    Margin = new Thickness(10, 0, 10, 0),
-                    HorizontalTextAlignment = TextAlignment.Start,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    FontFamily = "B_Nazanin",
-                    FontSize = 24,
-                };
-
-                YearLabel.SetBinding(Label.TextProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "Year",
-                    Mode = BindingMode.OneWay
-                });
-
-                YearLabel.SetBinding(Label.TextColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "HeaderTitleTextColor",
-                });
-
-                var TempGesture = new TapGestureRecognizer()
-                {
-                    CommandParameter = new List<object>() { YearLabel, YearListView },
-                };
-                TempGesture.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "YearTappedCommand"
-
-                });
-
-                YearLabel.GestureRecognizers.Add(TempGesture);
-
-                return YearLabel;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        private Label CreateSelectedDayLabel()
+    private Label CreateYearLabel()
+    {
+        try
         {
-            try
+            Label label = new()
             {
-                var SelectedDayLabel = new Label()
-                {
-                    Margin = new Thickness(10, 0, 10, 5),
-                    HorizontalTextAlignment = TextAlignment.Start,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    FontFamily = "B_Nazanin_Bold",
-                    FontSize = 30,
-                    TextColor = Color.White,
-                };
+                Margin = new Thickness(10, 0, 10, 0),
+                HorizontalTextAlignment = TextAlignment.Start,
+                VerticalTextAlignment = TextAlignment.Center,
+                VerticalOptions = LayoutOptions.Center,
+                FontFamily = "B_Nazanin",
+                FontSize = 24,
+                TextColor = Globals.HeaderTitleTextColor,
+            };
 
-                SelectedDayLabel.SetValue(Grid.RowProperty, 1);
-
-                SelectedDayLabel.SetBinding(Label.TextProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "SelectedDay",
-                    Mode = BindingMode.OneWay
-                });
-
-                SelectedDayLabel.SetBinding(Label.TextColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "HeaderSubTitleTextColor",
-                });
-
-                var TapEvent = new TapGestureRecognizer();
-                TapEvent.SetBinding(TapGestureRecognizer.CommandProperty,
-                    new Binding()
-                    {
-                        Path = "GoToSelectedDay",
-                        Source = DataContext
-                    });
-                SelectedDayLabel.GestureRecognizers.Add(TapEvent);
-
-                return SelectedDayLabel;
-            }
-            catch (Exception ex)
+            label.SetBinding(Label.TextProperty, new Binding()
             {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+                Source = DataContext,
+                Path = nameof(DataContext.Year),
+                Mode = BindingMode.OneWay
+            });
+
+            var TempGesture = new TapGestureRecognizer()
+            {
+                CommandParameter = new List<object>() 
+                {
+                    label, 
+                    YearListView 
+                },
+            };
+
+            TempGesture.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.YearTappedCommand),
+            });
+
+            label.GestureRecognizers.Add(TempGesture);
+
+            return label;
         }
-
-        #endregion
-
-        #region CarouselGrid
-
-        private Grid CreateCarouselGrid()
+        catch (Exception ex)
         {
-            try
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private Label CreateSelectedDayLabel()
+    {
+        try
+        {
+            Label label = new()
             {
-                var CarouselGrid = new Grid()
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                Margin = new Thickness(10, 0, 10, 5),
+                HorizontalTextAlignment = TextAlignment.Start,
+                VerticalTextAlignment = TextAlignment.Center,
+                VerticalOptions = LayoutOptions.Center,
+                FontFamily = "B_Nazanin_Bold",
+                FontSize = 30,
+                TextColor = Globals.HeaderSubTitleTextColor,
+            };
 
-                    Padding = 0,
-                    Margin = 0,
+            label.SetValue(Grid.RowProperty, 1);
 
-                    RowDefinitions =
+            label.SetBinding(Label.TextProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.SelectedDay),
+                Mode = BindingMode.OneWay
+            });
+
+            var TapEvent = new TapGestureRecognizer();
+            TapEvent.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
+            {
+                Path = nameof(DataContext.GoToSelectedDay),
+                Source = DataContext
+            });
+            label.GestureRecognizers.Add(TapEvent);
+
+            return label;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    #endregion
+
+    #region CarouselGrid
+
+    private Grid CreateCarouselGrid()
+    {
+        try
+        {
+            Grid grid = new()
+            {
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Colors.Transparent,
+
+                Padding = 0,
+                Margin = 0,
+
+                RowDefinitions =
                 {
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
                     new RowDefinition() { Height = new GridLength(3.5, GridUnitType.Star) },
                 },
 
-                    Children =
+                Children =
                 {
                     CreateCarouselView(),
                     CreateSignGrid(),
                 },
-                };
+            };
 
-                CarouselGrid.SetValue(Grid.RowProperty, 1);
-                CarouselGrid.SetValue(Grid.ColumnProperty, 1);
+            grid.SetValue(Grid.RowProperty, 1);
+            grid.SetValue(Grid.ColumnProperty, 0);
+            grid.SetValue(Grid.ColumnSpanProperty, 2);
 
-                return CarouselGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return grid;
         }
-
-        private CarouselViewControl CreateCarouselView()
+        catch (Exception ex)
         {
-            try
-            {
-                var carouselView = new CarouselViewControl()
-                {
-                    FlowDirection = FlowDirection.RightToLeft,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Margin = 0,
-                };
-
-                carouselView.PositionSelected += (s, e) =>
-                {
-                    try
-                    {
-                        if (carouselView.SelectedItem != null)
-                        {
-                            ((CarouselItem)carouselView.SelectedItem).CreateDaysIfNeeded();
-
-                        }
-                    }
-                    catch { }
-                };
-
-                carouselView.SetValue(Grid.RowSpanProperty, 2);
-
-                carouselView.SetBinding(CarouselViewControl.ItemsSourceProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CarouselItems"
-                });
-
-                carouselView.SetBinding(CarouselViewControl.PositionProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "Position",
-                    Mode = BindingMode.TwoWay,
-                });
-
-                carouselView.ItemTemplate = new DataTemplate(() => { return CreateTemplateCarouselMainGrid(); });
-
-                return carouselView;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        #region TemplateCarouselMainGrid
-
-        private Grid CreateTemplateCarouselMainGrid()
+    private CarouselView CreateCarouselView()
+    {
+        try
         {
-            try
+            CarouselView carouselView = new()
             {
-                var MainTemplateGrid = new Grid()
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Padding = 0,
-                    Margin = 0,
+                FlowDirection = FlowDirection.RightToLeft,
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
+                Margin = 0,
+                Loop = false,
+                BackgroundColor = Colors.Transparent,
+            };
 
-                    RowDefinitions =
+            carouselView.PositionChanged += (s, e) =>
+            {
+                try
+                {
+                    CarouselView sender = s as CarouselView;
+                    CarouselItem currentItem = DataContext.CarouselItems[e.CurrentPosition];
+                    currentItem?.CreateDaysIfNeeded();
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine(ex.GetErrorMessage());
+                }
+            };
+
+            carouselView.SetValue(Grid.RowSpanProperty, 2);
+
+            carouselView.SetBinding(ItemsView.ItemsSourceProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.CarouselItems)
+            });
+
+            carouselView.SetBinding(CarouselView.PositionProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.Position),
+                Mode = BindingMode.TwoWay,
+            });
+
+            carouselView.ItemTemplate = new DataTemplate(CreateTemplateCarouselMainGrid);
+
+            return carouselView;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    #region TemplateCarouselMainGrid
+
+    private Grid CreateTemplateCarouselMainGrid()
+    {
+        try
+        {
+            Grid grid = new()
+            {
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
+                Padding = 0,
+                Margin = 0,
+                BackgroundColor = Colors.Transparent,
+
+                RowDefinitions =
                 {
                     new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
                     new RowDefinition() { Height = new GridLength(0.5, GridUnitType.Star) },
                     new RowDefinition() { Height = new GridLength(3, GridUnitType.Star) }
                 },
 
-                    Children =
+                Children =
                 {
                     CreateTemplateCarouselHeaderLabel(),
                     CreateTemplateCarouselDayOfWeekGrid(),
                     CreateTemplateCarouselCalendarMonth()
                 }
-                };
+            };
 
-                return MainTemplateGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return grid;
         }
-
-        private Label CreateTemplateCarouselHeaderLabel()
+        catch (Exception ex)
         {
-            try
-            {
-                var HeaderTamplateLabel = new Label()
-                {
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    FontFamily = "B_Nazanin_Bold",
-                    FontSize = 16
-                };
-
-                HeaderTamplateLabel.SetBinding(Label.TextColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarTitleColor",
-                });
-
-                HeaderTamplateLabel.SetBinding(Label.TextProperty, new Binding()
-                {
-                    Path = "Header",
-                    Mode = BindingMode.OneWay,
-                });
-
-                return HeaderTamplateLabel;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        private Grid CreateTemplateCarouselDayOfWeekGrid()
+    private static Label CreateTemplateCarouselHeaderLabel()
+    {
+        try
         {
-            try
+            Label label = new()
             {
-                var DayOfWeekTemplateGrid = new Grid()
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Padding = 0,
-                    Margin = 0,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Fill,
+                FontFamily = "B_Nazanin_Bold",
+                FontSize = 16,
+                TextColor = Globals.CalendarTitleColor,
+            };
 
-                    ColumnDefinitions =
+            label.SetBinding(Label.TextProperty, new Binding()
+            {
+                Path = nameof(CarouselItem.Header),
+                Mode = BindingMode.OneWay,
+            });
+
+            return label;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private static Grid CreateTemplateCarouselDayOfWeekGrid()
+    {
+        try
+        {
+            Label l1 = new()
+            {
+                Text = "ش",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center,
+            };
+            l1.SetValue(Grid.RowProperty, 0);
+            l1.SetValue(Grid.ColumnProperty, 1);
+
+            Label l2 = new()
+            {
+                Text = "ی",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center,
+            };
+            l2.SetValue(Grid.RowProperty, 0);
+            l2.SetValue(Grid.ColumnProperty, 2);
+
+            Label l3 = new()
+            {
+                Text = "د",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+            l3.SetValue(Grid.RowProperty, 0);
+            l3.SetValue(Grid.ColumnProperty, 3);
+
+            Label l4 = new()
+            {
+                Text = "س",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+            l4.SetValue(Grid.RowProperty, 0);
+            l4.SetValue(Grid.ColumnProperty, 4);
+
+            Label l5 = new()
+            {
+                Text = "چ",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+            l5.SetValue(Grid.RowProperty, 0);
+            l5.SetValue(Grid.ColumnProperty, 5);
+
+            Label l6 = new()
+            {
+                Text = "پ",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+            l6.SetValue(Grid.RowProperty, 0);
+            l6.SetValue(Grid.ColumnProperty, 6);
+
+            Label l7 = new()
+            {
+                Text = "ج",
+                TextColor = Globals.CalendarSubTitleColor,
+                HorizontalTextAlignment = TextAlignment.Center
+            };
+            l7.SetValue(Grid.RowProperty, 0);
+            l7.SetValue(Grid.ColumnProperty, 7);
+
+            Grid grid = new()
+            {
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                Padding = 0,
+                Margin = 0,
+
+                ColumnDefinitions =
                 {
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) },
                     new ColumnDefinition(),
@@ -574,139 +595,87 @@ namespace ShamsiDatePicker.View
                     new ColumnDefinition(),
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) },
                 },
-                };
-
-                DayOfWeekTemplateGrid.SetValue(Grid.RowProperty, 1);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
+                
+                Children =
                 {
-                    Text = "ش",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 1, 0);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
-                {
-                    Text = "ی",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 2, 0);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
-                {
-                    Text = "د",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 3, 0);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
-                {
-                    Text = "س",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 4, 0);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
-                {
-                    Text = "چ",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 5, 0);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
-                {
-                    Text = "پ",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 6, 0);
-
-                DayOfWeekTemplateGrid.Children.Add(new Label()
-                {
-                    Text = "ج",
-                    HorizontalTextAlignment = TextAlignment.Center
-                }, 7, 0);
-
-                foreach (Label label in DayOfWeekTemplateGrid.Children)
-                {
-                    try
-                    {
-                        label.SetBinding(Label.TextColorProperty, new Binding()
-                        {
-                            Source = DataContext,
-                            Path = "CalendarSubTitleColor",
-                        });
-                    }
-                    catch { }
+                    l1, l2, l3, l4, l5, l6, l7
                 }
-                return DayOfWeekTemplateGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            };
+
+            grid.SetValue(Grid.RowProperty, 1);
+
+            return grid;
         }
-
-        private CalendarMonthGridView CreateTemplateCarouselCalendarMonth()
+        catch (Exception ex)
         {
-            try
-            {
-                var TemplateCalendarMonth = new CalendarMonthGridView()
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                };
-                TemplateCalendarMonth.SetBinding(CalendarMonthGridView.ItemsProperty, new Binding() { Path = nameof(CarouselItem.Days) });
-                TemplateCalendarMonth.SetValue(Grid.RowProperty, 2);
-
-                return TemplateCalendarMonth;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
-        #endregion
+    }
 
-        #region SignGrid
-        private Grid CreateSignGrid()
+    private static CalendarMonthGridView CreateTemplateCarouselCalendarMonth()
+    {
+        try
         {
-            try
+            CalendarMonthGridView calendarMonth = [];
+
+            calendarMonth.SetBinding(CalendarMonthGridView.ItemsProperty, new Binding()
             {
-                var ForwardShape = CreateForwardShape();
-                var ForwardImage = CreateForwardImage();
-                var BackwardShape = CreateBackwardShape();
-                var BackwardImage = CreateBackwardImage();
+                Path = nameof(CarouselItem.Days)
+            });
 
-                var TapForwardCommand = new TapGestureRecognizer()
-                {
-                    CommandParameter = ForwardShape
-                };
-                TapForwardCommand.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "ForwardCommand"
-                });
+            calendarMonth.SetValue(Grid.RowProperty, 2);
 
-                var TapBackwardCommand = new TapGestureRecognizer()
-                {
-                    CommandParameter = BackwardShape
-                };
-                TapBackwardCommand.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "BackwardCommand"
-                });
+            return calendarMonth;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+    #endregion
 
-                ForwardShape.GestureRecognizers.Add(TapForwardCommand);
-                ForwardImage.GestureRecognizers.Add(TapForwardCommand);
+    #region SignGrid
 
-                BackwardShape.GestureRecognizers.Add(TapBackwardCommand);
-                BackwardImage.GestureRecognizers.Add(TapBackwardCommand);
+    private Grid CreateSignGrid()
+    {
+        try
+        {
+            var ForwardShape = CreateForwardShape();
+            var ForwardImage = CreateForwardImage();
+            var BackwardShape = CreateBackwardShape();
+            var BackwardImage = CreateBackwardImage();
 
-                var SignGrid = new Grid()
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Margin = 0,
-                    Padding = 0,
+            TapGestureRecognizer TapForwardCommand = new()
+            {
+                CommandParameter = ForwardShape
+            };
+            TapForwardCommand.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.ForwardCommand),
+            });
 
-                    ColumnDefinitions =
+            TapGestureRecognizer TapBackwardCommand = new()
+            {
+                CommandParameter = BackwardShape
+            };
+            TapBackwardCommand.SetBinding(TapGestureRecognizer.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.BackwardCommand),
+            });
+
+            ForwardShape.GestureRecognizers.Add(TapForwardCommand);
+            BackwardShape.GestureRecognizers.Add(TapBackwardCommand);
+
+            var grid = new Grid()
+            {
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
+                Margin = 0,
+                Padding = 0,
+
+                ColumnDefinitions =
                 {
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) },
                     new ColumnDefinition(),
@@ -715,7 +684,7 @@ namespace ShamsiDatePicker.View
                     new ColumnDefinition() { Width = new GridLength(0.5 , GridUnitType.Star) }
                 },
 
-                    Children =
+                Children =
                 {
                     ForwardShape,
                     ForwardImage,
@@ -723,405 +692,370 @@ namespace ShamsiDatePicker.View
                     BackwardShape,
                     BackwardImage
                 }
-                };
+            };
 
-                return SignGrid;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return grid;
         }
-
-        private XFShapeView.ShapeView CreateForwardShape()
+        catch (Exception ex)
         {
-            try
-            {
-                var ForwardShape = new XFShapeView.ShapeView()
-                {
-                    ShapeType = XFShapeView.ShapeType.Circle,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Color = Color.Silver,
-                    Opacity = 0
-                };
-
-                ForwardShape.SetValue(Grid.ColumnProperty, 1);
-
-                ForwardShape.SetBinding(XFShapeView.ShapeView.ColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarTitleColor",
-                });
-
-                return ForwardShape;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        private ImageTinted CreateForwardImage()
+    private static Frame CreateForwardShape()
+    {
+        try
         {
-            try
+            Frame frame = new()
             {
-                var ForwardImage = new ImageTinted()
-                {
-                    Source = ImageSource.FromResource("ShamsiDatePicker.Resources.Images.right.png"),
-                    Aspect = Aspect.AspectFill,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    WidthRequest = 15,
-                    HeightRequest = 15,
-                    TintColor = DataContext.CalendarTitleColor,
-                };
+                HeightRequest = 50,
+                WidthRequest = 50,
+                CornerRadius = 25,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                BackgroundColor = Globals.CalendarTitleColor,
+                BorderColor = Colors.Transparent,
+                Opacity = 0,
+            };
 
-                ForwardImage.SetValue(Grid.ColumnProperty, 1);
+            frame.SetValue(Grid.ColumnProperty, 1);
 
-                /*var TintEffect = new TintImageEffect();
-                TintEffect.TintColor = DataContext.CalendarTitleColor;
-
-                ForwardImage.Effects.Add(TintEffect);*/
-
-                return ForwardImage;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return frame;
         }
-
-        private XFShapeView.ShapeView CreateBackwardShape()
+        catch (Exception ex)
         {
-            try
-            {
-                var BackwardShape = new XFShapeView.ShapeView()
-                {
-                    ShapeType = XFShapeView.ShapeType.Circle,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Color = Color.Silver,
-                    Opacity = 0
-                };
-
-                BackwardShape.SetValue(Grid.ColumnProperty, 3);
-
-                BackwardShape.SetBinding(XFShapeView.ShapeView.ColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarTitleColor",
-                });
-
-                return BackwardShape;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        private ImageTinted CreateBackwardImage()
+    private static ImageTinted CreateForwardImage()
+    {
+        try
         {
-            try
+            ImageTinted image = new()
             {
-                var BackwardImage = new ImageTinted()
-                {
-                    Source = ImageSource.FromResource("ShamsiDatePicker.Resources.Images.left.png"),
-                    Aspect = Aspect.AspectFill,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    WidthRequest = 15,
-                    HeightRequest = 15,
-                    TintColor = DataContext.CalendarTitleColor,
-                };
+                Source = ImageSource.FromResource("ShamsiDatePicker.Resources.Images.right.png"),
+                Aspect = Aspect.AspectFill,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                WidthRequest = 15,
+                HeightRequest = 15,
+                TintColor = Globals.CalendarTitleColor,
+            };
 
-                BackwardImage.SetValue(Grid.ColumnProperty, 3);
+            image.SetValue(Grid.ColumnProperty, 1);
 
-                /*var TintEffect = new TintImageEffect();
-                TintEffect.TintColor = DataContext.CalendarTitleColor;
-
-                BackwardImage.Effects.Add(TintEffect);*/
-
-                return BackwardImage;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return image;
         }
-
-        #endregion //SignGrid
-
-        #endregion //CarouselGrid
-
-        #region YearListGrid
-        private Grid CreateYearListGrid()
+        catch (Exception ex)
         {
-            try
-            {
-                var line = new BoxView()
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    HeightRequest = 0.6,
-                    Color = Color.Silver,
-                };
-                line.SetValue(Grid.RowProperty, 1);
+            throw new Exception(ex.Message);
+        }
+    }
 
-                var YearListGrid = new Grid()
-                {
-                    RowDefinitions =
+    private static Frame CreateBackwardShape()
+    {
+        try
+        {
+            Frame frame = new()
+            {
+                HeightRequest = 50,
+                WidthRequest = 50,
+                CornerRadius = 25,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                BackgroundColor = Globals.CalendarTitleColor,
+                BorderColor = Colors.Transparent,
+                Opacity = 0
+            };
+
+            frame.SetValue(Grid.ColumnProperty, 3);
+
+            return frame;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private static ImageTinted CreateBackwardImage()
+    {
+        try
+        {
+            ImageTinted image = new()
+            {
+                Source = ImageSource.FromResource("ShamsiDatePicker.Resources.Images.left.png"),
+                Aspect = Aspect.AspectFill,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                WidthRequest = 15,
+                HeightRequest = 15,
+                TintColor = Globals.CalendarTitleColor,
+            };
+
+            image.SetValue(Grid.ColumnProperty, 3);
+
+            return image;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    #endregion //SignGrid
+
+    #endregion //CarouselGrid
+
+    #region YearListGrid
+
+    private Grid CreateYearListGrid()
+    {
+        try
+        {
+            BoxView line = new()
+            {
+                HorizontalOptions = LayoutOptions.Fill,
+                HeightRequest = 0.6,
+                Color = Colors.Silver,
+            };
+            line.SetValue(Grid.RowProperty, 1);
+
+            Grid grid = new()
+            {
+                RowDefinitions =
                 {
                     new RowDefinition(),
-                    new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) }
+                    new RowDefinition() { Height = new GridLength(0.6, GridUnitType.Absolute) },
                 },
 
-                    Children =
+                Children =
                 {
                     YearListView,
                     line,
-                }
-                };
+                },
 
-                YearListGrid.SetBinding(IsVisibleProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "YearListVisibility"
-                });
+                BackgroundColor = Globals.CalendarBackgroundColor,
+            };
 
-                YearListGrid.SetBinding(BackgroundColorProperty, new Binding()
-                {
-                    Path = "CalendarBackgroundColor",
-                    Source = DataContext,
-                });
-
-
-                YearListGrid.SetValue(Grid.RowProperty, 1);
-                YearListGrid.SetValue(Grid.ColumnProperty, 1);
-
-                return YearListGrid;
-            }
-            catch (Exception ex)
+            grid.SetBinding(IsVisibleProperty, new Binding()
             {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+                Source = DataContext,
+                Path = nameof(DataContext.YearListVisibility),
+            });
+
+            grid.SetValue(Grid.RowProperty, 1);
+            grid.SetValue(Grid.ColumnProperty, 0);
+            grid.SetValue(Grid.ColumnSpanProperty, 2);
+
+            return grid;
         }
-
-        private ListView CreateYearListView()
+        catch (Exception ex)
         {
-            try
-            {
-                var YearListView = new ListView()
-                {
-                    SelectionMode = ListViewSelectionMode.Single,
-                    SeparatorVisibility = SeparatorVisibility.None,
-                    HorizontalOptions = LayoutOptions.Center,
-                };
-
-                YearListView.SetBinding(ListView.ItemsSourceProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "YearList"
-                });
-                YearListView.SetBinding(ListView.SelectedItemProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "SelectedYear",
-                    Mode = BindingMode.TwoWay
-                });
-
-                YearListView.ItemTemplate = new DataTemplate(() =>
-                {
-                    return new ViewCell()
-                    {
-                        View = CreateTemplateListYearNumberLabel(),
-                    };
-                });
-
-                var ItemSelectedEvent = new EventToCommandBehavior()
-                {
-                    EventName = "ItemSelected",
-                    Converter = new SelectedItemEventArgsToSelectedItemConverter(),
-                };
-                ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "YearSelectedCommand"
-                });
-                YearListView.Behaviors.Add(ItemSelectedEvent);
-
-                var ItemTappedEvent = new EventToCommandBehavior()
-                {
-                    EventName = "ItemTapped"
-                };
-                ItemTappedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "YearListTapped"
-                });
-                YearListView.Behaviors.Add(ItemTappedEvent);
-
-                return YearListView;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        private Label CreateTemplateListYearNumberLabel()
+    private ListView CreateYearListView()
+    {
+        try
         {
-            try
+            ListView listView = new()
             {
-                var TemplateListYearNumberLabel = new Label()
+                SelectionMode = ListViewSelectionMode.Single,
+                SeparatorVisibility = SeparatorVisibility.None,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Globals.CalendarBackgroundColor,
+            };
+
+            listView.SetBinding(ListView.ItemsSourceProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.YearList),
+            });
+            listView.SetBinding(ListView.SelectedItemProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.SelectedYear),
+                Mode = BindingMode.TwoWay
+            });
+
+            listView.ItemTemplate = new DataTemplate(() =>
+            {
+                return new ViewCell()
                 {
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    FontFamily = "B_Nazanin",
+                    View = CreateTemplateListYearNumberLabel(),
                 };
+            });
 
-                TemplateListYearNumberLabel.SetBinding(Label.TextProperty, new Binding() { Path = "YearNumber" });
-                TemplateListYearNumberLabel.SetBinding(Label.FontSizeProperty, new Binding() { Path = "FontSize" });
-                TemplateListYearNumberLabel.SetBinding(Label.TextColorProperty, new Binding() { Path = "ForeColor" });
-
-                return TemplateListYearNumberLabel;
-            }
-            catch (Exception ex)
+            EventToCommandBehavior ItemSelectedEvent = new()
             {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+                EventName = nameof(ListView.ItemSelected),
+                Converter = new SelectedItemEventArgsToSelectedItemConverter(),
+            };
+
+            ItemSelectedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.YearSelectedCommand),
+            });
+
+            listView.Behaviors.Add(ItemSelectedEvent);
+
+            EventToCommandBehavior ItemTappedEvent = new()
+            {
+                EventName = nameof(ListView.ItemTapped),
+            };
+
+            ItemTappedEvent.SetBinding(EventToCommandBehavior.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.YearListTapped),
+            });
+
+            listView.Behaviors.Add(ItemTappedEvent);
+
+            return listView;
         }
-        #endregion
-
-        #region ButtonStackLayout
-        private StackLayout CreateButtonStackLayout()
+        catch (Exception ex)
         {
-            try
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private static Label CreateTemplateListYearNumberLabel()
+    {
+        try
+        {
+            Label label = new()
             {
-                var ButtonStackLayout = new StackLayout()
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Margin = 0,
-                    Padding = 0,
-                    Orientation = StackOrientation.Horizontal,
-                    Children =
+                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalOptions = LayoutOptions.Center,
+                FontFamily = "B_Nazanin",
+            };
+
+            label.SetBinding(Label.TextProperty, new Binding() 
+            { 
+                Path = nameof(YearListViewModel.YearNumber), 
+            });
+            label.SetBinding(Label.FontSizeProperty, new Binding() 
+            { 
+                Path = nameof(YearListViewModel.FontSize),
+            });
+            label.SetBinding(Label.TextColorProperty, new Binding() 
+            { 
+                Path = nameof(YearListViewModel.ForeColor),
+            });
+
+            return label;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    #endregion
+
+    #region ButtonStackLayout
+
+    private HorizontalStackLayout CreateButtonStackLayout()
+    {
+        try
+        {
+            HorizontalStackLayout stack = new()
+            {
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
+                Margin = 0,
+                Padding = 0,
+                Children =
                 {
                     CreateOKButton(),
                     CreateCancelButton(),
                 }
-                };
+            };
 
-                /*ButtonStackLayout.SetBinding(StackLayout.OrientationProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "NotDeviceOrientation",
-                });*/
+            stack.SetValue(Grid.RowProperty, 2);
+            stack.SetValue(Grid.ColumnProperty, 0);
+            stack.SetValue(Grid.ColumnSpanProperty, 2);
 
-                ButtonStackLayout.SetValue(Grid.RowProperty, 2);
-                ButtonStackLayout.SetValue(Grid.ColumnProperty, 1);
-
-                return ButtonStackLayout;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            return stack;
         }
-
-        private Button CreateOKButton()
+        catch (Exception ex)
         {
-            try
-            {
-                var OKButton = new Button()
-                {
-                    Text = "تایید",
-                    FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Button)),
-                    FontFamily = "B_Nazanin",
-                    Margin = new Thickness(5, 10, 10, 10),
-                    CommandParameter = this,
-                };
-
-                OKButton.SetBinding(Button.TextColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarOKButtonTextColor",
-                });
-
-                OKButton.SetBinding(Button.BackgroundColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarOKButtonBackgroundColor",
-                });
-
-                OKButton.SetBinding(Button.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "OkCommand"
-                });
-
-                return OKButton;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
+            throw new Exception(ex.Message);
         }
-
-        private Button CreateCancelButton()
-        {
-            try
-            {
-                var CancelButton = new Button()
-                {
-                    Text = "انصراف",
-                    FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Button)),
-                    FontFamily = "B_Nazanin",
-                    Margin = new Thickness(10, 10, 0, 10),
-                    CommandParameter = this,
-                };
-
-                CancelButton.SetBinding(Button.TextColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarCancelButtonTextColor",
-                });
-
-                CancelButton.SetBinding(Button.BackgroundColorProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CalendarCancelButtonBackgroundColor",
-                });
-
-                CancelButton.SetBinding(Button.CommandProperty, new Binding()
-                {
-                    Source = DataContext,
-                    Path = "CancelCommand"
-                });
-
-                return CancelButton;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.GetErrorMessage());
-                return null;
-            }
-        }
-
-        #endregion //ButtonStackLayout
-
-        #endregion //ContentGrid
-
-        #endregion //MainGrid
     }
+
+    private Button CreateOKButton()
+    {
+        try
+        {
+            Button button = new()
+            {
+                Text = "تایید",
+                FontSize = Application.Current.GetNamedSize(NamedSizes.Body),
+                FontFamily = "B_Nazanin",
+                Margin = new Thickness(10, 10, 5, 10),
+                Padding = 5,
+                WidthRequest = 100,
+                CommandParameter = this,
+                TextColor = Globals.CalendarOKButtonTextColor,
+                BackgroundColor = Globals.CalendarOKButtonBackgroundColor,
+            };
+
+            button.SetBinding(Button.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.OkCommand),
+            });
+
+            return button;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private Button CreateCancelButton()
+    {
+        try
+        {
+            Button button = new()
+            {
+                Text = "انصراف",
+                FontSize = Application.Current.GetNamedSize(NamedSizes.Body),
+                FontFamily = "B_Nazanin",
+                Margin = new Thickness(0, 10, 10, 10),
+                Padding = 5,
+                WidthRequest = 100,
+                CommandParameter = this,
+                TextColor = Globals.CalendarCancelButtonTextColor,
+                BackgroundColor = Globals.CalendarCancelButtonBackgroundColor,
+            };
+
+            button.SetBinding(Button.CommandProperty, new Binding()
+            {
+                Source = DataContext,
+                Path = nameof(DataContext.CancelCommand),
+            });
+
+            return button;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    #endregion //ButtonStackLayout
+
+    #endregion //ContentGrid
+
+    #endregion //MainGrid
+
 }

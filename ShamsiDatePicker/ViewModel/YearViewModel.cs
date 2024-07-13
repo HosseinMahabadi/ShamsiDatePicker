@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HMExtension.Xamarin;
+using HMExtension.Maui;
 
-namespace ShamsiDatePicker.ViewModel
+namespace ShamsiDatePicker.ViewModel;
+
+internal class YearViewModel : ViewModelBase
 {
-    internal class YearViewModel : ViewModelBase
+    private int _year = 1300;
+    public int Year
     {
-        private int _year = 1300;
-        public int Year
-        {
-            get => _year;
-            set => SetProperty(ref _year, value);
-        }
+        get => _year;
+        set => SetProperty(ref _year, value);
+    }
 
-        public override string ToString()
-        {
-            return Year.ToString();
-        }
+    public override string ToString()
+    {
+        return Year.ToString();
     }
 }

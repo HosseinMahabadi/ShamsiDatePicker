@@ -1,67 +1,64 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/2.1.2">
-
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.44">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;MonoAndroid10.0;xamarinios10</TargetFrameworks>
-    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
-    <Version>3.0.20</Version>
+    <Version>4.0.95</Version>
     <Authors>Hossein Mahabadi</Authors>
-    <Description>This custom control shows shamsi calendar just like Xamarin forms DatePicker control.
+    <Description>This custom control shows shamsi calendar just like Microsoft Maui DatePicker control.
 
 https://instagram.com/hossein.mahabadi468</Description>
+    
     <PackageIcon>ShamsiDatePickerIcon.png</PackageIcon>
     <Copyright>Copyright (c) 2020-2025 Hossein Mahabadi
       https://instagram.com/hossein.mahabadi468
 </Copyright>
+    
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Fixed some bugs.</PackageReleaseNotes>
-    <PackageTags>xamarin xamarinforms date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
+    <PackageReleaseNotes>Support Microsoft Maui</PackageReleaseNotes>
+    <PackageTags>xamarin xamarinforms maui date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
+    <TargetFrameworks>net8.0-ios;net8.0-android;net8.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+    <UseMaui>True</UseMaui>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+    <OutputType>Library</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SingleProject>true</SingleProject>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
     <Optimize>true</Optimize>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <None Remove="C:\Users\h.mahabadi.ALIGODARZ-MAN01\.nuget\packages\hmcontrols\1.0.5\contentFiles\any\netstandard2.0\Platform\Android\Renderers\StandardEditorRenderer.cs" />
-    <None Remove="Resources\bnazanin.ttf" />
-    <None Remove="Resources\Fonts\bnazanin_bold.ttf" />
-    <None Remove="Resources\Images\background-blue.jpg" />
-    <None Remove="Resources\Images\background.jpg" />
-    <None Remove="Resources\Images\left.png" />
-    <None Remove="Resources\Images\right.png" />
+    <EmbeddedResource Remove="C:\Users\Hossein Mahabadi\.nuget\packages\hmextension.maui\3.0.12\contentFiles\any\net8.0-ios17.2\Platform\Android\Resources\values\styles.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="license.txt">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
     <None Include="Resources\Images\ShamsiDatePickerIcon.png">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Fonts\bnazanin.ttf" />
-    <EmbeddedResource Include="Resources\Fonts\bnazanin_bold.ttf" />
-    <EmbeddedResource Include="Resources\Images\background-blue.jpg" />
-    <EmbeddedResource Include="Resources\Images\background.jpg" />
+    <EmbeddedResource Include="Resources\Fonts\*" />
     <EmbeddedResource Include="Resources\Images\left.png" />
     <EmbeddedResource Include="Resources\Images\right.png" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="CarouselView.FormsPlugin" Version="6.0.0" />
-    <PackageReference Include="HMControls" Version="1.0.7" />
-    <PackageReference Include="HMExtension.Xamarin" Version="2.1.7" />
-    <PackageReference Include="VG.XFShapeView" Version="1.0.5" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
+    <PackageReference Include="HMControls" Version="2.0.62" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.70" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.70" />
   </ItemGroup>
 </Project>
