@@ -13,7 +13,7 @@
 
 #  ساختار کلاس
 ```csharp
-public class ShamsiDatePicker : KeyboardlessEntry, IDisposable
+public class ShamsiDatePicker : KeyboardlessEntry
 ```
 # روش نصب
 - `کنترل تقویم فارسی برای زامارین` در سایت ناگت قابل دسترسی است : https://www.nuget.org/packages/ShamsiDatePicker
