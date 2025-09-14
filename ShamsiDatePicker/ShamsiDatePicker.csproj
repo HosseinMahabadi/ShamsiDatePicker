@@ -2,7 +2,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
-    <Version>4.0.95</Version>
+    <Version>4.0.99</Version>
     <Authors>Hossein Mahabadi</Authors>
     <Description>This custom control shows shamsi calendar just like Microsoft Maui DatePicker control.
 
@@ -19,8 +19,8 @@ https://instagram.com/hossein.mahabadi468</Description>
     <PackageTags>xamarin xamarinforms maui date persian persiandate shamsi jalali hijrishamsi taghvim datetime iran xamarincalendar xamarinpersiancalendar</PackageTags>
     <PackageProjectUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HosseinMahabadi/ShamsiDatePicker</RepositoryUrl>
-    <TargetFrameworks>net8.0-ios;net8.0-android;net8.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net9.0-ios;net9.0-android;net9.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
     <UseMaui>True</UseMaui>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
@@ -57,8 +57,8 @@ https://instagram.com/hossein.mahabadi468</Description>
     <EmbeddedResource Include="Resources\Images\right.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HMControls" Version="2.0.62" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.70" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.70" />
+    <PackageReference Include="HMControls" Version="2.0.99" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
   </ItemGroup>
 </Project>

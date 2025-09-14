@@ -11,7 +11,7 @@ namespace ShamsiDatePickerSample
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureShamsiDatePicker()
+                .UseShamsiDatePicker()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

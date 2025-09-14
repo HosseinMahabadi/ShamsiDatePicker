@@ -36,7 +36,7 @@ public class ShamsiDatePicker : KeyboardlessEntry
         }
     }
 
-    public override void ActionOnFocused()
+    public override void ActionOnFocus()
     {
         ShowCalendar();
     }
